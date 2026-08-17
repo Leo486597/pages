@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Clavon 换房案例研究 · 目录</title>
+<style>
+:root{--bg:#F7F7F3;--paper:#fff;--ink:#1B2421;--ink2:#525E5A;--ink3:#8A948F;--line:#E2E6E1;--a:#2a78d6;--b:#eb6834;--mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;--serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;--sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 var(--sans)}
+.page{max-width:960px;margin:0 auto;padding:44px 28px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+h1{font-family:var(--serif);font-size:34px;line-height:1.25;margin:0 0 12px}
+.lede{font-family:var(--serif);font-size:18px;color:var(--ink2);max-width:760px;margin:0 0 30px}
+h2{font-family:var(--serif);font-size:20px;margin:34px 0 12px;border-top:1px solid var(--line);padding-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+a.card{display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;text-decoration:none;color:inherit;transition:border-color .15s}
+a.card:hover{border-color:var(--ink2)}
+a.card.hero{grid-column:1/-1;border-left:4px solid var(--ink)}
+.card .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.card .t{font-family:var(--serif);font-size:18px;font-weight:700;margin:4px 0 6px}
+.card .d{font-size:13.5px;color:var(--ink2)}
+.card .who{display:inline-block;margin-top:8px;font-size:11px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--ink3)}
+.foot{font-size:12px;color:var(--ink3);margin-top:34px;line-height:1.7}
+.answer{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:0 12px 12px 0;padding:14px 20px;font-family:var(--serif);font-size:17px;line-height:1.7;margin:0 0 26px}
+.answer b{font-family:var(--mono);font-weight:600}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">Case study · Singapore · Clementi · 2026-08</div>
+  <h1>换大四房公寓，还是换组屋、把 60 万拿在手里？</h1>
+  <p class="lede">一对在新加坡十年的夫妇，Clavon 两房两卫要换四房。两条路：A 卖了再买 S$3.1M 的四房公寓；B 卖了买金文泰转售组屋、手里多出约 60 万。这里是全部分析、模拟器、回溯测试、策略搜索和给客户的建议书。</p>
+  <div class="answer">结论：建议 B。同样的住房预算跑 20 年，B 的净资产中位数 <b>S$6.19M</b> vs A <b>S$4.79M</b>，79% 的市场路径领先；A 需要房价年化 <b>≥ 4.2%</b> 才追平（URA 指数 2010 起 3.3%）。「每十年换一次」作为收益策略不成立。60 万的进场规则按所有起点搜过：越早买完越好、每月固定定投、比例偏离大了才调仓；分批 6 个月是买安心的保险。</div>
+
+  <h2>给客户</h2>
+  <div class="grid">
+    <a class="card hero" href="report.html"><div class="k">建议书</div><div class="t">换房建议书（可打印）</div><div class="d">结论 → 您现在的位置 → 两条路同一把尺 → 为什么 B → 60 万怎么进（含「试试看」小部件）→ 20 年后 → 下一步 → 15 条问答 → 附录。</div><span class="who">客户</span></a>
+    <a class="card" href="strategy-lab.html"><div class="k">交互实验</div><div class="t">进场规则实验室</div><div class="d">自己改进场月数 / 触发器 / 均线 / 储备金 / 再平衡，在 152 个真实起点 + 300 条替代历史上即时打分；543 条规则的网格结果与白话方法说明。</div><span class="who">客户 · 分析</span></a>
+    <a class="card" href="entry-plan.html"><div class="k">向导</div><div class="t">60 万入场向导（七步）</div><div class="d">切分 → 选节奏 → 逐月日历 → 触发器演练 → 之后的规则与再平衡计算器 → 纪律契约签署 → 执行打卡；进度存在浏览器本地。</div><span class="who">客户</span></a>
+  </div>
+
+  <h2>模拟与回溯</h2>
+  <div class="grid">
+    <a class="card" href="simulator.html"><div class="k">沙盘</div><div class="t">换房沙盘</div><div class="d">A/B/C/D 四方案，全局假设、房贷、房价、组合配置、压力情景全可改；蒙特卡洛 1000 条路径，净资产走势、追平点扫描、现金流、真实指数滚动 10 年、资产说明书。</div><span class="who">分析</span></a>
+    <a class="card" href="backtest.html"><div class="k">回溯</div><div class="t">按起点看回溯（2004–2026 真实数据）</div><div class="d">拖起点看四种入场方式的十年路径与回撤触发点；所有起点的差额柱；汇总与典型起点表。</div><span class="who">分析</span></a>
+  </div>
+
+  <h2>文字报告</h2>
+  <div class="grid">
+    <a class="card" href="analysis.html"><div class="k">报告</div><div class="t">深度分析</div><div class="d">核验状态表、假设 A1–A6、2026-08 现行规则与一次换房的真实成本、「每十年换一次」检验、四方案数学、风险形状、60 万配置蓝图、走 A 的止损做法、中间路线、先核的四个数。</div><span class="who">分析</span></a>
+    <a class="card" href="entry-plan-doc.html"><div class="k">报告</div><div class="t">60 万怎么进场：可执行方案</div><div class="d">一次性 vs 分批的数学、12 个月日历、加速触发器、纪律契约、执行细节（券商 / 换汇 / 税）、策略卡 v2 更新、回溯结论。</div><span class="who">分析</span></a>
+    <a class="card" href="backtest-doc.html"><div class="k">报告</div><div class="t">入场计划回溯测试报告</div><div class="d">数据与代理、规则、152 个起点的结果、触发器有没有用、典型起点、蒙特卡洛 vs 历史为什么差、局限。</div><span class="who">分析</span></a>
+    <a class="card" href="strategy-doc.html"><div class="k">报告</div><div class="t">策略卡 v2：规则搜索与自动执行</div><div class="d">543 条规则的网格搜索结论、证据表、局限；写成代码的月度执行代理（rules.json / agent.py）与 cron / launchd 用法。</div><span class="who">分析 · 工程</span></a>
+  </div>
+
+  <div class="foot">全部页面自包含、离线可开；数字由同一套引擎生成（沙盘 sim/engine.js，回溯 backtest/bt.js）。源代码、原始数据（URA / HDB 指数、Yahoo 月度价）、脚本与自动执行代理在本机目录 case-study-clavon-buy-or-sell/。不构成投资建议。</div>
+</div>
+</body>
+</html>
