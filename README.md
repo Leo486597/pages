@@ -11,7 +11,7 @@ Leo 的个人 artifact 发布站。**一个 folder = 一个 topic**，每个 top
 
 | Topic | 内容 | 发布 | 在线 |
 |---|---|---|---|
-| [`us-mega10-value-checklist/`](us-mega10-value-checklist/) | 美股市值前十 · 巴菲特买入前 Checklist 六关体检（10 家公司，SEC XBRL 一手数据） | 2026-08-16 | [打开](https://leo486597.github.io/pages/us-mega10-value-checklist/) |
+| [`us-mega10-value-checklist/`](us-mega10-value-checklist/) | 美股市值前十 · 价值投资体检 —— 巴菲特买入前 Checklist 六道闸门跑完市值前 10。0 家通过、2 家灰色、8 家未通过——外加三个单看一家发现不了的跨公司事实。 | 2026-08-16 | [打开](https://leo486597.github.io/pages/us-mega10-value-checklist/) |
 
 ---
 
