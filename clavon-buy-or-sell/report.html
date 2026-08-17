@@ -255,6 +255,7 @@ figure{margin:14px 0}
     <li><b>如果 60 万里有一半是要退回 CPF 的：</b>用它付组屋首付（省下等额现金进组合），B 的优势会缩小但仍在；沙盘里改「起始可投总额」即可看到。</li>
     <li><b>定路线：</b>把四个数填进沙盘，跑 20 年——追平点仍在 4% 以上 → B；掉到 3% 以下（比如你们只信组合能拿 4%）→ A 不亏。</li>
     <li><b>走 B 的第 0 个月：</b>开 IBKR、开 SRS 户口（两人各一个）、写下六条纪律；资金到账的下一个月开始按第 04 节执行。每月的动作清单可以由附带的脚本自动生成（`strategy/agent.py`）。</li>
+    <li><b>券商怎么选：</b>原方案里三只伦交所 ETF（VWRA / AGGU / IGLN）需要 IBKR；想<b>一个账户管全部</b>可以用老虎证券——把它们换成美股注册的等价物（VT / BNDW / IAU）、SSB 换成 SGX 上的 A35，代价约 0.3–0.5%/年的股息预扣税；2026-08-17 已在老虎模拟盘把第 1 个月从换汇到成交全自动跑通：<a href="tiger-automation.html">能不能全自动？老虎模拟盘实测</a>。</li>
     <li><b>房产交易顺序：</b>公民夫妇可以先买组屋、6 个月内卖 Clavon；两人都是 PR 则先卖后买（ABSD 5% 不可退）。</li>
   </ul>
 </section>
@@ -294,7 +295,7 @@ figure{margin:14px 0}
     <tr><td>指数数据</td><td>URA 私宅指数 1975Q1–2026Q2；HDB 转售指数 1990Q1–2026Q2</td><td>data.gov.sg 原始季度数据</td></tr>
     <tr><td>回溯测试数据</td><td>2004-01–2026-08 月度：VTSMX/VGTSX/VBMFX/ES3/GC=F/SGD=X</td><td>Yahoo Finance 复权价</td></tr>
   </table>
-  <p class="foot">模型边界：不含 CPF 账户机制（卖房后 CPF 本息须退回 OA）；不含收入变化；房贷利率固定；房价与资产收益为对数正态 + 固定相关矩阵。附带文件：<a href="simulator.html">换房沙盘</a>（改任何假设重算 A/B）· <a href="strategy-lab.html">进场规则实验室</a>（自己改进场规则看成绩）· <a href="entry-plan.html">入场向导</a>（逐月日历与打卡）· <a href="backtest.html">回溯测试</a>（从过去任何一个月起投）· <span class="num">strategy.md</span>（策略卡与自动执行脚本）。本建议书不构成投资建议。</p>
+  <p class="foot">模型边界：不含 CPF 账户机制（卖房后 CPF 本息须退回 OA）；不含收入变化；房贷利率固定；房价与资产收益为对数正态 + 固定相关矩阵。附带文件：<a href="simulator.html">换房沙盘</a>（改任何假设重算 A/B）· <a href="strategy-lab.html">进场规则实验室</a>（自己改进场规则看成绩）· <a href="entry-plan.html">入场向导</a>（逐月日历与打卡）· <a href="backtest.html">回溯测试</a>（从过去任何一个月起投）· <a href="tiger-automation.html">老虎模拟盘实测</a>（全自动执行可行性）· <span class="num">strategy.md</span>（策略卡与自动执行脚本）。本建议书不构成投资建议。</p>
 </section>
 </div>
 <div class="tip" id="tip"></div>

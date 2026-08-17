@@ -11,7 +11,7 @@ Leo 的个人 artifact 发布站。**一个 folder = 一个 topic**，每个 top
 
 | Topic | 内容 | 发布 | 在线 |
 |---|---|---|---|
-| [`clavon-buy-or-sell/`](clavon-buy-or-sell/) | 换大公寓，还是组屋 + 60 万？— Clavon 换房案例研究 —— 新加坡换房决策全套：建议书、换房沙盘、60 万入场向导、真实数据回溯、进场规则实验室、深度分析与策略卡（含自动执行代理说明） | 2026-08-17 | [打开](https://leo486597.github.io/pages/clavon-buy-or-sell/) |
+| [`clavon-buy-or-sell/`](clavon-buy-or-sell/) | Clavon 换房案例研究 —— 换大四房公寓还是换组屋拿 60 万：建议书、沙盘、回测、策略卡、老虎模拟盘全自动实测 | 2026-08-17 | [打开](https://leo486597.github.io/pages/clavon-buy-or-sell/) |
 | [`us-mega10-value-checklist/`](us-mega10-value-checklist/) | 美股市值前十 · 价值投资体检 —— 巴菲特买入前 Checklist 六道闸门跑完市值前 10。0 家通过、2 家灰色、8 家未通过——外加三个单看一家发现不了的跨公司事实。 | 2026-08-16 | [打开](https://leo486597.github.io/pages/us-mega10-value-checklist/) |
 
 ---

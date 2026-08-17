@@ -38,3 +38,7 @@ A 需私宅年化 ≥4.2% 才追平（URA 非有地指数 2010Q1–2026Q2 年化
 - 自动执行：`strategy/rules.json` `strategy/agent.py`（每月 cron：拉价 → 算信号 → 动作清单 → 记账）
 
 不构成投资建议。
+
+## 2026-08-17 追加：能不能全自动？老虎证券模拟盘实测
+
+`tiger-automation.html` —— 原方案在老虎只有 15% 能自动（伦交所 ETF 是合约壳、SSB 非券商产品）；一个账户管全部的老虎篮子（VT / BNDW / IAU / A35 + ES3 / CLR）已在模拟盘 21839889713464356 从换汇到成交全自动跑通，含逐条 API 证据、每一张单、幂等复跑。本机源：`case-study-clavon-buy-or-sell/strategy/{execute.py,brokers/,report.py,log/}`；老虎 API 能力探测：`auto-buy-O39/.claude/skills/tiger-api/`。

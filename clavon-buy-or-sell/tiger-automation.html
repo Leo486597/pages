@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>能不能全自动？老虎证券模拟盘实测</title><style>
+:root{--bg:#F7F7F3;--paper:#fff;--ink:#1B2421;--ink2:#525E5A;--ink3:#8A948F;--line:#E2E6E1;--acc:#1B2421;--mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;--serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;--sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 var(--sans)}
+.nav{max-width:920px;margin:0 auto;padding:16px 28px 0;font-size:13px;color:var(--ink3)}.nav a{color:var(--ink2)}
+.page{max-width:920px;margin:0 auto;padding:16px 28px 80px}.sheet{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:40px 48px}
+@media(max-width:700px){.sheet{padding:24px 18px}}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:700;line-height:1.3;margin:1.4em 0 .5em}h1{font-size:30px;margin-top:0}h2{font-size:22px;border-top:1px solid var(--line);padding-top:18px}h3{font-size:17px}h4{font-size:15px}
+p{margin:.6em 0}code{font-family:var(--mono);font-size:.9em;background:var(--bg);padding:1px 5px;border-radius:4px}pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.55}pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;display:block;overflow-x:auto}th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--bg);font-weight:600;color:var(--ink2);font-size:12.5px;white-space:nowrap}
+ul,ol{padding-left:1.4em}li{margin:.25em 0}hr{border:0;border-top:1px solid var(--line);margin:24px 0}a{color:var(--ink)}blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:var(--ink2)}
+.foot{font-size:12px;color:var(--ink3);margin-top:22px}
+</style></head>
+<body><div class="nav"><a href="index.html">← 目录</a></div><div class="page"><div class="sheet"><h1>能不能全自动？——老虎证券模拟盘实测（2026-08-17）</h1>
+<p>本页回答两个问题：<b>策略卡 v2 能不能在老虎证券（Tiger Brokers SG）一个账户里全自动执行</b>；以及<b>在老虎模拟盘上真的跑一遍会发生什么</b>。结论、证据、每一张单的成交都在下面；这一页由 <code>strategy/report.py</code> 从模拟盘的订单记录生成，重跑即更新。策略本身、为什么是 60/40、入场规则的推导，见 <a href="report.html">换房建议书</a> 与 <a href="strategy-doc.html">策略卡 v2</a>。</p>
+<h2>0. 结论</h2>
+<table><thead><tr><th>问题</th><th>答案</th></tr></thead><tbody><tr><td>原方案（VWRA / AGGU / IGLN 伦交所 UCITS + ES3 / CLR + SSB/T-bill + 高息户）在老虎能全自动吗</td><td><b>不能。</b> 老虎没有伦交所通道，占组合 <b>70%</b> 的三只 UCITS ETF 买不到（合约壳能下单、永远不成交）；SSB / T-bill / 高息户（<b>15%</b>）不是券商产品；只有 ES3 / CLR（<b>15%</b>）能直接自动</td></tr><tr><td>客户要「一个账户管全部」怎么办</td><td>换成老虎买得到的<b>等价篮子</b>：VT（全球股）/ BNDW（全球债，美元对冲）/ IAU（黄金）/ A35.SI（新加坡政府债 ETF）+ ES3.SI / CLR.SI 不变 + 5% 现金留在账户新元余额 → <b>100% 在一个老虎账户里，95% 由脚本下单，5% 是本来就该留的现金</b></td></tr><tr><td>代价</td><td>美股注册 ETF 的股息预扣税 30%（爱尔兰 UCITS 15%）+ 美国遗产税敞口（美国注册资产 &gt; US$6 万部分 40%）；SSB → A35 多了利率波动（久期约 7 年）。<b>税的年化拖累估算 ≈ 0.3–0.5%</b>（⚠️ 估算：VT 股息率 ~1.9% × 15 个百分点 × 45% ≈ 0.13%；BNDW ~4% × 30% × 20% ≈ 0.24%，部分利息收入可免预扣未计入），<a href="report.html">建议书</a> 里已经把它算作「换工具不换策略」的价签</td></tr><tr><td>模拟盘跑通了吗</td><td><b>跑通了。</b> 第 1 个月的全部动作（安全层一次性 + 黄金 1/6 + 股票层 1/6 + 定投）从「算清单 → 换汇 → 逐张预览 → 下单 → 成交 → 记账」走完；成交明细在 §3。美股腿在美股开盘（新加坡 21:30）后成交，页面在那之后重跑一次会补上</td></tr><tr><td>以后有客户用 IBKR 呢</td><td>券商层已经抽成接口（<code>strategy/brokers/base.py</code>），老虎是第一个实现（<code>brokers/tiger.py</code>），IBKR 留了骨架与要点（<code>brokers/ibkr.py</code>）；IBKR 有伦交所通道，<b>原方案的工具在 IBKR 可以直接自动</b>，不必换篮子</td></tr></tbody></table>
+<hr>
+<h2>1. 核验状态（每一条都是 2026-08-17 在老虎 API 上真调过的）</h2>
+<table><thead><tr><th>#</th><th>要核的事</th><th>调用与结果</th><th>判定</th><th>时间</th></tr></thead><tbody><tr><td>1</td><td>老虎有没有伦交所通道</td><td><code>quote.get_symbols(Market.ALL)</code> 26,288 个代码，后缀分布 US 25,641 / SH 270 / … / <b>无一个 <code>.L</code></b>；<code>Market</code> 枚举只有 US/HK/CN/SG</td><td>❌ 没有</td><td>12:38 SGT</td></tr><tr><td>2</td><td>VWRA / AGGU / IGLN 在老虎里是什么</td><td><code>get_contract("VWRA", STK, USD)</code> → 合约壳 <code>VANG FTSE AW USDA</code>（IB 命名）、market <b>US</b>、<code>is_etf=False</code>；不在 <code>get_symbols(Market.US)</code> 里；<code>get_bars</code> → <b>空表</b>；<code>get_stock_delay_briefs</code> → 全 0</td><td>⚠️ 只有壳，无行情</td><td>12:33–12:39 SGT</td></tr><tr><td>3</td><td>壳能不能成交</td><td><code>place_order(BUY 1 VWRA LMT 100)</code> → <code>HELD</code>，撤单 OK；再挂一张<b>高于市价</b>的 <code>BUY 1 VWRA LMT 250 DAY</code>（VWRA.L ≈ US$195）观察是否成交</td><td>⏳ 见 §3.4</td><td>12:34 / 12:39 SGT</td></tr><tr><td>4</td><td>市价单时段</td><td><code>preview_order(MKT VWRA)</code> → <i>Market order is only available during regular trading hours (09:30-16:00 ET)</i> — 老虎把它当美股处理</td><td>✅ 已核</td><td>12:33 SGT</td></tr><tr><td>5</td><td>美股替代品</td><td><code>get_contract</code> VT / BNDW / IAU：market US、<code>is_etf=True</code>、有日 K（VT 162.25 / BNDW 67.51 / IAU 82.28）、VT &amp; IAU <code>support_fractional_share=True</code></td><td>✅ 可买</td><td>12:44 SGT</td></tr><tr><td>6</td><td>SGX 工具</td><td>ES3.SI（SPDR STI）、CLR.SI（Lion-Phillip S-REIT）、A35.SI（ABF SG Bond）：market SG、<code>is_etf=True</code>、日 K 正常（5.80 / 0.813 / 1.116）；合约 <code>lot_size=1</code>（<code>get_trade_metas</code> 却写 100，以合约与 preview 为准：5 份 GTC 预览通过）</td><td>✅ 可买</td><td>12:31–12:44 SGT</td></tr><tr><td>7</td><td>换汇</td><td><code>place_forex_order(SEC, "USD", "SGD", 100)</code> → 卖 100 USD @ 1.26737，3 秒后 SGD 余额 −3,122 → −2,995</td><td>✅ 即时成交</td><td>12:34 SGT</td></tr><tr><td>8</td><td>实时报价权限</td><td><code>get_quote_permission()</code> → <code>aStockQuoteLv1</code> 而已；<code>get_stock_briefs</code> / <code>get_timeline</code> / <code>get_depth_quote</code> 全部 <code>code=4 permission denied</code>；日 K / 5 分钟 K 正常</td><td>⚠️ 只有 K 线</td><td>12:0x SGT</td></tr><tr><td>9</td><td>SSB / T-bill / 高息户</td><td>不是券商产品，任何 API 都没有；老虎里最接近的是 SGX 上的 A35.SI（新加坡政府债 ETF）与账户新元余额</td><td>❌ 需替代</td><td>—</td></tr><tr><td>10</td><td>账户内美元 vs 新元</td><td>模拟盘持美元；买 SGX 会让新元余额变负（老虎自动借新元）。执行器先算各币种缺口、先换汇再下单</td><td>✅ 已处理</td><td>13:0x SGT</td></tr></tbody></table>
+<p>未核 / 待观察：伦交所壳合约那张高于市价的 1 股 VWRA 单会不会在伦敦（15:00 SGT）或纽约（21:30 SGT）开盘后成交（§3.4）；美股腿的当日成交价（§3.3，页面重跑更新）。</p>
+<h2>2. 逐腿判定：原工具 → 老虎能不能 → 替代</h2>
+<table><thead><tr><th>层</th><th>资产</th><th>权重</th><th>原工具（策略卡）</th><th>老虎能否自动</th><th>老虎替代（本次实测用）</th><th>差别</th></tr></thead><tbody><tr><td>equity</td><td>全球股票</td><td>45%</td><td><code>VWRA.L</code></td><td>❌ 伦交所无通道</td><td><code>VT</code> Vanguard Total World Stock ETF</td><td>美股注册；股息预扣 30% vs 15%；遗产税敞口；VT 跟踪 FTSE Global All Cap，VWRA 跟踪 FTSE All-World（相关 ~0.99）</td></tr><tr><td>equity</td><td>新加坡股票</td><td>10%</td><td><code>ES3.SI</code></td><td>✅</td><td><code>ES3.SI</code> SPDR STI ETF</td><td>同一工具</td></tr><tr><td>equity</td><td>新加坡 REIT</td><td>5%</td><td><code>CLR.SI</code></td><td>✅</td><td><code>CLR.SI</code> Lion-Phillip S-REIT ETF</td><td>同一工具</td></tr><tr><td>safe</td><td>全球投资级债（美元对冲）</td><td>20%</td><td><code>AGGU.L</code></td><td>❌ 伦交所无通道</td><td><code>BNDW</code> Vanguard Total World Bond ETF (USD-hedged)</td><td>美股注册；BNDW = BND + BNDX（美元对冲），与 AGGU 同为全球综合债；分红预扣税同上</td></tr><tr><td>safe</td><td>新加坡政府债 / 短债</td><td>10%</td><td><code>SSB / T-bill（按面值记）</code></td><td>❌ 非券商产品</td><td><code>A35.SI</code> ABF Singapore Bond Index Fund</td><td>ETF 有价格波动（久期 ~7 年），SSB 没有；但能自动买、能再平衡</td></tr><tr><td>gold</td><td>黄金</td><td>5%</td><td><code>IGLN.L</code></td><td>❌ 伦交所无通道</td><td><code>IAU</code> iShares Gold Trust</td><td>实物黄金信托，无分红故无预扣；遗产税敞口</td></tr><tr><td>safe</td><td>现金</td><td>5%</td><td><code>高息户 / 货币基金</code></td><td>❌ 非券商产品</td><td>账户新元余额（不下单）</td><td>留在老虎账户新元余额（老虎 Tiger Vault 需手动申购，API 不覆盖）</td></tr></tbody></table>
+<p>加总：原方案在老虎 <b>15% 可自动 / 70% 买不到 / 15% 非券商</b>；老虎篮子 <b>95% 自动下单 + 5% 现金</b>。</p>
+<hr>
+<h2>3. 模拟盘实测</h2>
+<p>账户：老虎<b>模拟盘</b> <code>21839889713464356</code>（起始 US$1,000,000）· 篮子 <code>tiger</code> · 演练日期 2026-08-17（把起投月设为 2026-08，让当天就是第 1 个月）· 汇率 USD/SGD 1.2773 · 首次运行 2026-08-17T13:03:05 · 本页数据刷新于 2026-08-17T13:15:07</p>
+<h3>3.1 agent.py 算出的本月清单（与 strategy.md §4 的干跑一致）</h3>
+<p>信号 VWRA 新元 249.87，10 月均线 229.90（之上），回撤 0.0%。判断：安全层一次性到位。</p>
+<table><thead><tr><th>动作</th><th>资产</th><th>新元</th></tr></thead><tbody><tr><td>入场买入</td><td>全球投资级债（美元对冲） <code>gBond</code></td><td>120,000</td></tr><tr><td>入场买入</td><td>新加坡政府债 / 短债 <code>sgGov</code></td><td>60,000</td></tr><tr><td>入场买入</td><td>现金 <code>cash</code></td><td>30,000</td></tr><tr><td>入场买入</td><td>黄金 <code>gold</code></td><td>5,000</td></tr><tr><td>入场买入</td><td>全球股票 <code>gEq</code></td><td>45,000</td></tr><tr><td>入场买入</td><td>新加坡股票 <code>sgEq</code></td><td>10,000</td></tr><tr><td>入场买入</td><td>新加坡 REIT <code>reit</code></td><td>5,000</td></tr><tr><td>定投</td><td>全球股票 <code>gEq</code></td><td>2,970</td></tr><tr><td>定投</td><td>新加坡股票 <code>sgEq</code></td><td>660</td></tr><tr><td>定投</td><td>新加坡 REIT <code>reit</code></td><td>330</td></tr><tr><td>定投</td><td>全球投资级债（美元对冲） <code>gBond</code></td><td>1,320</td></tr><tr><td>定投</td><td>新加坡政府债 / 短债 <code>sgGov</code></td><td>660</td></tr><tr><td>定投</td><td>黄金 <code>gold</code></td><td>330</td></tr><tr><td>定投</td><td>现金 <code>cash</code></td><td>330</td></tr><tr><td><b>合计</b></td><td></td><td><b>281,600</b></td></tr></tbody></table>
+<p>人工腿（老虎无此工具，本次按「留在账户新元余额」处理）：入场买入 现金 S$30,000；定投 现金 S$330</p>
+<h3>3.2 换汇</h3>
+<p>下单前可用现金：USD 775,125.25 · SGD 30,791.23；各币种需求（含 0.3% 缓冲）：SGD 30,330.00</p>
+<ul><li>本次无需换汇（前一次运行已把新元换够——这正是「按缺口补」的幂等行为）</li></ul>
+<h3>3.3 每一张单</h3>
+<table><thead><tr><th>资产</th><th>工具</th><th>币种</th><th>本月新元</th><th>参考价（来源）</th><th>目标份数</th><th>订单（限价）</th><th>状态</th><th>成交</th><th>均价</th><th>实付佣金</th></tr></thead><tbody><tr><td>全球投资级债（美元对冲）</td><td><code>BNDW</code></td><td>USD</td><td>121,320</td><td>67.51 (tiger_last)</td><td>1,406</td><td>BUY 1,407 <code>44307980258264064</code> @≤67.85</td><td>HELD</td><td>0 / 1,406</td><td>—</td><td>—</td></tr><tr><td>新加坡政府债 / 短债</td><td><code>A35.SI</code></td><td>SGD</td><td>60,660</td><td>1.116 (tiger_last)</td><td>54,354</td><td>BUY 54,354 <code>44307980279365632</code> @≤1.12</td><td>FILLED</td><td>54,354 / 54,354</td><td>1.12</td><td>98.94</td></tr><tr><td>黄金</td><td><code>IAU</code></td><td>USD</td><td>5,330</td><td>82.28 (tiger_last)</td><td>50</td><td>BUY 50 <code>44307980300337152</code> @≤82.7</td><td>HELD</td><td>0 / 50</td><td>—</td><td>—</td></tr><tr><td>全球股票</td><td><code>VT</code></td><td>USD</td><td>47,970</td><td>162.25 (tiger_last)</td><td>231</td><td>BUY 231 <code>44307980326813696</code> @≤163.07</td><td>HELD</td><td>0 / 231</td><td>—</td><td>—</td></tr><tr><td>新加坡股票</td><td><code>ES3.SI</code></td><td>SGD</td><td>10,660</td><td>5.814 (tiger_last)</td><td>1,833</td><td>SELL 4 <code>44308166874514432</code> @≤5.796 / BUY 1,837 <code>44307980347264000</code> @≤5.818</td><td>FILLED / FILLED</td><td>1,833 / 1,833</td><td>5.81 / 5.80</td><td>3.33 / 17.39</td></tr><tr><td>新加坡 REIT</td><td><code>CLR.SI</code></td><td>SGD</td><td>5,330</td><td>0.812 (tiger_last)</td><td>6,564</td><td>BUY 9 <code>44308166902957056</code> @≤0.815 / BUY 6,555 <code>44307980368626688</code> @≤0.816</td><td>FILLED / FILLED</td><td>6,564 / 6,564</td><td>0.81 / 0.81</td><td>3.32 / 8.70</td></tr></tbody></table>
+<p>读法：SGX 三腿在 13:00 午后开盘即成交；美股三腿是 DAY 限价单，挂到纽约 21:30（新加坡时间）开盘成交，限价 = 参考价 +0.5%，若开盘跳空超过 0.5% 则当日不成交、下一次运行按新价补单（幂等）。</p>
+<h3>3.4 伦交所壳合约那张单</h3>
+<p><code>BUY 1 VWRA LMT 250.0 DAY</code>（VWRA.L 市价约 US$195，限价远高于市价）订单 <code>44307886033750016</code>，2026-08-17 12:39 SGT 下单：</p>
+<ul><li>2026-08-17 12:53 SGT：HELD，成交 0.0</li></ul>
+<h3>3.5 幂等复跑</h3>
+<p><code>rerun-1.out</code>：</p>
+<pre><code>== run · broker=tiger account=paper basket=tiger · 2026-08（第 1 个月）· fx USD/SGD 1.2774
+   判断: 安全层一次性到位
+   人工腿: 入场买入 cash S$30,000 — 高息户 / 货币基金（tiger 无此工具）
+   人工腿: 定投 cash S$330 — 高息户 / 货币基金（tiger 无此工具）
+   tiger account=21839889713464356
+   gEq    VT      USD market=US lot=1 ref=162.25 (tiger_last)
+   gBond  BNDW    USD market=US lot=1 ref=67.51 (tiger_last)
+   gold   IAU     USD market=US lot=1 ref=82.28 (tiger_last)
+   sgEq   ES3.SI  SGD market=SG lot=1 ref=5.814 (tiger_last)
+   reit   CLR.SI  SGD market=SG lot=1 ref=0.812 (tiger_last)
+   sgGov  A35.SI  SGD market=SG lot=1 ref=1.116 (tiger_last)
+   可用现金: SGD 30,781.93 · USD 775,125.25
+   gBond  BNDW    目标     1406 份  已成交       0  挂单中   1407  → 本次       -0 @ ≤67.17 USD  (S$121,320)
+   sgGov  A35.SI  目标    54354 份  已成交   54354  挂单中      0  → 本次       +0 @ ≤1.112 SGD  (S$60,660)
+   gold   IAU     目标       50 份  已成交       0  挂单中     50  → 本次       +0 @ ≤81.86 USD  (S$5,330)
+   gEq    VT      目标      231 份  已成交       0  挂单中    231  → 本次       +0 @ ≤161.43 USD  (S$47,970)
+   sgEq   ES3.SI  目标     1833 份  已成交    1837  挂单中      0  → 本次       -4 @ ≤5.796 SGD  (S$10,660)
+   reit   CLR.SI  目标     6564 份  已成交    6555  挂单中      0  → 本次       +9 @ ≤0.815 SGD  (S$5,330)
+   BNDW: 本月已到位，跳过
+   A35.SI: 本月已到位，跳过
+   IAU: 本月已到位，跳过
+   VT: 本月已到位，跳过
+   preview OK SELL 4 ES3.SI LMT 5.796 — 佣金 3.33 SGD
+   下单 id=44308166874514432
+   preview OK BUY 9 CLR.SI LMT 0.815 — 佣金 3.32 SGD
+   下单 id=44308166902957056
+   ES3.SI  id=44308166874514432 FILLED filled 4/4 @ 5.814 佣金 3.33
+   CLR.SI  id=44308166902957056 FILLED filled 9/9 @ 0.812 佣金 3.32
+→ /Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell/strategy/log/tiger-paper-tiger-2026-08.json</code></pre>
+<p><code>rerun-2.out</code>：</p>
+<pre><code>== run · broker=tiger account=paper basket=tiger · 2026-08（第 1 个月）· fx USD/SGD 1.2773
+   判断: 安全层一次性到位
+   人工腿: 入场买入 cash S$30,000 — 高息户 / 货币基金（tiger 无此工具）
+   人工腿: 定投 cash S$330 — 高息户 / 货币基金（tiger 无此工具）
+   tiger account=21839889713464356
+   gEq    VT      USD market=US lot=1 ref=162.25 (tiger_last)
+   gBond  BNDW    USD market=US lot=1 ref=67.51 (tiger_last)
+   gold   IAU     USD market=US lot=1 ref=82.28 (tiger_last)
+   sgEq   ES3.SI  SGD market=SG lot=1 ref=5.814 (tiger_last)
+   reit   CLR.SI  SGD market=SG lot=1 ref=0.812 (tiger_last)
+   sgGov  A35.SI  SGD market=SG lot=1 ref=1.116 (tiger_last)
+   可用现金: SGD 30,791.23 · USD 775,125.25
+   gBond  BNDW    目标     1406 份  已成交       0  挂单中   1407  → 本次       -0 @ ≤67.17 USD  (S$121,320)
+   sgGov  A35.SI  目标    54354 份  已成交   54354  挂单中      0  → 本次       +0 @ ≤1.112 SGD  (S$60,660)
+   gold   IAU     目标       50 份  已成交       0  挂单中     50  → 本次       +0 @ ≤81.86 USD  (S$5,330)
+   gEq    VT      目标      231 份  已成交       0  挂单中    231  → 本次       +0 @ ≤161.43 USD  (S$47,970)
+   sgEq   ES3.SI  目标     1833 份  已成交    1833  挂单中      0  → 本次       +0 @ ≤5.796 SGD  (S$10,660)
+   reit   CLR.SI  目标     6564 份  已成交    6564  挂单中      0  → 本次       +0 @ ≤0.809 SGD  (S$5,330)
+   BNDW: 本月已到位，跳过
+   A35.SI: 本月已到位，跳过
+   IAU: 本月已到位，跳过
+   VT: 本月已到位，跳过
+   ES3.SI: 本月已到位，跳过
+   CLR.SI: 本月已到位，跳过
+→ /Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell/strategy/log/tiger-paper-tiger-2026-08.json</code></pre>
+<hr>
+<h2>4. 每月怎么跑（老虎版流水线）</h2>
+<pre><code>PY=/Users/leo/Documents/finantial-analysi/auto-buy-O39/.venv/bin/python   # 装了 tigeropen 的解释器
+python3 strategy/agent.py --init 2026-09                                  # 起投月（一次）
+$PY strategy/execute.py --broker tiger --account paper --check            # 连通、合约、价格、现金：不下单
+$PY strategy/execute.py --broker tiger --account paper --dry-run          # 到 preview 为止
+$PY strategy/execute.py --broker tiger --account paper --run --book       # 下单 + 按真实成交记账（模拟盘）
+CLAVON_LIVE_OK=yes $PY strategy/execute.py --broker tiger --account live --run --book   # 实盘：多一道闸门</code></pre>
+<ul><li><b>一个月跑一次就够，但每天跑也安全</b>：每张单带 tag <code>clavon-tiger-&lt;篮子&gt;-&lt;资产&gt;-&lt;年月&gt;</code>，重跑先读自己的 tag，只补差额；成交完就「本月已到位，跳过」。</li><li><b>顺序</b>：算清单 → 券商最新价 → 各币种缺口 → 换汇 → 每张单先 preview（券商给出佣金 / 拒绝理由）→ 限价 DAY 下单 → 等成交 → 落盘 JSON → <code>--book</code> 把真实份数与新元成本记进 <code>state.json</code>。</li><li><b>不做的事</b>：不下市价单（老虎盘外拒绝）；卖出永不超过持仓；实盘 <code>--run</code> 需要环境变量 <code>CLAVON_LIVE_OK=yes</code>。</li><li><b>调度</b>：与 <a href="strategy-doc.html"><code>strategy.md</code></a> §4.3 相同的 cron / launchd，把命令换成上面的 <code>execute.py</code>；美股腿在新加坡晚上成交，所以选<b>每月 3 号 09:05</b> 跑一次、<b>4 号</b>再跑一次补美股腿即可。</li><li><b>仍是人工的</b>：往老虎账户存新元；SRS / CPF 的年度动作（不在这条流水线里）。</li></ul>
+<h2>5. 历史回测 vs 模拟盘</h2>
+<p>模拟盘只能<b>向前</b>：它按今天的价格成交，不能回放 2004–2026。所以「回测」仍是 <a href="backtest.html">按起点看回溯（2004–2026 真实数据）</a> 与 <a href="strategy-lab.html">进场规则实验室</a>；模拟盘证明的是<b>执行链</b>——每一腿买得到、换汇通、幂等、记账对。两者合起来才是「这套规则能自动跑」。</p>
+<h2>6. 局限与下一步</h2>
+<ul><li>老虎这个 tiger_id 没有实时报价，参考价是当日 K 线（盘中即最新价）；限价 +0.3% / +0.5% 是为了当天成交，代价是最多多付这么多。</li><li>老虎对 <code>VWRA</code> 等伦交所代码给出「能下单」的假象（合约壳）：<b>任何新工具都必须先在模拟盘下一张小单看它成不成交</b>，别信 preview。</li><li>税的拖累是估算（§0），未按客户实际税务身份核。</li><li>下一步：① 客户确认「老虎篮子」的三只美股 ETF 与 A35 替代；② 实盘账户存入新元；③ 首月在实盘 <code>--dry-run</code> 看单再 <code>--run</code>；④ IBKR 适配（有伦交所，可回到原工具）。</li></ul>
+<hr>
+<p>文件：<code>strategy/execute.py</code>（券商无关执行器）· <code>strategy/brokers/{base,tiger,ibkr}.py</code>（券商接口 / 老虎实现 / IBKR 骨架）· <code>strategy/brokers.json</code>（每家券商的工具映射）· <code>strategy/log/tiger-paper-*.json</code>（每次运行的订单与成交）· <code>strategy/report.py</code>（本页生成器）。老虎 API 能力探测：<code>auto-buy-O39/.claude/skills/tiger-api/</code>。</p><p class="foot">由 tiger-automation.md 生成 · 源文件、数据与脚本在本机 case-study-clavon-buy-or-sell/ 目录。</p></div></div></body></html>

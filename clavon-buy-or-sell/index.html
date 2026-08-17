@@ -52,6 +52,7 @@ a.card.hero{grid-column:1/-1;border-left:4px solid var(--ink)}
     <a class="card" href="entry-plan-doc.html"><div class="k">报告</div><div class="t">60 万怎么进场：可执行方案</div><div class="d">一次性 vs 分批的数学、12 个月日历、加速触发器、纪律契约、执行细节（券商 / 换汇 / 税）、策略卡 v2 更新、回溯结论。</div><span class="who">分析</span></a>
     <a class="card" href="backtest-doc.html"><div class="k">报告</div><div class="t">入场计划回溯测试报告</div><div class="d">数据与代理、规则、152 个起点的结果、触发器有没有用、典型起点、蒙特卡洛 vs 历史为什么差、局限。</div><span class="who">分析</span></a>
     <a class="card" href="strategy-doc.html"><div class="k">报告</div><div class="t">策略卡 v2：规则搜索与自动执行</div><div class="d">543 条规则的网格搜索结论、证据表、局限；写成代码的月度执行代理（rules.json / agent.py）与 cron / launchd 用法。</div><span class="who">分析 · 工程</span></a>
+    <a class="card" href="tiger-automation.html"><div class="k">实测</div><div class="t">能不能全自动？老虎证券模拟盘实测</div><div class="d">原方案在老虎只有 15% 能自动（伦交所 ETF 买不到、SSB 非券商产品）；一个账户管全部的老虎篮子（VT / BNDW / IAU / A35 + ES3 / CLR）2026-08-17 在模拟盘从换汇到成交全自动跑通；逐条 API 证据、每一张单、幂等复跑、券商接口（IBKR 待接）。</div><span class="who">客户 · 工程</span></a>
   </div>
 
   <div class="foot">全部页面自包含、离线可开；数字由同一套引擎生成（沙盘 sim/engine.js，回溯 backtest/bt.js）。源代码、原始数据（URA / HDB 指数、Yahoo 月度价）、脚本与自动执行代理在本机目录 case-study-clavon-buy-or-sell/。不构成投资建议。</div>
