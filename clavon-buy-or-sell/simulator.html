@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clavon 换房沙盘</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F5F6F2; --panel:#FFFFFF; --ink:#1B2421; --ink2:#5E6A66; --ink3:#8C9793; --line:#E0E4DF; --line2:#CDD3CE;
+  --grid:#EEF0EA; --accent:#1B2421; --good:#0ca30c; --warn:#b26a00; --bad:#c22f2f;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;
+  --sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#171917; --panel:#1F2220; --ink:#F1F3EE; --ink2:#B9C1BC; --ink3:#7F8984; --line:#2E332F; --line2:#3D443F; --grid:#232725; --accent:#F1F3EE;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; }}
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#171917; --panel:#1F2220; --ink:#F1F3EE; --ink2:#B9C1BC; --ink3:#7F8984; --line:#2E332F; --line2:#3D443F; --grid:#232725; --accent:#F1F3EE; --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 var(--sans)}
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:.01em;margin:0}
+h1{font-size:34px;line-height:1.2}
+h2{font-size:18px;margin-bottom:10px}
+h3{font-size:15px;margin-bottom:6px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1440px;margin:0 auto;padding:28px 24px 80px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.sub{color:var(--ink2);max-width:760px;margin-top:8px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:7px 12px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:var(--bg)}
+button.primary{border:0;background:var(--accent);color:var(--bg);padding:8px 16px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+button.ghost{border:1px solid var(--line2);background:var(--panel);color:var(--ink);padding:6px 10px;border-radius:8px;font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.verdict{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin-bottom:18px;font-family:var(--serif);font-size:19px;line-height:1.6}
+.verdict small{display:block;font-family:var(--sans);font-size:12px;color:var(--ink3);margin-top:6px}
+.verdict b{font-family:var(--mono);font-weight:600}
+.layout{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}
+.layout>main,.layout>aside{min-width:0}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.panel.tight{padding:12px 14px}
+.field{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dashed var(--line)}
+.field:last-child{border-bottom:0}
+.field label{color:var(--ink2);font-size:13px}
+.field label small{display:block;color:var(--ink3);font-size:11px}
+.field input[type=number],.field select{width:100%;font:inherit;font-family:var(--mono);font-size:13px;padding:5px 8px;border:1px solid var(--line2);border-radius:6px;background:var(--bg);color:var(--ink)}
+.field .unit{display:flex;align-items:center;gap:4px}
+.field .unit span{color:var(--ink3);font-size:11px;white-space:nowrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{border:1px solid var(--line2);background:var(--bg);color:var(--ink2);padding:6px 10px;border-radius:8px;font:inherit;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tabs button.on{border-color:var(--ink);color:var(--ink);background:var(--panel)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.w-row{display:grid;grid-template-columns:1fr 60px 44px;gap:8px;align-items:center;padding:3px 0}
+.w-row label{font-size:12px;color:var(--ink2)}
+.w-row input[type=range]{width:100%;accent-color:var(--ink)}
+.w-row .pct{font-family:var(--mono);font-size:12px;text-align:right}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.presets button{border:1px solid var(--line2);background:var(--bg);color:var(--ink);padding:4px 9px;border-radius:14px;font:inherit;font-size:12px;cursor:pointer}
+.presets button.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.hint{font-size:12px;color:var(--ink3);margin-top:6px}
+.warn{font-size:12px;color:var(--warn)}
+.bad{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:1250px){.grid2{grid-template-columns:1fr}}
+table{width:100%;min-width:1280px;border-collapse:collapse;font-size:13px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left;white-space:nowrap}
+th{white-space:normal;min-width:70px}
+th{font-weight:600;color:var(--ink2);font-size:12px}
+td.num{font-family:var(--mono)}
+tr.best td{font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink2);margin:4px 0 8px}
+.legend span i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axis text{font-family:var(--mono);font-size:11px;fill:var(--ink3)}
+.axis line{stroke:var(--line);stroke-width:1}
+.tip{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.12);z-index:10;display:none;min-width:180px}
+.tip .t{font-family:var(--mono);color:var(--ink3);margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:12px}
+.tip .r b{font-family:var(--mono);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.kpi .l{font-size:11px;color:var(--ink3)}
+.kpi .v{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:2px}
+.kpi .d{font-size:11px;color:var(--ink2)}
+details{border-top:1px solid var(--line);padding:8px 0}
+details summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details summary::after{content:"+";font-family:var(--mono);color:var(--ink3)}
+details[open] summary::after{content:"−"}
+.asset-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;font-size:12px;color:var(--ink2);margin:8px 0}
+.asset-meta b{font-family:var(--mono);color:var(--ink);font-weight:600}
+.asset-body p{margin:6px 0;font-size:13px}
+.asset-body p b{color:var(--ink2);font-weight:600}
+.asset-edit{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--ink2);margin-top:6px}
+.asset-edit input{width:64px;font-family:var(--mono);font-size:12px;padding:3px 6px;border:1px solid var(--line2);border-radius:6px;background:var(--bg);color:var(--ink)}
+.foot{color:var(--ink3);font-size:12px;margin-top:24px;line-height:1.7}
+.sr{position:absolute;left:-9999px}
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;padding:1px 6px;border:1px solid var(--line2);border-radius:10px;color:var(--ink2);margin-left:6px}
+.stack{display:flex;flex-direction:column;gap:6px}
+.evi{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.evi{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){ .verdict{transition:border-color .3s} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Case study · Clementi · Aug 2026</div>
+    <h1>换大四房公寓，还是组屋 + 60 万？</h1>
+    <div class="sub">把「卖掉 Clavon 两房」之后的两条路放进同一个沙盘：同样的家庭住房预算，同样的市场随机性（共同随机数），跑 10 / 20 / 30 年，看净资产的分布，而不只是一个数字。所有假设都可改；默认值的出处见 <span class="num">analysis.md</span>。</div>
+  </div>
+  <div class="toolbar">
+    <div class="seg" id="modeSeg"><button data-v="mc" class="on">蒙特卡洛</button><button data-v="det">期望路径</button></div>
+    <div class="seg" id="yearSeg"><button data-v="10">10 年</button><button data-v="20" class="on">20 年</button><button data-v="30">30 年</button></div>
+    <button class="primary" id="runBtn">重新计算</button>
+  </div>
+</header>
+
+<div class="verdict" id="verdict">…</div>
+
+<div class="layout">
+<aside>
+  <div class="panel">
+    <h2>全局设定</h2>
+    <div id="globalFields"></div>
+    <div class="hint">「住房月预算」是公平比较的关键：每个方案先付自己的房贷 + 物业 + 房产税，预算剩下的钱自动定投进组合；不够的从组合里扣。</div>
+  </div>
+  <div class="panel">
+    <h2>方案编辑器</h2>
+    <div class="tabs" id="planTabs"></div>
+    <div id="planEditor"></div>
+    <div class="toolbar" style="margin-top:10px">
+      <button class="ghost" id="addPlan">＋ 新增方案</button>
+      <button class="ghost" id="dupPlan">复制当前</button>
+      <button class="ghost" id="delPlan">删除当前</button>
+      <button class="ghost" id="resetAll">恢复默认</button>
+    </div>
+  </div>
+  <div class="panel tight">
+    <h3>压力情景</h3>
+    <div id="shockFields"></div>
+  </div>
+</aside>
+
+<main>
+  <div class="panel">
+    <h2>净资产走势 <span class="chip" id="modeChip"></span></h2>
+    <div class="legend" id="fanLegend"></div>
+    <div id="fanChart"></div>
+    <div class="hint">实线 = 中位数；色带 = 第 10–90 百分位（蒙特卡洛模式）。净资产 = 组合 + 房产市值 − 贷款余额（不含出售成本，除非勾选「期末变现」）。</div>
+  </div>
+  <div class="panel">
+    <h2>期末结果对比</h2>
+    <div class="kpis" id="kpis"></div>
+    <div id="rangeChart"></div>
+    <div style="overflow-x:auto"><table id="resultTable"></table></div>
+    <div class="hint" id="tableHint"></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>A 需要多少房价涨幅才追平？</h2>
+      <div class="hint" style="margin:0 0 8px">把第一个方案的房价年化从 0% 扫到 8%（期望路径），与第二个方案比期末净资产。交叉点就是「私宅必须跑出的年化」。</div>
+      <div id="beChart"></div>
+      <div class="hint" id="beText"></div>
+    </div>
+    <div class="panel">
+      <h2>现金流负担</h2>
+      <div class="hint" style="margin:0 0 8px">首年每月住房支出（房贷 + 物业 + 房产税）对比住房预算。差额即每月可定投的金额。</div>
+      <div id="cfChart"></div>
+      <div class="hint" id="cfText"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>「每十年换一次」站得住吗？——真实数据</h2>
+    <div class="hint" style="margin:0 0 10px">URA 非有地私宅价格指数（1975Q1–2026Q2）与 HDB 转售价格指数（1990Q1–2026Q2），data.gov.sg 原始季度数据。每根柱 = 从该季度起持有 10 年的年化涨幅（不含租金、不含交易成本、不含单套房的地契折旧）。</div>
+    <div class="evi">
+      <div><h3>私宅：滚动 10 年年化</h3><div id="rollCondo"></div></div>
+      <div><h3>组屋：滚动 10 年年化</h3><div id="rollHdb"></div></div>
+    </div>
+    <div class="hint" id="rollText"></div>
+  </div>
+  <div class="panel">
+    <h2>资产类型说明书 <span class="chip">可改预期收益 / 波动</span></h2>
+    <div class="hint" style="margin:0 0 8px">预期收益 = 名义、新元计、扣除基金费用后的长期年化<b>规划值</b>（不是预测）；波动 = 年收益标准差；最大回撤 = 历史上最惨一次。改动后点「重新计算」。</div>
+    <div id="assetLib"></div>
+  </div>
+  <div class="foot">
+    模型边界：不含 CPF 账户机制（卖房后 CPF 本息须退回 OA，这部分钱不能自由投 ETF）；不含所得税（新加坡无资本利得税、股息基本免税）；不含收入变化 / 失业；房贷利率按固定处理（可用「利率 +2%」压力测试）；组屋 5 年 MOP、私宅业主 6 个月内须售出等规则见 analysis.md。<br>
+    这不是投资建议。它是一个把假设摊开来的算盘——数字对不对，取决于你填进去的假设对不对。
+  </div>
+</main>
+</div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>window.URA_NONLANDED={"1975-Q1":10.5,"1975-Q2":11.2,"1975-Q3":11.5,"1975-Q4":11.5,"1976-Q1":11.5,"1976-Q2":11.7,"1976-Q3":11.7,"1976-Q4":11.5,"1977-Q1":11.5,"1977-Q2":11.5,"1977-Q3":11.5,"1977-Q4":11.5,"1978-Q1":11.5,"1978-Q2":11.7,"1978-Q3":11.7,"1978-Q4":12.1,"1979-Q1":12.7,"1979-Q2":13.3,"1979-Q3":14.6,"1979-Q4":15.8,"1980-Q1":18.9,"1980-Q2":22.0,"1980-Q3":25.8,"1980-Q4":31.0,"1981-Q1":39.6,"1981-Q2":44.3,"1981-Q3":43.1,"1981-Q4":40.0,"1982-Q1":38.7,"1982-Q2":39.0,"1982-Q3":38.7,"1982-Q4":39.6,"1983-Q1":40.6,"1983-Q2":41.2,"1983-Q3":40.6,"1983-Q4":39.6,"1984-Q1":38.1,"1984-Q2":35.4,"1984-Q3":33.7,"1984-Q4":33.1,"1985-Q1":30.9,"1985-Q2":31.3,"1985-Q3":29.9,"1985-Q4":28.5,"1986-Q1":26.5,"1986-Q2":23.5,"1986-Q3":24.8,"1986-Q4":26.5,"1987-Q1":26.8,"1987-Q2":28.3,"1987-Q3":31.0,"1987-Q4":31.4,"1988-Q1":30.7,"1988-Q2":31.6,"1988-Q3":32.6,"1988-Q4":34.4,"1989-Q1":35.2,"1989-Q2":36.4,"1989-Q3":38.7,"1989-Q4":39.4,"1990-Q1":41.6,"1990-Q2":43.1,"1990-Q3":42.7,"1990-Q4":41.8,"1991-Q1":42.8,"1991-Q2":46.7,"1991-Q3":47.5,"1991-Q4":47.7,"1992-Q1":49.9,"1992-Q2":52.7,"1992-Q3":55.2,"1992-Q4":56.3,"1993-Q1":57.2,"1993-Q2":61.6,"1993-Q3":65.4,"1993-Q4":68.5,"1994-Q1":72.7,"1994-Q2":83.4,"1994-Q3":88.7,"1994-Q4":92.3,"1995-Q1":95.2,"1995-Q2":96.8,"1995-Q3":97.7,"1995-Q4":105.5,"1996-Q1":110.8,"1996-Q2":122.2,"1996-Q3":119.9,"1996-Q4":118.8,"1997-Q1":111.9,"1997-Q2":110.9,"1997-Q3":106.2,"1997-Q4":102.9,"1998-Q1":93.0,"1998-Q2":85.4,"1998-Q3":76.8,"1998-Q4":71.2,"1999-Q1":75.2,"1999-Q2":83.5,"1999-Q3":90.4,"1999-Q4":95.1,"2000-Q1":98.5,"2000-Q2":100.4,"2000-Q3":97.7,"2000-Q4":94.2,"2001-Q1":90.0,"2001-Q2":89.8,"2001-Q3":87.3,"2001-Q4":82.7,"2002-Q1":82.0,"2002-Q2":81.4,"2002-Q3":81.6,"2002-Q4":81.3,"2003-Q1":80.6,"2003-Q2":80.2,"2003-Q3":79.9,"2003-Q4":79.9,"2004-Q1":79.6,"2004-Q2":79.6,"2004-Q3":79.9,"2004-Q4":80.8,"2005-Q1":81.4,"2005-Q2":81.9,"2005-Q3":83.1,"2005-Q4":84.4,"2006-Q1":85.7,"2006-Q2":87.2,"2006-Q3":90.0,"2006-Q4":93.8,"2007-Q1":98.8,"2007-Q2":107.1,"2007-Q3":116.0,"2007-Q4":124.4,"2008-Q1":129.0,"2008-Q2":129.0,"2008-Q3":125.8,"2008-Q4":117.8,"2009-Q1":100.0,"2009-Q2":95.3,"2009-Q3":110.5,"2009-Q4":118.4,"2010-Q1":124.3,"2010-Q2":130.5,"2010-Q3":132.6,"2010-Q4":135.0,"2011-Q1":137.3,"2011-Q2":139.2,"2011-Q3":140.8,"2011-Q4":141.2,"2012-Q1":141.0,"2012-Q2":141.6,"2012-Q3":142.3,"2012-Q4":144.8,"2013-Q1":145.9,"2013-Q2":148.0,"2013-Q3":148.9,"2013-Q4":147.6,"2014-Q1":145.7,"2014-Q2":144.5,"2014-Q3":143.9,"2014-Q4":142.5,"2015-Q1":140.9,"2015-Q2":139.8,"2015-Q3":137.7,"2015-Q4":137.4,"2016-Q1":136.6,"2016-Q2":136.5,"2016-Q3":134.9,"2016-Q4":133.8,"2017-Q1":133.8,"2017-Q2":133.7,"2017-Q3":134.5,"2017-Q4":135.6,"2018-Q1":141.6,"2018-Q2":146.1,"2018-Q3":146.1,"2018-Q4":146.8,"2019-Q1":145.2,"2019-Q2":148.1,"2019-Q3":150.0,"2019-Q4":149.6,"2020-Q1":148.1,"2020-Q2":148.7,"2020-Q3":148.8,"2020-Q4":153.3,"2021-Q1":157.1,"2021-Q2":158.8,"2021-Q3":159.9,"2021-Q4":168.4,"2022-Q1":167.9,"2022-Q2":173.9,"2022-Q3":181.6,"2022-Q4":182.1,"2023-Q1":186.8,"2023-Q2":185.7,"2023-Q3":189.8,"2023-Q4":194.2,"2024-Q1":196.1,"2024-Q2":197.3,"2024-Q3":197.5,"2024-Q4":203.4,"2025-Q1":205.4,"2025-Q2":206.8,"2025-Q3":208.5,"2025-Q4":208.1,"2026-Q1":210.8,"2026-Q2":210.6};
+window.URA_ALL={"1975-Q1":8.9,"1975-Q2":9.1,"1975-Q3":9.1,"1975-Q4":9.1,"1976-Q1":9.5,"1976-Q2":9.5,"1976-Q3":9.8,"1976-Q4":9.5,"1977-Q1":9.5,"1977-Q2":9.5,"1977-Q3":9.5,"1977-Q4":9.1,"1978-Q1":9.1,"1978-Q2":9.5,"1978-Q3":9.5,"1978-Q4":9.8,"1979-Q1":10.4,"1979-Q2":10.9,"1979-Q3":11.9,"1979-Q4":12.7,"1980-Q1":15.1,"1980-Q2":17.7,"1980-Q3":20.4,"1980-Q4":23.9,"1981-Q1":30.5,"1981-Q2":34.6,"1981-Q3":34.0,"1981-Q4":32.2,"1982-Q1":32.0,"1982-Q2":32.8,"1982-Q3":33.5,"1982-Q4":34.6,"1983-Q1":36.1,"1983-Q2":37.2,"1983-Q3":37.5,"1983-Q4":37.5,"1984-Q1":37.2,"1984-Q2":35.5,"1984-Q3":34.6,"1984-Q4":33.1,"1985-Q1":31.0,"1985-Q2":30.2,"1985-Q3":28.7,"1985-Q4":28.1,"1986-Q1":26.3,"1986-Q2":23.9,"1986-Q3":25.3,"1986-Q4":27.9,"1987-Q1":28.5,"1987-Q2":29.7,"1987-Q3":32.0,"1987-Q4":32.0,"1988-Q1":31.4,"1988-Q2":32.2,"1988-Q3":32.6,"1988-Q4":34.0,"1989-Q1":34.5,"1989-Q2":35.5,"1989-Q3":37.7,"1989-Q4":38.3,"1990-Q1":40.9,"1990-Q2":41.8,"1990-Q3":42.0,"1990-Q4":40.3,"1991-Q1":42.1,"1991-Q2":45.6,"1991-Q3":46.8,"1991-Q4":47.6,"1992-Q1":49.9,"1992-Q2":51.8,"1992-Q3":53.8,"1992-Q4":55.3,"1993-Q1":58.3,"1993-Q2":64.9,"1993-Q3":71.1,"1993-Q4":75.1,"1994-Q1":82.1,"1994-Q2":93.6,"1994-Q3":104.5,"1994-Q4":106.9,"1995-Q1":109.8,"1995-Q2":111.1,"1995-Q3":112.7,"1995-Q4":117.9,"1996-Q1":122.3,"1996-Q2":129.7,"1996-Q3":127.2,"1996-Q4":123.7,"1997-Q1":119.2,"1997-Q2":118.2,"1997-Q3":113.0,"1997-Q4":108.4,"1998-Q1":98.3,"1998-Q2":90.1,"1998-Q3":78.3,"1998-Q4":71.5,"1999-Q1":75.4,"1999-Q2":84.3,"1999-Q3":91.1,"1999-Q4":95.9,"2000-Q1":98.9,"2000-Q2":100.4,"2000-Q3":97.6,"2000-Q4":94.9,"2001-Q1":91.1,"2001-Q2":90.3,"2001-Q3":87.6,"2001-Q4":83.8,"2002-Q1":82.8,"2002-Q2":82.2,"2002-Q3":82.6,"2002-Q4":82.3,"2003-Q1":81.6,"2003-Q2":81.1,"2003-Q3":80.7,"2003-Q4":80.6,"2004-Q1":80.3,"2004-Q2":80.4,"2004-Q3":80.7,"2004-Q4":81.3,"2005-Q1":81.9,"2005-Q2":82.3,"2005-Q3":83.3,"2005-Q4":84.5,"2006-Q1":85.8,"2006-Q2":87.3,"2006-Q3":89.6,"2006-Q4":93.1,"2007-Q1":97.6,"2007-Q2":105.6,"2007-Q3":114.4,"2007-Q4":122.1,"2008-Q1":126.7,"2008-Q2":126.9,"2008-Q3":123.9,"2008-Q4":116.4,"2009-Q1":100.0,"2009-Q2":95.3,"2009-Q3":110.3,"2009-Q4":118.4,"2010-Q1":125.1,"2010-Q2":131.7,"2010-Q3":135.5,"2010-Q4":139.2,"2011-Q1":142.3,"2011-Q2":145.1,"2011-Q3":147.0,"2011-Q4":147.4,"2012-Q1":147.2,"2012-Q2":147.9,"2012-Q3":148.8,"2012-Q4":151.5,"2013-Q1":152.4,"2013-Q2":154.0,"2013-Q3":154.6,"2013-Q4":153.2,"2014-Q1":151.3,"2014-Q2":149.7,"2014-Q3":148.6,"2014-Q4":147.0,"2015-Q1":145.5,"2015-Q2":144.2,"2015-Q3":142.3,"2015-Q4":141.6,"2016-Q1":140.6,"2016-Q2":140.0,"2016-Q3":137.9,"2016-Q4":137.2,"2017-Q1":136.7,"2017-Q2":136.6,"2017-Q3":137.6,"2017-Q4":138.7,"2018-Q1":144.1,"2018-Q2":149.0,"2018-Q3":149.7,"2018-Q4":149.6,"2019-Q1":148.6,"2019-Q2":150.8,"2019-Q3":152.8,"2019-Q4":153.6,"2020-Q1":152.1,"2020-Q2":152.6,"2020-Q3":153.8,"2020-Q4":157.0,"2021-Q1":162.2,"2021-Q2":163.5,"2021-Q3":165.3,"2021-Q4":173.6,"2022-Q1":174.8,"2022-Q2":180.9,"2022-Q3":187.8,"2022-Q4":188.6,"2023-Q1":194.8,"2023-Q2":194.4,"2023-Q3":196.0,"2023-Q4":201.5,"2024-Q1":204.3,"2024-Q2":206.1,"2024-Q3":204.7,"2024-Q4":209.4,"2025-Q1":211.1,"2025-Q2":213.2,"2025-Q3":215.1,"2025-Q4":216.4,"2026-Q1":218.3,"2026-Q2":219.4};
+window.HDB_RPI={"1990-Q1":24.3,"1990-Q2":24.4,"1990-Q3":25.0,"1990-Q4":24.7,"1991-Q1":24.9,"1991-Q2":25.5,"1991-Q3":25.2,"1991-Q4":25.1,"1992-Q1":25.8,"1992-Q2":27.4,"1992-Q3":28.0,"1992-Q4":28.6,"1993-Q1":30.2,"1993-Q2":39.6,"1993-Q3":47.7,"1993-Q4":49.0,"1994-Q1":50.4,"1994-Q2":51.7,"1994-Q3":54.6,"1994-Q4":54.8,"1995-Q1":57.3,"1995-Q2":63.9,"1995-Q3":67.7,"1995-Q4":73.7,"1996-Q1":80.5,"1996-Q2":90.9,"1996-Q3":96.4,"1996-Q4":99.0,"1997-Q1":98.6,"1997-Q2":97.5,"1997-Q3":93.6,"1997-Q4":88.0,"1998-Q1":81.7,"1998-Q2":78.3,"1998-Q3":74.9,"1998-Q4":72.3,"1999-Q1":71.2,"1999-Q2":72.2,"1999-Q3":78.1,"1999-Q4":79.8,"2000-Q1":80.3,"2000-Q2":79.3,"2000-Q3":77.6,"2000-Q4":75.8,"2001-Q1":73.2,"2001-Q2":72.1,"2001-Q3":70.6,"2001-Q4":69.6,"2002-Q1":69.1,"2002-Q2":69.2,"2002-Q3":69.9,"2002-Q4":69.9,"2003-Q1":71.0,"2003-Q2":72.5,"2003-Q3":74.3,"2003-Q4":75.1,"2004-Q1":75.3,"2004-Q2":76.2,"2004-Q3":76.3,"2004-Q4":77.1,"2005-Q1":77.2,"2005-Q2":73.5,"2005-Q3":73.2,"2005-Q4":73.5,"2006-Q1":73.6,"2006-Q2":74.3,"2006-Q3":74.2,"2006-Q4":74.9,"2007-Q1":75.8,"2007-Q2":78.1,"2007-Q3":83.2,"2007-Q4":88.0,"2008-Q1":91.3,"2008-Q2":95.4,"2008-Q3":99.4,"2008-Q4":100.8,"2009-Q1":100.0,"2009-Q2":101.4,"2009-Q3":105.0,"2009-Q4":109.0,"2010-Q1":112.1,"2010-Q2":116.6,"2010-Q3":121.3,"2010-Q4":124.4,"2011-Q1":126.4,"2011-Q2":130.4,"2011-Q3":135.4,"2011-Q4":137.7,"2012-Q1":138.5,"2012-Q2":140.3,"2012-Q3":143.1,"2012-Q4":146.7,"2013-Q1":148.6,"2013-Q2":149.4,"2013-Q3":148.1,"2013-Q4":145.8,"2014-Q1":143.5,"2014-Q2":141.5,"2014-Q3":139.1,"2014-Q4":137.0,"2015-Q1":135.6,"2015-Q2":135.0,"2015-Q3":134.6,"2015-Q4":134.8,"2016-Q1":134.7,"2016-Q2":134.7,"2016-Q3":134.7,"2016-Q4":134.6,"2017-Q1":133.9,"2017-Q2":133.7,"2017-Q3":132.8,"2017-Q4":132.6,"2018-Q1":131.6,"2018-Q2":131.7,"2018-Q3":131.6,"2018-Q4":131.4,"2019-Q1":131.0,"2019-Q2":130.8,"2019-Q3":130.9,"2019-Q4":131.5,"2020-Q1":131.5,"2020-Q2":131.9,"2020-Q3":133.9,"2020-Q4":138.1,"2021-Q1":142.2,"2021-Q2":146.4,"2021-Q3":150.6,"2021-Q4":155.7,"2022-Q1":159.5,"2022-Q2":163.9,"2022-Q3":168.1,"2022-Q4":171.9,"2023-Q1":173.6,"2023-Q2":176.2,"2023-Q3":178.5,"2023-Q4":180.4,"2024-Q1":183.7,"2024-Q2":187.9,"2024-Q3":192.9,"2024-Q4":197.9,"2025-Q1":201.0,"2025-Q2":202.9,"2025-Q3":203.7,"2025-Q4":203.6,"2026-Q1":203.4,"2026-Q2":202.8};</script>
+<script>/* ============================================================
+   Clavon case-study — wealth simulator engine (pure JS, no deps)
+   Runs in the browser (inlined into simulator.html) and in node
+   (node sim/run.js) so numbers in analysis.md come from the same code.
+   All money in SGD, nominal. Monthly steps.
+   ============================================================ */
+(function (root) {
+  'use strict';
+
+  /* ---------- 1. Asset library ----------
+     mu  = expected nominal annual return (arithmetic, SGD terms, after typical fund TER)
+     vol = annual volatility (std dev of annual return)
+     These are planning assumptions, editable in the UI. Sources / reasoning in analysis.md §5.
+  */
+  const ASSETS = [
+    { id: 'gEq',  name: '全球股票 ETF',        ticker: 'VWRA / IWDA（爱尔兰注册 UCITS）', mu: 0.070, vol: 0.15, mdd: -0.55, liq: '高（T+2）', group: 'equity',
+      intro: '一只基金买下全球 3,000+ 家公司，美股约占六成。长期回报来自全球企业盈利增长 + 股息再投资。是绝大多数被动投资者的核心仓位。',
+      risks: '2008 年最大回撤约 -55%，2020 年 3 月一个月 -30%；以美元计价、新元结算有汇率波动；持有期 <10 年可能亏损。',
+      how: 'IBKR / Saxo / moomoo 等券商在伦交所（LSE）买入 VWRA（累积型，股息自动再投）。选爱尔兰注册是为了把美股股息预扣税从 30% 降到 15%，且免美国遗产税风险。' },
+    { id: 'usEq', name: '美股 S&P 500 ETF',    ticker: 'CSPX / VUAA（爱尔兰 UCITS）', mu: 0.075, vol: 0.16, mdd: -0.57, liq: '高（T+2）', group: 'equity',
+      intro: '美国 500 家大公司。过去 100 年名义年化约 10%（美元），但当前估值偏高，多数机构对未来 10 年的预期只有 5–7%。',
+      risks: '单一国家集中；科技股权重 30%+；估值均值回归；美元兑新元长期趋弱（1985 年 1 美元=2.2 新元 → 2026 年约 1.28）。',
+      how: '同上，LSE 买入 CSPX（累积型）。不要买美国注册的 SPY / VOO：股息税 30% + 遗产税 40%（超过 6 万美元部分）。' },
+    { id: 'sgEq', name: '新加坡股票 STI ETF',  ticker: 'ES3 / G3B（SGX）', mu: 0.055, vol: 0.15, mdd: -0.60, liq: '高（T+2）', group: 'equity',
+      intro: '海指 30 只蓝筹，银行占一半（DBS/OCBC/UOB）。股息率约 4%，回报主要靠分红，价格本身 20 年几乎横盘。',
+      risks: '2008 年 -60%；行业极度集中于银行 + 地产；跟本地房价、本地经济同涨同跌——与自住房是同一个风险源。',
+      how: 'SGX 直接买 ES3；新元计价，无汇率风险，股息免税。适合作为「本地」仓位而非核心。' },
+    { id: 'emEq', name: '亚洲 / 新兴市场股票',  ticker: 'EIMI / 2800.HK / 3067.HK', mu: 0.070, vol: 0.20, mdd: -0.65, liq: '高', group: 'equity',
+      intro: '中国、印度、台湾、韩国等。估值低于美股，波动更大，回报周期性强。',
+      risks: '政策与地缘风险；2007–08 年 -65%；十年可能跑输美股（2010–2020 年就是如此）。',
+      how: 'LSE 买 EIMI（爱尔兰 UCITS）；港股通道买 2800（盈富）/ 3067（恒生科技）。' },
+    { id: 'reit', name: '新加坡 REITs',        ticker: 'CLR（Lion-Phillip S-REIT ETF）/ 个股', mu: 0.055, vol: 0.16, mdd: -0.70, liq: '高', group: 'equity',
+      intro: '上市的商场、写字楼、物流仓库、数据中心。股息率 5–6%，是「不用 ABSD 就持有新加坡商业地产」的方式。',
+      risks: '对利率极敏感（2022 年加息周期跌 -25%）；2008 年 -70%；本质是带杠杆的地产，不能当债券用。',
+      how: 'SGX 买 CLR 或 CapitaLand / Mapletree / Keppel 系 REIT；股息免税，可放 SRS。' },
+    { id: 'gBond', name: '全球投资级债券',      ticker: 'AGGU（对冲美元）/ 新元债基', mu: 0.035, vol: 0.05, mdd: -0.15, liq: '高', group: 'bond',
+      intro: '全球政府 + 投资级公司债。作用是压低组合波动，在股灾时提供再平衡的弹药。',
+      risks: '2022 年加息一年 -15%（史上最差）；利率上行期会亏；未对冲版本有汇率波动。',
+      how: 'LSE 买 AGGU（美元对冲，累积）；或 Endowus / 银行买新元计价债基（费率注意 <0.5%）。' },
+    { id: 'sgGov', name: '新加坡国债 / SSB / T-bill', ticker: 'MAS 拍卖 / SSB 每月发行', mu: 0.020, vol: 0.01, mdd: -0.02, liq: '高（SSB 一个月内可赎回）', group: 'bond',
+      intro: 'AAA 主权信用。2026 年 8 月：6 个月 T-bill 1.56%，SSB 十年平均 2.06%。适合放 1–3 年内要用的钱和应急金。',
+      risks: '几乎无信用风险；主要风险是跑不赢通胀（新加坡核心 CPI 长期约 2%）；到期再投资时利率可能更低。',
+      how: '任何本地银行网银 → SGS 申购；SSB 每人上限 20 万；可用 CPF OA/SRS 买 T-bill。' },
+    { id: 'cash', name: '现金 / 定存 / 货币基金', ticker: '银行 FD / Fullerton SGD Cash Fund', mu: 0.015, vol: 0.003, mdd: 0, liq: '最高', group: 'cash',
+      intro: '流动性储备。2026 年新加坡定存利率已回落到 1.5% 附近。',
+      risks: '长期确定性地被通胀侵蚀；持有过多现金是「隐性亏损」。',
+      how: '3–6 个月生活费 + 已知的大额支出（装修、学费）放这里，其余不要。' },
+    { id: 'cpf',  name: 'CPF 特别账户 / 退休账户填补', ticker: 'RSTU / 现金填补 SA/RA', mu: 0.040, vol: 0.0, mdd: 0, liq: '极低（55 岁前锁定）', group: 'cash',
+      intro: '政府保证 4% 无风险（2026 年下限延至年底），首 6 万有额外 1%。每人每年前 8,000 新元填补可抵税。',
+      risks: '完全不流动：55 岁前拿不出，且 SA 在 55 岁关闭并入 RA；政策可改；上限受全额退休存款（FRS）约束。',
+      how: 'CPF 网站 → Top up；夫妻各 8,000/年抵税上限；超出部分不抵税但仍拿 4%。' },
+    { id: 'gold', name: '黄金',                ticker: 'GLD / SGLN（伦交所）/ UOB 金账户', mu: 0.040, vol: 0.15, mdd: -0.45, liq: '高', group: 'alt',
+      intro: '不生息的储值资产。与股票低相关，在滞胀 / 地缘危机 / 美元贬值时表现好，是组合的「保险」。',
+      risks: '1980–1999 年二十年 -45%；没有现金流，长期回报约等于通胀 + 一点；短期波动跟股票差不多。',
+      how: 'LSE 买 SGLN（实物黄金 ETC，无 GST）；或 UOB 黄金储蓄账户；实物金条在新加坡免 GST（投资级）。' },
+    { id: 'btc',  name: '加密货币（BTC）',      ticker: 'BTC 现货 / IBIT', mu: 0.10, vol: 0.70, mdd: -0.80, liq: '高（24/7）', group: 'alt',
+      intro: '高波动投机性资产。历史回报极高但方差极大，2022 年 -77%。只适合用「归零也无所谓」的仓位。',
+      risks: '-80% 级别回撤反复出现；监管、交易所倒闭（FTX）、私钥丢失；与股票在危机时高度相关。',
+      how: '持牌交易所（新加坡 MAS 牌照：Coinhako / Independent Reserve）或美股 IBIT。仓位建议 ≤5%。' },
+  ];
+
+  /* correlation matrix among assets (+ 2 property shocks appended at runtime) */
+  const CORR_IDS = ASSETS.map(a => a.id).concat(['propCondo', 'propHdb']);
+  const CORR = {
+    gEq:   { usEq: 0.95, sgEq: 0.70, emEq: 0.80, reit: 0.60, gBond: 0.15, sgGov: 0.0, cash: 0.0, cpf: 0.0, gold: 0.05, btc: 0.35, propCondo: 0.20, propHdb: 0.10 },
+    usEq:  { sgEq: 0.65, emEq: 0.70, reit: 0.55, gBond: 0.15, sgGov: 0.0, cash: 0.0, cpf: 0.0, gold: 0.05, btc: 0.35, propCondo: 0.15, propHdb: 0.10 },
+    sgEq:  { emEq: 0.70, reit: 0.75, gBond: 0.10, sgGov: 0.0, cash: 0.0, cpf: 0.0, gold: 0.05, btc: 0.25, propCondo: 0.35, propHdb: 0.25 },
+    emEq:  { reit: 0.55, gBond: 0.10, sgGov: 0.0, cash: 0.0, cpf: 0.0, gold: 0.10, btc: 0.30, propCondo: 0.25, propHdb: 0.15 },
+    reit:  { gBond: 0.25, sgGov: 0.05, cash: 0.0, cpf: 0.0, gold: 0.05, btc: 0.20, propCondo: 0.40, propHdb: 0.25 },
+    gBond: { sgGov: 0.60, cash: 0.20, cpf: 0.0, gold: 0.20, btc: 0.0, propCondo: 0.0, propHdb: 0.0 },
+    sgGov: { cash: 0.50, cpf: 0.0, gold: 0.05, btc: 0.0, propCondo: 0.0, propHdb: 0.0 },
+    cash:  { cpf: 0.0, gold: 0.0, btc: 0.0, propCondo: 0.0, propHdb: 0.0 },
+    cpf:   { gold: 0.0, btc: 0.0, propCondo: 0.0, propHdb: 0.0 },
+    gold:  { btc: 0.10, propCondo: 0.0, propHdb: 0.0 },
+    btc:   { propCondo: 0.05, propHdb: 0.0 },
+    propCondo: { propHdb: 0.75 },
+  };
+  function corrMatrix(ids) {
+    const n = ids.length, m = [];
+    for (let i = 0; i < n; i++) { m.push(new Array(n).fill(0)); m[i][i] = 1; }
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      const a = ids[i], b = ids[j];
+      const v = (CORR[a] && CORR[a][b] !== undefined) ? CORR[a][b] : (CORR[b] && CORR[b][a] !== undefined ? CORR[b][a] : 0);
+      m[i][j] = m[j][i] = v;
+    }
+    return m;
+  }
+  function cholesky(m) {
+    const n = m.length, L = [];
+    for (let i = 0; i < n; i++) L.push(new Array(n).fill(0));
+    for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
+      let s = m[i][j];
+      for (let k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+      if (i === j) L[i][j] = Math.sqrt(Math.max(s, 1e-10)); else L[i][j] = s / L[j][j];
+    }
+    return L;
+  }
+
+  /* ---------- 2. RNG (seeded, reproducible) ---------- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function gaussPair(rnd) {
+    let u = 0, v = 0; while (u === 0) u = rnd(); while (v === 0) v = rnd();
+    const r = Math.sqrt(-2 * Math.log(u)), t = 2 * Math.PI * v;
+    return [r * Math.cos(t), r * Math.sin(t)];
+  }
+
+  /* ---------- 3. Singapore stamp duty / tax schedules (verified Aug 2026, see analysis.md) ---------- */
+  function bsd(price) { // Buyer's Stamp Duty, residential, from 15 Feb 2023
+    const bands = [[180000, 0.01], [180000, 0.02], [640000, 0.03], [500000, 0.04], [1500000, 0.05], [Infinity, 0.06]];
+    let left = price, tax = 0;
+    for (const [w, r] of bands) { const x = Math.min(left, w); tax += x * r; left -= x; if (left <= 0) break; }
+    return tax;
+  }
+  function absd(price, profile) { // profile: 'sc1' 0%, 'pr1' 5%, 'sc2' 20%, 'pr2' 30%
+    const r = { sc1: 0, pr1: 0.05, sc2: 0.20, pr2: 0.30, f: 0.60 }[profile] || 0;
+    return price * r;
+  }
+  function ssd(price, yearsHeld) { // 4-year schedule from 4 Jul 2025
+    if (yearsHeld >= 4) return 0;
+    return price * [0.16, 0.12, 0.08, 0.04][Math.floor(yearsHeld)];
+  }
+  function propertyTaxOO(av) { // owner-occupied residential, from 1 Jan 2024
+    const bands = [[8000, 0], [22000, 0.04], [10000, 0.06], [15000, 0.10], [15000, 0.14], [15000, 0.20], [15000, 0.26], [Infinity, 0.32]];
+    let left = av, tax = 0;
+    for (const [w, r] of bands) { const x = Math.min(left, w); tax += x * r; left -= x; if (left <= 0) break; }
+    return tax;
+  }
+  function pmt(principal, annualRate, years) {
+    const n = years * 12, r = annualRate / 12;
+    if (principal <= 0) return 0;
+    if (r === 0) return principal / n;
+    return principal * r / (1 - Math.pow(1 + r, -n));
+  }
+
+  /* ---------- 4. Plan model ----------
+   plan = {
+     id, name, color,
+     housing: { type:'condo'|'hdb'|'none', price, ltv, rate, tenure, mu, vol, rent, rentGrowth, maint, av,
+                swapEvery (0=never), agentSellPct, legalBuy, renoBuy, absdProfile, exitAtEnd },
+     portfolio: { extraInitial, weights:{assetId:0..1}, dca (monthly extra), dcaGrowth, ter, rebalance }
+   }
+   global = { years, wealth0, budget, budgetGrowth, inflation, paths, seed, mode:'mc'|'det',
+              shock:{ rateAdd, propMuAdd, eqCrashY1 } , assets: overrides {id:{mu,vol}} }
+  */
+  function housingUpfront(h) {
+    if (h.type === 'none') return { down: 0, bsd: 0, absd: 0, legal: 0, reno: 0, total: 0 };
+    const down = h.price * (1 - h.ltv), b = bsd(h.price), a = absd(h.price, h.absdProfile || 'sc1');
+    const legal = h.legalBuy || 0, reno = h.renoBuy || 0;
+    return { down, bsd: b, absd: a, legal, reno, total: down + b + a + legal + reno };
+  }
+  function swapCost(h, price) { // sell + rebuy same-value home
+    return price * (h.agentSellPct || 0.0218) + bsd(price) + (h.legalBuy || 0) + (h.legalBuy || 0) + (h.renoBuy || 0);
+  }
+  function exitCost(h, price) { return price * (h.agentSellPct || 0.0218) + (h.legalBuy || 0); }
+
+  function assetParams(g) {
+    return ASSETS.map(a => {
+      const o = (g.assets && g.assets[a.id]) || {};
+      return { id: a.id, mu: o.mu !== undefined ? o.mu : a.mu, vol: o.vol !== undefined ? o.vol : a.vol };
+    });
+  }
+
+  /* run all plans on common random numbers; return per-plan yearly stats */
+  function simulate(plans, g) {
+    const years = g.years, months = years * 12, det = g.mode === 'det';
+    const nPaths = det ? 1 : (g.paths || 1000);
+    const ap = assetParams(g), nA = ap.length, nDim = nA + 2;
+    const L = cholesky(corrMatrix(CORR_IDS));
+    const rnd = mulberry32(g.seed || 42);
+    const shock = g.shock || {};
+
+    // per-plan static setup
+    const P = plans.map(p => {
+      const h = p.housing, up = housingUpfront(h);
+      const price0 = h.type === 'none' ? 0 : h.price;
+      const loan0 = h.type === 'none' ? 0 : h.price * h.ltv;
+      const rate = (h.rate || 0) + (shock.rateAdd || 0);
+      const payment = pmt(loan0, rate, h.tenure || 30);
+      const port0 = Math.max(0, g.wealth0 - up.total) + (p.portfolio.extraInitial || 0);
+      const shortfall0 = Math.max(0, up.total - g.wealth0);
+      const w = ap.map(a => (p.portfolio.weights[a.id] || 0));
+      const ws = w.reduce((s, x) => s + x, 0) || 1;
+      const wn = w.map(x => x / ws);
+      const entryMonths = Math.max(0, Math.round(p.portfolio.entryMonths || 0));
+      const cashIdx = ap.findIndex(a => a.id === 'cash');
+      const propMu = (h.mu || 0) + (shock.propMuAdd || 0);
+      return { p, h, up, price0, loan0, rate, payment, port0, shortfall0, wn, propMu, entryMonths, cashIdx,
+        propIdx: h.type === 'condo' ? nA : (h.type === 'hdb' ? nA + 1 : -1),
+        yearly: [], // per path: array of yearly snapshots
+        term: [], liqTerm: [], mddArr: [], rentTerm: [], shortfallPaths: 0, maxOutflow: 0, firstOutflow: 0 };
+    });
+
+    const z = new Float64Array(nDim), e = new Float64Array(nDim);
+    for (let path = 0; path < nPaths; path++) {
+      // per-plan state
+      const S = P.map(x => ({
+        price: x.price0, loan: x.loan0, port: (x.entryMonths > 0 && x.cashIdx >= 0) ? x.wn.map((w, i) => i === x.cashIdx ? x.port0 : 0) : x.wn.map(w => w * x.port0), parked: (x.entryMonths > 0 && x.cashIdx >= 0) ? x.port0 : 0, cumRent: 0, shortfall: false,
+        snaps: [], peak: -Infinity, mdd: 0
+      }));
+      const bud = { budget: g.budget, dca: null };
+      for (let m = 1; m <= months; m++) {
+        // shocks
+        if (det) { for (let i = 0; i < nDim; i++) e[i] = 0; }
+        else {
+          for (let i = 0; i < nDim; i += 2) { const [a, b] = gaussPair(rnd); z[i] = a; if (i + 1 < nDim) z[i + 1] = b; }
+          for (let i = 0; i < nDim; i++) { let s = 0; for (let k = 0; k <= i; k++) s += L[i][k] * z[k]; e[i] = s; }
+        }
+        const yr = (m - 1) / 12, yIdx = Math.floor(yr);
+        const infl = Math.pow(1 + (g.inflation || 0.02), yr);
+        const budgetNow = g.budget * Math.pow(1 + (g.budgetGrowth || 0), yr);
+        // asset monthly gross factors (shared)
+        const af = new Array(nA);
+        for (let i = 0; i < nA; i++) {
+          const a = ap[i];
+          let mu = a.mu, vol = a.vol;
+          if (shock.eqCrashY1 && yIdx === 0 && (a.id === 'gEq' || a.id === 'usEq' || a.id === 'sgEq' || a.id === 'emEq' || a.id === 'reit' || a.id === 'btc')) {
+            // impose ~ -40% over first 12 months for equity-like assets
+            mu = Math.log(0.6) - 0; vol = det ? 0 : vol;
+            af[i] = det ? Math.pow(0.6, 1 / 12) : Math.exp(mu / 12 + vol / Math.sqrt(12) * e[i] - vol * vol / 24);
+            continue;
+          }
+          af[i] = det ? Math.pow(1 + mu, 1 / 12)
+                      : Math.exp((Math.log(1 + mu) - vol * vol / 2) / 12 + vol / Math.sqrt(12) * e[i]);
+        }
+        for (let k = 0; k < P.length; k++) {
+          const x = P[k], s = S[k], h = x.h;
+          // 1. property price
+          if (x.propIdx >= 0) {
+            const vol = h.vol || 0;
+            const f = det ? Math.pow(1 + x.propMu, 1 / 12)
+                          : Math.exp((Math.log(1 + x.propMu) - vol * vol / 2) / 12 + vol / Math.sqrt(12) * e[x.propIdx]);
+            s.price *= f;
+          }
+          // 2. mortgage
+          let outflow = 0;
+          if (s.loan > 0) {
+            const interest = s.loan * x.rate / 12;
+            const pay = Math.min(x.payment, s.loan + interest);
+            s.loan = Math.max(0, s.loan + interest - pay);
+            outflow += pay;
+          }
+          // 3. holding costs (inflating)
+          if (x.propIdx >= 0) {
+            const rentNow = (h.rent || 0) * Math.pow(1 + (h.rentGrowth || 0.02), yr);
+            s.cumRent += rentNow;
+            outflow += (h.maint || 0) * infl;
+            outflow += propertyTaxOO((h.av || 0) * Math.pow(1 + (h.rentGrowth || 0.02), yr)) / 12;
+          }
+          if (m === 1) x.firstOutflow = outflow;
+          if (outflow > x.maxOutflow) x.maxOutflow = outflow;
+          // 4. portfolio growth
+          let pv = 0;
+          for (let i = 0; i < nA; i++) { s.port[i] *= af[i] * (1 - (x.p.portfolio.ter || 0) / 12); pv += s.port[i]; }
+          // 5. contribution = budget - housing outflow + extra dca
+          const dca = (x.p.portfolio.dca || 0) * Math.pow(1 + (x.p.portfolio.dcaGrowth || 0), yr);
+          let contrib = budgetNow - outflow + dca;
+          if (m === 1 && x.shortfall0 > 0) contrib -= x.shortfall0; // upfront shortfall drawn at t=1
+          // 6. swap event (every N years, not at t=0, not in final month)
+          if (x.propIdx >= 0 && h.swapEvery > 0 && m % (h.swapEvery * 12) === 0 && m < months) {
+            contrib -= swapCost(h, s.price);
+          }
+          if (contrib >= 0) {
+            if (pv <= 0) { for (let i = 0; i < nA; i++) s.port[i] = x.wn[i] * contrib; }
+            else for (let i = 0; i < nA; i++) s.port[i] += x.wn[i] * contrib;
+          } else {
+            let need = -contrib;
+            if (pv >= need) { const f = (pv - need) / pv; for (let i = 0; i < nA; i++) s.port[i] *= f; }
+            else { for (let i = 0; i < nA; i++) s.port[i] = 0; s.loan += (need - pv); s.shortfall = true; }
+          }
+          // 6b. staged entry: move a slice of the parked cash into target weights
+          if (s.parked > 0 && m <= x.entryMonths) {
+            const slice = s.parked / (x.entryMonths - m + 1);
+            const mv = Math.min(slice, s.port[x.cashIdx]);
+            s.port[x.cashIdx] -= mv; s.parked -= slice;
+            for (let i = 0; i < nA; i++) s.port[i] += x.wn[i] * mv;
+            if (m === x.entryMonths) s.parked = 0;
+          }
+          // 7. annual rebalance (suspended while still entering)
+          if (x.p.portfolio.rebalance !== false && m % 12 === 0 && s.parked <= 0) {
+            let tot = 0; for (let i = 0; i < nA; i++) tot += s.port[i];
+            for (let i = 0; i < nA; i++) s.port[i] = x.wn[i] * tot;
+          }
+          // 8. snapshot at year end
+          if (m % 12 === 0) {
+            let port = 0; for (let i = 0; i < nA; i++) port += s.port[i];
+            const isEnd = m === months;
+            const propNet = x.propIdx >= 0 ? s.price - ((isEnd && h.exitAtEnd) ? exitCost(h, s.price) : 0) : 0;
+            const nw = port + propNet - s.loan;
+            if (nw > s.peak) s.peak = nw;
+            const dd = s.peak > 0 ? (nw - s.peak) / s.peak : 0;
+            if (dd < s.mdd) s.mdd = dd;
+            s.snaps.push({ nw, port, price: s.price, loan: s.loan, cumRent: s.cumRent });
+          }
+        }
+      }
+      for (let k = 0; k < P.length; k++) {
+        const x = P[k], s = S[k];
+        x.yearly.push(s.snaps.map(v => v.nw));
+        x.term.push(s.snaps[s.snaps.length - 1]);
+        x.mddArr.push(s.mdd);
+        if (s.shortfall) x.shortfallPaths++;
+      }
+    }
+
+    // aggregate
+    const q = (arr, p) => { const a = arr.slice().sort((x, y) => x - y); const i = (a.length - 1) * p; const lo = Math.floor(i), hi = Math.ceil(i); return a[lo] + (a[hi] - a[lo]) * (i - lo); };
+    const results = P.map((x, k) => {
+      const yearsArr = [];
+      for (let y = 0; y < years; y++) {
+        const col = x.yearly.map(r => r[y]);
+        yearsArr.push({ year: y + 1, p10: q(col, 0.10), p25: q(col, 0.25), p50: q(col, 0.5), p75: q(col, 0.75), p90: q(col, 0.9), mean: col.reduce((s, v) => s + v, 0) / col.length });
+      }
+      const termNW = x.term.map(t => t.nw), termPort = x.term.map(t => t.port), termPrice = x.term.map(t => t.price), termLoan = x.term.map(t => t.loan), termRent = x.term.map(t => t.cumRent);
+      return {
+        id: x.p.id, name: x.p.name, color: x.p.color,
+        upfront: x.up, port0: x.port0, loan0: x.loan0, payment: x.payment, rate: x.rate,
+        firstOutflow: x.firstOutflow, maxOutflow: x.maxOutflow, shortfall0: x.shortfall0,
+        yearly: yearsArr,
+        terminal: { p10: q(termNW, .1), p25: q(termNW, .25), p50: q(termNW, .5), p75: q(termNW, .75), p90: q(termNW, .9), mean: termNW.reduce((s, v) => s + v, 0) / termNW.length,
+                    port50: q(termPort, .5), price50: q(termPrice, .5), loan50: q(termLoan, .5), rent50: q(termRent, .5),
+                    liq50: q(termPort.map((v, i) => termNW[i] > 0 ? v / termNW[i] : 0), .5) },
+        mdd50: q(x.mddArr, .5), mdd10: q(x.mddArr, .1),
+        pShortfall: x.shortfallPaths / nPaths,
+        _termNW: termNW,
+      };
+    });
+    // pairwise beat probabilities (paired paths)
+    for (const r of results) {
+      r.beats = {};
+      for (const o of results) { if (o === r) continue; let c = 0; for (let i = 0; i < r._termNW.length; i++) if (r._termNW[i] > o._termNW[i]) c++; r.beats[o.id] = c / r._termNW.length; }
+    }
+    return results;
+  }
+
+  /* breakeven scan: vary property mu of plan A (deterministic), report NW_A - NW_B */
+  function breakevenScan(planA, planB, g, muList) {
+    return muList.map(mu => {
+      const a = JSON.parse(JSON.stringify(planA)); a.housing.mu = mu;
+      const r = simulate([a, planB], Object.assign({}, g, { mode: 'det' }));
+      return { mu, a: r[0].terminal.p50, b: r[1].terminal.p50 };
+    });
+  }
+
+  /* ---------- 5. Presets ---------- */
+  const RISK_PRESETS = {
+    conservative: { name: '保守', desc: '目标：跑赢定存和 CPF OA，最大回撤 ≤ 15%。', weights: { gEq: 0.20, gBond: 0.30, sgGov: 0.25, cpf: 0.10, gold: 0.10, cash: 0.05 } },
+    balanced:     { name: '稳健', desc: '经典 60/40 加本地与黄金。目标 5–6% 年化，回撤 ≤ 30%。', weights: { gEq: 0.45, sgEq: 0.10, reit: 0.05, gBond: 0.20, sgGov: 0.10, gold: 0.05, cash: 0.05 } },
+    growth:       { name: '进取', desc: '八成股票。目标 6.5–7% 年化，接受 -45% 回撤和十年不赚钱的可能。', weights: { gEq: 0.55, usEq: 0.10, emEq: 0.10, reit: 0.05, gBond: 0.10, gold: 0.05, cash: 0.05 } },
+    aggressive:   { name: '激进', desc: '几乎全股 + 少量加密。目标 7%+，回撤 -55% 以上要能睡得着。', weights: { gEq: 0.55, usEq: 0.15, emEq: 0.15, reit: 0.05, btc: 0.05, cash: 0.05 } },
+    sgLocal:      { name: '本地偏好', desc: '新元资产为主，无汇率波动，但与本地房市同源风险高。', weights: { sgEq: 0.35, reit: 0.25, sgGov: 0.20, cpf: 0.10, gBond: 0.10 } },
+  };
+
+  const DEFAULT_GLOBAL = {
+    years: 20, wealth0: 1000000, budget: 10000, budgetGrowth: 0.02, inflation: 0.02, paths: 1000, seed: 42, mode: 'mc',
+    shock: { rateAdd: 0, propMuAdd: 0, eqCrashY1: false }, assets: {},
+  };
+
+  const DEFAULT_PLANS = [
+    { id: 'A', name: 'A · 换大四房公寓', color: 1,
+      housing: { type: 'condo', price: 3100000, ltv: 0.75, rate: 0.022, tenure: 30, mu: 0.03, vol: 0.08, rent: 7200, rentGrowth: 0.02, maint: 520, av: 62000,
+                 swapEvery: 10, agentSellPct: 0.0218, legalBuy: 3500, renoBuy: 60000, absdProfile: 'sc1', exitAtEnd: false },
+      portfolio: { extraInitial: 0, weights: RISK_PRESETS.balanced.weights, dca: 0, dcaGrowth: 0, ter: 0.002, rebalance: true, entryMonths: 0 } },
+    { id: 'B', name: 'B · 组屋 + 稳健组合', color: 2,
+      housing: { type: 'hdb', price: 1000000, ltv: 0.75, rate: 0.022, tenure: 25, mu: 0.02, vol: 0.06, rent: 4200, rentGrowth: 0.02, maint: 90, av: 13000,
+                 swapEvery: 0, agentSellPct: 0.0109, legalBuy: 2500, renoBuy: 70000, absdProfile: 'sc1', exitAtEnd: false },
+      portfolio: { extraInitial: 0, weights: RISK_PRESETS.balanced.weights, dca: 0, dcaGrowth: 0, ter: 0.002, rebalance: true } },
+    { id: 'C', name: 'C · 组屋 + 进取组合', color: 3,
+      housing: { type: 'hdb', price: 1000000, ltv: 0.75, rate: 0.022, tenure: 25, mu: 0.02, vol: 0.06, rent: 4200, rentGrowth: 0.02, maint: 90, av: 13000,
+                 swapEvery: 0, agentSellPct: 0.0109, legalBuy: 2500, renoBuy: 70000, absdProfile: 'sc1', exitAtEnd: false },
+      portfolio: { extraInitial: 0, weights: RISK_PRESETS.growth.weights, dca: 0, dcaGrowth: 0, ter: 0.002, rebalance: true } },
+    { id: 'D', name: 'D · 组屋全款 + 保守组合', color: 4,
+      housing: { type: 'hdb', price: 1000000, ltv: 0.0, rate: 0.022, tenure: 25, mu: 0.02, vol: 0.06, rent: 4200, rentGrowth: 0.02, maint: 90, av: 13000,
+                 swapEvery: 0, agentSellPct: 0.0109, legalBuy: 2500, renoBuy: 70000, absdProfile: 'sc1', exitAtEnd: false },
+      portfolio: { extraInitial: 0, weights: RISK_PRESETS.conservative.weights, dca: 0, dcaGrowth: 0, ter: 0.002, rebalance: true } },
+  ];
+
+  const api = { ASSETS, CORR_IDS, corrMatrix, cholesky, bsd, absd, ssd, propertyTaxOO, pmt, housingUpfront, swapCost, exitCost, simulate, breakevenScan, RISK_PRESETS, DEFAULT_GLOBAL, DEFAULT_PLANS };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SimEngine = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function(){
+'use strict';
+const E = window.SimEngine;
+const $ = s => document.querySelector(s);
+const el = (t, a = {}, ...ch) => { const n = document.createElement(t); for (const k in a) { if (k === 'class') n.className = a[k]; else if (k === 'html') n.innerHTML = a[k]; else if (k.startsWith('on')) n.addEventListener(k.slice(2), a[k]); else n.setAttribute(k, a[k]); } for (const c of ch) n.append(c); return n; };
+const COLORS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)'];
+const money = v => { const s = v < 0 ? '−' : ''; v = Math.abs(v); if (v >= 1e6) return s + 'S$' + (v / 1e6).toFixed(2) + 'M'; if (v >= 1e3) return s + 'S$' + Math.round(v / 1e3) + 'k'; return s + 'S$' + Math.round(v); };
+const pct = (v, d = 1) => (v * 100).toFixed(d) + '%';
+const clone = o => JSON.parse(JSON.stringify(o));
+
+let G = clone(E.DEFAULT_GLOBAL);
+let PLANS = clone(E.DEFAULT_PLANS);
+let cur = 0, results = null;
+
+/* ---------- global fields ---------- */
+const GFIELDS = [
+  ['wealth0', '起始可投总额', 'S$', 1, '卖 Clavon 净得（估 ~83 万）+ 其他流动资金 / CPF OA'],
+  ['budget', '住房月预算', 'S$/月', 1, '家庭每月愿意投入住房 + 投资的总额'],
+  ['budgetGrowth', '预算年增长', '%', 100, '随收入增长'],
+  ['inflation', '通胀（物业费等）', '%', 100, ''],
+  ['paths', '模拟路径数', '条', 1, '1000 够用；4000 更平滑但慢 4 倍'],
+  ['seed', '随机种子', '', 1, '同种子 = 可复现'],
+];
+function renderGlobal() {
+  const box = $('#globalFields'); box.innerHTML = '';
+  for (const [k, label, unit, scale, hint] of GFIELDS) {
+    const inp = el('input', { type: 'number', step: unit === '%' ? '0.1' : 'any', value: +(G[k] * scale).toFixed(4) });
+    inp.addEventListener('change', () => { G[k] = parseFloat(inp.value) / scale; if (k === 'paths') G[k] = Math.max(1, Math.round(G[k])); });
+    const lab = el('label', {}, label); if (hint) lab.append(el('small', {}, hint));
+    box.append(el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, inp, el('span', {}, unit))));
+  }
+}
+const SHOCKS = [
+  ['rateAdd', '房贷利率加点', '%', 100, '2022–23 年 SORA 从 0.2% 升到 3.7%'],
+  ['propMuAdd', '房价年化加减', '%', 100, '所有方案的房产同时加减'],
+];
+function renderShocks() {
+  const box = $('#shockFields'); box.innerHTML = '';
+  for (const [k, label, unit, scale, hint] of SHOCKS) {
+    const inp = el('input', { type: 'number', step: '0.5', value: +(G.shock[k] * scale).toFixed(2) });
+    inp.addEventListener('change', () => { G.shock[k] = parseFloat(inp.value) / scale; });
+    const lab = el('label', {}, label); if (hint) lab.append(el('small', {}, hint));
+    box.append(el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, inp, el('span', {}, unit))));
+  }
+  const cb = el('input', { type: 'checkbox' }); cb.checked = !!G.shock.eqCrashY1;
+  cb.addEventListener('change', () => { G.shock.eqCrashY1 = cb.checked; });
+  const lab = el('label', {}, '第一年股灾 −40%'); lab.append(el('small', {}, '顺序风险：刚投进去就跌'));
+  box.append(el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, cb)));
+}
+
+/* ---------- plan editor ---------- */
+const HFIELDS = {
+  condo: [
+    ['price', '买入价', 'S$', 1, 'Clavon 4 房 1,356 sqft 2026 年成交 S$3.0–3.1M'],
+    ['ltv', '贷款成数 LTV', '%', 100, '首套银行贷款上限 75%'],
+    ['rate', '房贷利率', '%', 100, '2026-08 两年固定 1.4–2.0%；长期按 2.2–3% 保守'],
+    ['tenure', '贷款年限', '年', 1, '≤30 年，且贷款到期不超过 65 岁'],
+    ['mu', '房价年化（该套房）', '%', 100, '指数 2010 起 3.3%/年；单套 99 年地契需减折旧'],
+    ['vol', '房价波动率', '%', 100, '指数年收益标准差：2000 起 8%'],
+    ['rent', '同类租金（月）', 'S$', 1, '仅用于「居住效用」与房产税年值'],
+    ['maint', '物业费（月）', 'S$', 1, ''],
+    ['av', '房产税年值 AV', 'S$', 1, 'IRAS 年值 ≈ 市场年租的 85–90%'],
+    ['swapEvery', '每 N 年换一次', '年', 1, '0 = 不换。换 = 卖出 + 等值买入，付中介 + BSD + 律师 + 装修'],
+    ['renoBuy', '装修 / 搬家（每次）', 'S$', 1, ''],
+    ['legalBuy', '律师费（每次）', 'S$', 1, ''],
+  ],
+  hdb: [
+    ['price', '买入价', 'S$', 1, '金文泰 4 房中位 S$860k，5 房 S$1.03–1.15M'],
+    ['ltv', '贷款成数 LTV', '%', 100, '银行贷款上限 75%（卖私宅后 30 个月内不能用 HDB 贷款）'],
+    ['rate', '房贷利率', '%', 100, ''],
+    ['tenure', '贷款年限', '年', 1, '组屋银行贷款 ≤25 年（保 75% LTV）'],
+    ['mu', '房价年化（该套房）', '%', 100, '指数 2010 起 3.7%/年；老组屋剩余地契短，折旧更快'],
+    ['vol', '房价波动率', '%', 100, ''],
+    ['rent', '同类租金（月）', 'S$', 1, '仅用于「居住效用」'],
+    ['maint', '杂费 S&CC（月）', 'S$', 1, ''],
+    ['av', '房产税年值 AV', 'S$', 1, 'HDB 5 房 AV 约 S$12–13k'],
+    ['swapEvery', '每 N 年换一次', '年', 1, '组屋 MOP 5 年内不可卖'],
+    ['renoBuy', '装修 / 搬家（每次）', 'S$', 1, ''],
+    ['legalBuy', '律师费（每次）', 'S$', 1, ''],
+  ],
+  none: [],
+};
+const PFIELDS = [
+  ['entryMonths', '分批入场（月）', '月', 1, '0 = 一次性全投；12 = 起始资金先放现金，分 12 个月等额买入'],
+  ['extraInitial', '额外初始投入', 'S$', 1, '在「起始可投总额 − 购房前期支出」之外再加的钱'],
+  ['dca', '额外月定投', 'S$/月', 1, '住房预算结余之外的定投'],
+  ['dcaGrowth', '定投年增长', '%', 100, ''],
+  ['ter', '基金费率 TER', '%', 100, '被动 ETF 0.1–0.25%'],
+];
+function renderTabs() {
+  const t = $('#planTabs'); t.innerHTML = '';
+  PLANS.forEach((p, i) => t.append(el('button', { class: i === cur ? 'on' : '', onclick: () => { cur = i; renderTabs(); renderEditor(); } }, el('span', { class: 'dot', style: 'background:' + COLORS[p.color - 1] }), p.name)));
+}
+function fieldRow(label, hint, obj, key, unit, scale, opts) {
+  const inp = el('input', { type: 'number', step: unit === '%' ? '0.1' : 'any', value: +(obj[key] * scale).toFixed(4) });
+  inp.addEventListener('change', () => { obj[key] = parseFloat(inp.value) / scale; if (opts && opts.after) opts.after(); });
+  const lab = el('label', {}, label); if (hint) lab.append(el('small', {}, hint));
+  return el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, inp, el('span', {}, unit)));
+}
+function renderEditor() {
+  const p = PLANS[cur], box = $('#planEditor'); box.innerHTML = '';
+  // name
+  const nameInp = el('input', { type: 'text', value: p.name, style: 'width:100%;font:inherit;padding:6px 8px;border:1px solid var(--line2);border-radius:6px;background:var(--bg);color:var(--ink);margin-bottom:8px' });
+  nameInp.addEventListener('change', () => { p.name = nameInp.value; renderTabs(); });
+  box.append(nameInp);
+  // housing
+  const hs = el('div', { class: 'stack' });
+  hs.append(el('h3', {}, '住房'));
+  const seg = el('div', { class: 'seg' });
+  for (const [v, l] of [['condo', '私宅公寓'], ['hdb', 'HDB 组屋'], ['none', '不买房']]) seg.append(el('button', { class: p.housing.type === v ? 'on' : '', onclick: () => { p.housing.type = v; if (v === 'hdb' && p.housing.price > 2e6) Object.assign(p.housing, { price: 1000000, mu: 0.02, vol: 0.06, rent: 4200, maint: 90, av: 13000, agentSellPct: 0.0109, tenure: 25 }); if (v === 'condo' && p.housing.price < 1.5e6) Object.assign(p.housing, { price: 3100000, mu: 0.03, vol: 0.08, rent: 7200, maint: 520, av: 62000, agentSellPct: 0.0218, tenure: 30 }); renderEditor(); } }, l));
+  hs.append(seg);
+  const up = E.housingUpfront(p.housing);
+  if (p.housing.type !== 'none') {
+    for (const [k, label, unit, scale, hint] of HFIELDS[p.housing.type]) hs.append(fieldRow(label, hint, p.housing, k, unit, scale, { after: renderEditor }));
+    // absd profile
+    const sel = el('select');
+    for (const [v, l] of [['sc1', '公民首套 0%'], ['pr1', 'PR 首套 5%'], ['sc2', '公民二套 20%'], ['pr2', 'PR 二套 30%']]) { const o = el('option', { value: v }, l); if ((p.housing.absdProfile || 'sc1') === v) o.selected = true; sel.append(o); }
+    sel.addEventListener('change', () => { p.housing.absdProfile = sel.value; renderEditor(); });
+    const lab = el('label', {}, 'ABSD 身份'); lab.append(el('small', {}, '公民夫妇 6 个月内卖旧房可退；PR 首套 5% 不退'));
+    hs.append(el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, sel)));
+    const cb = el('input', { type: 'checkbox' }); cb.checked = !!p.housing.exitAtEnd; cb.addEventListener('change', () => { p.housing.exitAtEnd = cb.checked; });
+    const lab2 = el('label', {}, '期末变现'); lab2.append(el('small', {}, '期末按卖出扣中介费计净资产'));
+    hs.append(el('div', { class: 'field' }, lab2, el('div', { class: 'unit' }, cb)));
+    const loan = p.housing.price * p.housing.ltv, pm = E.pmt(loan, p.housing.rate + (G.shock.rateAdd || 0), p.housing.tenure);
+    const port0 = G.wealth0 - up.total;
+    hs.append(el('div', { class: 'hint num', html: `前期支出 <b>${money(up.total)}</b>（首付 ${money(up.down)} + BSD ${money(up.bsd)}${up.absd ? ' + ABSD ' + money(up.absd) : ''} + 律师 ${money(up.legal)} + 装修 ${money(up.reno)}）<br>贷款 <b>${money(loan)}</b> · 月供 <b>${money(pm)}</b> · 剩余可投 <b class="${port0 < 0 ? 'bad' : ''}">${money(port0)}</b>${port0 < 0 ? ' ← 起始资金不够，缺口计入贷款' : ''}` }));
+    if (p.housing.type === 'condo') hs.append(el('div', { class: 'warn', html: '公民夫妇：买新房时可先付 20% ABSD、6 个月内卖掉 Clavon 后申请退还；或先卖后买。私宅换私宅无 MOP，但 SSD 4 年内出售要缴 16/12/8/4%。' }));
+    if (p.housing.type === 'hdb') hs.append(el('div', { class: 'warn', html: '2026-07-28 起私宅业主买转售组屋<b>不再等 15 个月</b>；但须在组屋交易完成后 6 个月内卖掉私宅；30 个月内不能用 HDB 贷款 / 津贴；MOP 5 年内不能卖也不能买私宅。全 PR 家庭需两人 PR 满 3 年，且 ABSD 5%。' }));
+  }
+  box.append(hs);
+  // portfolio
+  const ps = el('div', { class: 'stack', style: 'margin-top:12px' });
+  ps.append(el('h3', {}, '投资组合'));
+  const pre = el('div', { class: 'presets' });
+  const wkey = JSON.stringify(p.portfolio.weights);
+  for (const k in E.RISK_PRESETS) { const r = E.RISK_PRESETS[k]; pre.append(el('button', { class: JSON.stringify(r.weights) === wkey ? 'on' : '', title: r.desc, onclick: () => { p.portfolio.weights = clone(r.weights); renderEditor(); } }, r.name)); }
+  ps.append(pre);
+  const preOn = Object.values(E.RISK_PRESETS).find(r => JSON.stringify(r.weights) === wkey);
+  ps.append(el('div', { class: 'hint' }, preOn ? preOn.desc : '自定义配置（拖动滑杆；比例会按合计归一化）'));
+  const wbox = el('div');
+  let sum = 0; for (const a of E.ASSETS) sum += p.portfolio.weights[a.id] || 0;
+  for (const a of E.ASSETS) {
+    const w = p.portfolio.weights[a.id] || 0;
+    const rng = el('input', { type: 'range', min: 0, max: 100, step: 1, value: Math.round(w * 100) });
+    const pctEl = el('span', { class: 'pct' }, Math.round(w * 100) + '%');
+    rng.addEventListener('input', () => { p.portfolio.weights[a.id] = rng.value / 100; pctEl.textContent = rng.value + '%'; sumEl.textContent = '合计 ' + Math.round(Object.values(p.portfolio.weights).reduce((s, x) => s + x, 0) * 100) + '%'; });
+    rng.addEventListener('change', () => renderEditor());
+    wbox.append(el('div', { class: 'w-row' }, el('label', {}, a.name), rng, pctEl));
+  }
+  const sumEl = el('div', { class: 'hint num' }, '合计 ' + Math.round(sum * 100) + '%');
+  ps.append(wbox, sumEl);
+  // expected return of portfolio
+  const ap = E.ASSETS.map(a => ({ mu: (G.assets[a.id] && G.assets[a.id].mu !== undefined) ? G.assets[a.id].mu : a.mu, w: (p.portfolio.weights[a.id] || 0) / (sum || 1) }));
+  const emu = ap.reduce((s, x) => s + x.mu * x.w, 0);
+  ps.append(el('div', { class: 'hint num' }, `组合加权预期年化 ≈ ${pct(emu)}（未扣 TER）`));
+  for (const [k, label, unit, scale, hint] of PFIELDS) ps.append(fieldRow(label, hint, p.portfolio, k, unit, scale));
+  const cb = el('input', { type: 'checkbox' }); cb.checked = p.portfolio.rebalance !== false; cb.addEventListener('change', () => { p.portfolio.rebalance = cb.checked; });
+  const lab = el('label', {}, '每年再平衡'); ps.append(el('div', { class: 'field' }, lab, el('div', { class: 'unit' }, cb)));
+  box.append(ps);
+}
+$('#addPlan').addEventListener('click', () => { if (PLANS.length >= 4) return alert('最多 4 个方案（颜色只够 4 个）'); const used = PLANS.map(p => p.color); const c = [1, 2, 3, 4].find(x => !used.includes(x)); const p = clone(E.DEFAULT_PLANS[1]); p.id = 'P' + Date.now(); p.color = c; p.name = '新方案'; PLANS.push(p); cur = PLANS.length - 1; renderTabs(); renderEditor(); });
+$('#dupPlan').addEventListener('click', () => { if (PLANS.length >= 4) return alert('最多 4 个方案'); const used = PLANS.map(p => p.color); const c = [1, 2, 3, 4].find(x => !used.includes(x)); const p = clone(PLANS[cur]); p.id = 'P' + Date.now(); p.color = c; p.name += ' 副本'; PLANS.push(p); cur = PLANS.length - 1; renderTabs(); renderEditor(); });
+$('#delPlan').addEventListener('click', () => { if (PLANS.length <= 1) return; PLANS.splice(cur, 1); cur = Math.max(0, cur - 1); renderTabs(); renderEditor(); });
+$('#resetAll').addEventListener('click', () => { G = clone(E.DEFAULT_GLOBAL); PLANS = clone(E.DEFAULT_PLANS); cur = 0; renderAll(); run(); });
+
+/* ---------- asset library ---------- */
+function renderAssets() {
+  const box = $('#assetLib'); box.innerHTML = '';
+  for (const a of E.ASSETS) {
+    const o = G.assets[a.id] || {};
+    const mu = o.mu !== undefined ? o.mu : a.mu, vol = o.vol !== undefined ? o.vol : a.vol;
+    const muI = el('input', { type: 'number', step: '0.1', value: (mu * 100).toFixed(1) }), volI = el('input', { type: 'number', step: '0.5', value: (vol * 100).toFixed(1) });
+    muI.addEventListener('change', () => { G.assets[a.id] = Object.assign({}, G.assets[a.id], { mu: parseFloat(muI.value) / 100 }); });
+    volI.addEventListener('change', () => { G.assets[a.id] = Object.assign({}, G.assets[a.id], { vol: parseFloat(volI.value) / 100 }); });
+    const d = el('details', {},
+      el('summary', {}, el('span', {}, a.name, el('span', { class: 'chip' }, a.ticker))),
+      el('div', { class: 'asset-body' },
+        el('div', { class: 'asset-meta' }, el('span', { html: `预期年化 <b>${pct(mu)}</b>` }), el('span', { html: `波动率 <b>${pct(vol, 0)}</b>` }), el('span', { html: `历史最大回撤 <b>${pct(a.mdd, 0)}</b>` }), el('span', { html: `流动性 <b>${a.liq}</b>` })),
+        el('p', { html: `<b>是什么</b> ${a.intro}` }), el('p', { html: `<b>风险点</b> ${a.risks}` }), el('p', { html: `<b>怎么买（新加坡）</b> ${a.how}` }),
+        el('div', { class: 'asset-edit' }, el('span', {}, '预期年化'), muI, el('span', {}, '%   波动率'), volI, el('span', {}, '%'))));
+    box.append(d);
+  }
+}
+
+/* ---------- SVG chart helpers ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const sv = (t, a = {}) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
+const tip = $('#tip');
+const cw = c => Math.max(320, Math.round(c.clientWidth || 900));
+function showTip(x, y, html) { tip.innerHTML = html; tip.style.display = 'block'; const w = tip.offsetWidth, h = tip.offsetHeight; let L = x + 14, T = y + 14; if (L + w > innerWidth - 8) L = x - w - 14; if (T + h > innerHeight - 8) T = y - h - 14; tip.style.left = L + 'px'; tip.style.top = T + 'px'; }
+function hideTip() { tip.style.display = 'none'; }
+function niceTicks(min, max, n = 5) { const span = max - min || 1; const raw = span / n; const p = Math.pow(10, Math.floor(Math.log10(raw))); const f = raw / p; const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; const t = []; for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) t.push(+v.toFixed(10)); return t; }
+const mAxis = v => Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(v % 1e6 === 0 ? 0 : 1) + 'M' : (v / 1e3).toFixed(0) + 'k';
+
+function fanChart(container, res) {
+  container.innerHTML = '';
+  const W = cw(container), H = 340, m = { l: 62, r: 16, t: 12, b: 30 };
+  const years = G.years, mc = G.mode === 'mc';
+  let lo = 0, hi = 0;
+  for (const r of res) for (const y of r.yearly) { hi = Math.max(hi, mc ? y.p90 : y.p50); lo = Math.min(lo, mc ? y.p10 : y.p50); }
+  hi *= 1.05; const ticks = niceTicks(lo, hi, 5); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks[ticks.length - 1]);
+  const X = y => m.l + (y / years) * (W - m.l - m.r), Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': '净资产走势' });
+  const ax = sv('g', { class: 'axis' });
+  for (const t of ticks) { ax.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) })); const tx = sv('text', { x: m.l - 8, y: Y(t) + 4, 'text-anchor': 'end' }); tx.textContent = mAxis(t); ax.append(tx); }
+  for (let y = 0; y <= years; y += years >= 20 ? 5 : 2) { const tx = sv('text', { x: X(y), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = y === 0 ? '今' : y + '年'; ax.append(tx); }
+  svg.append(ax);
+  res.forEach((r, i) => {
+    const col = COLORS[r.color - 1];
+    const pts0 = [{ year: 0, p10: G.wealth0 - r.upfront.total + r.upfront.down, p50: G.wealth0 - r.upfront.total + r.upfront.down, p90: G.wealth0 - r.upfront.total + r.upfront.down }].concat(r.yearly);
+    // day-0 net worth = wealth0 − sunk costs (bsd, legal, reno)
+    if (mc) {
+      const up = pts0.map(p => `${X(p.year)},${Y(p.p90)}`), dn = pts0.slice().reverse().map(p => `${X(p.year)},${Y(p.p10)}`);
+      svg.append(sv('polygon', { points: up.concat(dn).join(' '), fill: col, opacity: 0.10 }));
+    }
+    svg.append(sv('polyline', { points: pts0.map(p => `${X(p.year)},${Y(p.p50)}`).join(' '), fill: 'none', stroke: col, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }));
+    const last = pts0[pts0.length - 1];
+    const lb = sv('text', { x: X(years) - 4, y: Y(last.p50) - 6 - i * 0, 'text-anchor': 'end', style: `font:600 11px var(--mono);fill:${col}` }); lb.textContent = r.name.split(' · ')[0] + ' ' + mAxis(last.p50); svg.append(lb);
+  });
+  // hover
+  const cross = sv('line', { y1: m.t, y2: H - m.b, stroke: 'var(--ink3)', 'stroke-width': 1, 'stroke-dasharray': '3 3', visibility: 'hidden' }); svg.append(cross);
+  const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }); svg.append(hit);
+  hit.addEventListener('mousemove', ev => {
+    const bb = svg.getBoundingClientRect(); const px = (ev.clientX - bb.left) / bb.width * W; const yv = Math.round((px - m.l) / (W - m.l - m.r) * years); const yy = Math.min(years, Math.max(1, yv));
+    cross.setAttribute('x1', X(yy)); cross.setAttribute('x2', X(yy)); cross.setAttribute('visibility', 'visible');
+    let html = `<div class="t">第 ${yy} 年</div>`;
+    for (const r of res) { const p = r.yearly[yy - 1]; html += `<div class="r"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${COLORS[r.color - 1]};margin-right:6px"></i>${r.name.split(' · ')[0]}</span><b>${money(p.p50)}</b></div>` + (mc ? `<div class="r" style="color:var(--ink3)"><span>P10–P90</span><span class="num">${money(p.p10)} – ${money(p.p90)}</span></div>` : ''); }
+    showTip(ev.clientX, ev.clientY, html);
+  });
+  hit.addEventListener('mouseleave', () => { cross.setAttribute('visibility', 'hidden'); hideTip(); });
+  container.append(svg);
+  const lg = $('#fanLegend'); lg.innerHTML = ''; for (const r of res) lg.append(el('span', {}, el('i', { style: 'background:' + COLORS[r.color - 1] }), r.name));
+}
+
+function rangeChart(container, res) {
+  container.innerHTML = '';
+  const W = cw(container), rowH = 34, m = { l: 150, r: 20, t: 8, b: 26 }, H = m.t + m.b + rowH * res.length;
+  const mc = G.mode === 'mc';
+  let lo = Infinity, hi = -Infinity; for (const r of res) { lo = Math.min(lo, mc ? r.terminal.p10 : r.terminal.p50); hi = Math.max(hi, mc ? r.terminal.p90 : r.terminal.p50); }
+  const pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad; const ticks = niceTicks(lo, hi, 6);
+  const X = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` });
+  const ax = sv('g', { class: 'axis' }); for (const t of ticks) { if (t < lo || t > hi) continue; ax.append(sv('line', { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b })); const tx = sv('text', { x: X(t), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = mAxis(t); ax.append(tx); } svg.append(ax);
+  res.forEach((r, i) => {
+    const col = COLORS[r.color - 1], y = m.t + rowH * i + rowH / 2, t = r.terminal;
+    const lb = sv('text', { x: m.l - 10, y: y + 4, 'text-anchor': 'end', style: 'font:12px var(--sans);fill:var(--ink2)' }); lb.textContent = r.name; svg.append(lb);
+    if (mc) {
+      svg.append(sv('line', { x1: X(t.p10), x2: X(t.p90), y1: y, y2: y, stroke: col, 'stroke-width': 2, opacity: .5 }));
+      svg.append(sv('rect', { x: X(t.p25), y: y - 7, width: Math.max(2, X(t.p75) - X(t.p25)), height: 14, rx: 4, fill: col, opacity: .35 }));
+    }
+    svg.append(sv('circle', { cx: X(t.p50), cy: y, r: 6, fill: col, stroke: 'var(--panel)', 'stroke-width': 2 }));
+    const g = sv('rect', { x: m.l, y: y - rowH / 2, width: W - m.l - m.r, height: rowH, fill: 'transparent' });
+    g.addEventListener('mousemove', ev => showTip(ev.clientX, ev.clientY, `<div class="t">${r.name} · 第 ${G.years} 年净资产</div>` + (mc ? `<div class="r"><span>P10</span><b>${money(t.p10)}</b></div><div class="r"><span>P25</span><b>${money(t.p25)}</b></div>` : '') + `<div class="r"><span>中位数</span><b>${money(t.p50)}</b></div>` + (mc ? `<div class="r"><span>P75</span><b>${money(t.p75)}</b></div><div class="r"><span>P90</span><b>${money(t.p90)}</b></div><div class="r"><span>均值</span><b>${money(t.mean)}</b></div>` : '')));
+    g.addEventListener('mouseleave', hideTip); svg.append(g);
+  });
+  container.append(svg);
+}
+
+function barsChart(container, items, opts) { // items: [{label,value,color,sub}]
+  container.innerHTML = '';
+  const W = cw(container), rowH = 30, m = { l: 150, r: 70, t: 6, b: 6 }, H = m.t + m.b + rowH * items.length;
+  const max = Math.max(...items.map(i => i.value), opts.ref || 0) * 1.05 || 1;
+  const X = v => m.l + v / max * (W - m.l - m.r);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` });
+  items.forEach((it, i) => {
+    const y = m.t + rowH * i;
+    const lb = sv('text', { x: m.l - 10, y: y + rowH / 2 + 4, 'text-anchor': 'end', style: 'font:12px var(--sans);fill:var(--ink2)' }); lb.textContent = it.label; svg.append(lb);
+    svg.append(sv('rect', { x: m.l, y: y + 7, width: Math.max(0, X(it.value) - m.l), height: rowH - 14, rx: 4, fill: it.color }));
+    const v = sv('text', { x: X(it.value) + 6, y: y + rowH / 2 + 4, style: 'font:600 11px var(--mono);fill:var(--ink)' }); v.textContent = opts.fmt(it.value); svg.append(v);
+  });
+  if (opts.ref) { svg.append(sv('line', { x1: X(opts.ref), x2: X(opts.ref), y1: 0, y2: H, stroke: 'var(--ink)', 'stroke-dasharray': '4 3' })); const t = sv('text', { x: X(opts.ref) + 4, y: 10, style: 'font:11px var(--mono);fill:var(--ink2)' }); t.textContent = opts.refLabel; svg.append(t); }
+  container.append(svg);
+}
+
+function lineChart(container, series, opts) { // series: [{name,color,pts:[{x,y}]}]
+  container.innerHTML = '';
+  const W = cw(container), H = 260, m = { l: 56, r: 16, t: 12, b: 30 };
+  const xs = series.flatMap(s => s.pts.map(p => p.x)), ys = series.flatMap(s => s.pts.map(p => p.y));
+  const x0 = Math.min(...xs), x1 = Math.max(...xs); let y0 = Math.min(0, ...ys), y1 = Math.max(...ys) * 1.05;
+  const yt = niceTicks(y0, y1, 5); y0 = Math.min(y0, yt[0]); y1 = Math.max(y1, yt[yt.length - 1]);
+  const X = x => m.l + (x - x0) / (x1 - x0 || 1) * (W - m.l - m.r), Y = y => m.t + (1 - (y - y0) / (y1 - y0 || 1)) * (H - m.t - m.b);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` });
+  const ax = sv('g', { class: 'axis' });
+  for (const t of yt) { ax.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) })); const tx = sv('text', { x: m.l - 8, y: Y(t) + 4, 'text-anchor': 'end' }); tx.textContent = opts.fy(t); ax.append(tx); }
+  for (const p of series[0].pts) { if (opts.xLabelFilter && !opts.xLabelFilter(p.x)) continue; const tx = sv('text', { x: X(p.x), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = opts.fx(p.x); ax.append(tx); }
+  svg.append(ax);
+  for (const s of series) { svg.append(sv('polyline', { points: s.pts.map(p => `${X(p.x)},${Y(p.y)}`).join(' '), fill: 'none', stroke: s.color, 'stroke-width': 2.2 })); for (const p of s.pts) svg.append(sv('circle', { cx: X(p.x), cy: Y(p.y), r: 3.5, fill: s.color })); }
+  if (opts.markX !== undefined && isFinite(opts.markX)) { svg.append(sv('line', { x1: X(opts.markX), x2: X(opts.markX), y1: m.t, y2: H - m.b, stroke: 'var(--ink)', 'stroke-dasharray': '4 3' })); const t = sv('text', { x: X(opts.markX) + 5, y: m.t + 12, style: 'font:600 11px var(--mono);fill:var(--ink)' }); t.textContent = opts.markLabel; svg.append(t); }
+  const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' });
+  hit.addEventListener('mousemove', ev => { const bb = svg.getBoundingClientRect(); const px = (ev.clientX - bb.left) / bb.width * W; let best = 0, bd = Infinity; series[0].pts.forEach((p, i) => { const d = Math.abs(X(p.x) - px); if (d < bd) { bd = d; best = i; } }); let html = `<div class="t">${opts.fx(series[0].pts[best].x)}</div>`; for (const s of series) html += `<div class="r"><span>${s.name}</span><b>${opts.fy(s.pts[best].y)}</b></div>`; showTip(ev.clientX, ev.clientY, html); });
+  hit.addEventListener('mouseleave', hideTip); svg.append(hit);
+  container.append(svg);
+}
+
+function rollingChart(container, quarters, idx, color, label) {
+  container.innerHTML = '';
+  const qs = Object.keys(idx).sort(); const rows = [];
+  for (let i = 0; i + 40 < qs.length; i++) { const a = qs[i], b = qs[i + 40]; rows.push({ q: a, v: Math.pow(idx[b] / idx[a], 0.1) - 1 }); }
+  const W = cw(container), H = 200, m = { l: 44, r: 10, t: 10, b: 26 };
+  const lo = Math.min(-0.04, ...rows.map(r => r.v)), hi = Math.max(...rows.map(r => r.v)) * 1.05;
+  const X = i => m.l + i / rows.length * (W - m.l - m.r), Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b), bw = (W - m.l - m.r) / rows.length;
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` });
+  const ax = sv('g', { class: 'axis' }); for (const t of niceTicks(lo, hi, 5)) { ax.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) })); const tx = sv('text', { x: m.l - 6, y: Y(t) + 4, 'text-anchor': 'end' }); tx.textContent = (t * 100).toFixed(0) + '%'; ax.append(tx); }
+  rows.forEach((r, i) => { if (r.q.endsWith('Q1') && +r.q.slice(0, 4) % 5 === 0) { const tx = sv('text', { x: X(i), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = r.q.slice(0, 4); ax.append(tx); } });
+  svg.append(ax);
+  svg.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0), stroke: 'var(--ink3)' }));
+  rows.forEach((r, i) => { const rect = sv('rect', { x: X(i), y: Math.min(Y(0), Y(r.v)), width: Math.max(1, bw - 0.6), height: Math.abs(Y(r.v) - Y(0)), fill: color, opacity: r.v < 0 ? .95 : .7 }); rect.addEventListener('mousemove', ev => showTip(ev.clientX, ev.clientY, `<div class="t">${label}</div><div class="r"><span>${r.q} 起 10 年</span><b>${(r.v * 100).toFixed(1)}%/年</b></div><div class="r"><span>指数</span><span class="num">${idx[r.q]} → ${idx[qs[i + 40]]}</span></div>`)); rect.addEventListener('mouseleave', hideTip); svg.append(rect); });
+  container.append(svg);
+  return rows;
+}
+
+/* ---------- run & render ---------- */
+function run() {
+  const t0 = performance.now();
+  $('#runBtn').textContent = '计算中…';
+  setTimeout(() => {
+    results = E.simulate(PLANS, G);
+    renderResults();
+    $('#runBtn').textContent = '重新计算';
+    $('#modeChip').textContent = (G.mode === 'mc' ? `蒙特卡洛 ${G.paths} 条路径` : '期望路径（无波动）') + ` · ${Math.round(performance.now() - t0)} ms`;
+  }, 10);
+}
+function renderResults() {
+  const res = results, mc = G.mode === 'mc';
+  fanChart($('#fanChart'), res);
+  rangeChart($('#rangeChart'), res);
+  // kpis: best by median
+  const best = res.slice().sort((a, b) => b.terminal.p50 - a.terminal.p50)[0];
+  const k = $('#kpis'); k.innerHTML = '';
+  for (const r of res) k.append(el('div', { class: 'kpi', style: 'border-top:3px solid ' + COLORS[r.color - 1] }, el('div', { class: 'l' }, r.name), el('div', { class: 'v' }, money(r.terminal.p50)), el('div', { class: 'd' }, mc ? `P10 ${money(r.terminal.p10)} · P90 ${money(r.terminal.p90)}` : '期望路径')));
+  // table
+  const T = $('#resultTable'); T.innerHTML = '';
+  const head = ['方案', '前期支出', '起始组合', '首年月供+杂费', '期末净资产 中位', 'P10', 'P90', '其中组合', '房产 − 贷款', '流动资产占比', '净资产最大回撤（中位 / 最差 10%）', '需额外借款的路径', '累计居住效用', '净资产 + 居住效用', '跑赢其他方案的概率'];
+  T.append(el('thead', {}, el('tr', {}, ...head.map(h => el('th', {}, h)))));
+  const tb = el('tbody');
+  for (const r of res) {
+    const beats = Object.entries(r.beats).map(([id, p]) => { const o = res.find(x => x.id === id); return `${o ? o.name.split(' · ')[0] : id} ${pct(p, 0)}`; }).join(' · ');
+    tb.append(el('tr', { class: r === best ? 'best' : '' },
+      el('td', {}, el('span', { class: 'dot', style: 'background:' + COLORS[r.color - 1] + ';margin-right:6px' }), r.name),
+      el('td', { class: 'num' }, money(r.upfront.total)), el('td', { class: 'num' }, money(r.port0) + (r.shortfall0 > 0 ? ` (缺 ${money(r.shortfall0)})` : '')), el('td', { class: 'num' }, money(r.firstOutflow)),
+      el('td', { class: 'num' }, money(r.terminal.p50)), el('td', { class: 'num' }, mc ? money(r.terminal.p10) : '—'), el('td', { class: 'num' }, mc ? money(r.terminal.p90) : '—'),
+      el('td', { class: 'num' }, money(r.terminal.port50)), el('td', { class: 'num' }, money(r.terminal.price50 - r.terminal.loan50)), el('td', { class: 'num' }, pct(r.terminal.liq50, 0)),
+      el('td', { class: 'num' }, mc ? `${pct(r.mdd50, 0)} / ${pct(r.mdd10, 0)}` : '—'), el('td', { class: 'num' }, pct(r.pShortfall, 0)),
+      el('td', { class: 'num' }, money(r.terminal.rent50)), el('td', { class: 'num' }, money(r.terminal.p50 + r.terminal.rent50)), el('td', { class: 'num', style: 'text-align:left;white-space:nowrap' }, mc ? beats : '—')));
+  }
+  T.append(tb);
+  $('#tableHint').innerHTML = '「累计居住效用」= 该方案住的房子这些年的市场租金总和（住大房子本身是消费，也是价值）；「需额外借款」= 前期支出或换房成本超出组合余额、只能追加贷款的路径比例。';
+  // verdict
+  const A = res[0], B = res[1];
+  let v = '';
+  if (A && B) {
+    const diff = B.terminal.p50 - A.terminal.p50;
+    const winner = diff > 0 ? B : A, loser = diff > 0 ? A : B;
+    v = `按当前假设跑 ${G.years} 年：<b style="color:${COLORS[winner.color - 1]}">${winner.name}</b> 的期末净资产中位数为 <b>${money(winner.terminal.p50)}</b>，比 ${loser.name.split(' · ')[0]} 多 <b>${money(Math.abs(diff))}</b>` + (mc ? `；${winner.name.split(' · ')[0]} 跑赢 ${loser.name.split(' · ')[0]} 的概率 <b>${pct(winner.beats[loser.id], 0)}</b>` : '') + `。算上居住效用后差距为 <b>${money((B.terminal.p50 + B.terminal.rent50) - (A.terminal.p50 + A.terminal.rent50))}</b>（正 = B 仍领先）。`;
+  } else v = `${A.name}：期末净资产中位数 <b>${money(A.terminal.p50)}</b>。`;
+  // breakeven
+  if (A && B && PLANS[0].housing.type !== 'none') {
+    const mus = [0, .01, .02, .025, .03, .035, .04, .045, .05, .06, .07, .08];
+    const scan = E.breakevenScan(PLANS[0], PLANS[1], G, mus);
+    let be = NaN; for (let i = 1; i < scan.length; i++) { const d0 = scan[i - 1].a - scan[i - 1].b, d1 = scan[i].a - scan[i].b; if (d0 <= 0 && d1 > 0) { be = scan[i - 1].mu + (0 - d0) / (d1 - d0) * (scan[i].mu - scan[i - 1].mu); break; } }
+    lineChart($('#beChart'), [{ name: A.name, color: COLORS[A.color - 1], pts: scan.map(s => ({ x: s.mu, y: s.a })) }, { name: B.name, color: COLORS[B.color - 1], pts: scan.map(s => ({ x: s.mu, y: s.b })) }], { fx: x => pct(x, 1), fy: mAxis, xLabelFilter: x => Math.abs(x * 100 - Math.round(x * 100)) < 1e-9, markX: be, markLabel: isFinite(be) ? '追平点 ' + pct(be, 1) : '' });
+    $('#beText').innerHTML = isFinite(be) ? `${A.name.split(' · ')[0]} 的房价年化需要 ≥ <b class="num">${pct(be, 1)}</b> 才在第 ${G.years} 年追平 ${B.name.split(' · ')[0]}（期望路径；B 的组合与房价假设不变）。参考：URA 非有地指数 2010Q1–2026Q2 年化 3.3%，1996 年高点起 30 年年化 1.8%，2005 起 4.6%。` : `在 0–8% 区间内没有交叉点。`;
+    v += ` ${A.name.split(' · ')[0]} 需要私宅年化 <b>${isFinite(be) ? '≥ ' + pct(be, 1) : '> 8%'}</b> 才追平。`;
+  } else { $('#beChart').innerHTML = ''; $('#beText').textContent = '第一个方案没有房产，无法扫描。'; }
+  $('#verdict').innerHTML = v + `<small>${mc ? `蒙特卡洛 ${G.paths} 条路径、共同随机数、种子 ${G.seed}` : '期望路径'} · 起始 ${money(G.wealth0)} · 住房月预算 ${money(G.budget)} · 房贷利率加点 ${pct(G.shock.rateAdd || 0)} · 房价加减 ${pct(G.shock.propMuAdd || 0)}${G.shock.eqCrashY1 ? ' · 首年股灾' : ''}</small>`;
+  // cashflow
+  barsChart($('#cfChart'), res.map(r => ({ label: r.name, value: r.firstOutflow, color: COLORS[r.color - 1] })), { fmt: v => money(v) + '/月', ref: G.budget, refLabel: '预算 ' + money(G.budget) });
+  $('#cfText').innerHTML = res.map(r => `${r.name.split(' · ')[0]}：月供 ${money(r.payment)}，首年每月结余可投 <b class="num">${money(G.budget - r.firstOutflow)}</b>` + (r.maxOutflow > r.firstOutflow * 1.05 ? `，峰值支出 ${money(r.maxOutflow)}` : '')).join('<br>');
+}
+function renderEvidence() {
+  const c = rollingChart($('#rollCondo'), null, window.URA_NONLANDED, 'var(--s1)', 'URA 非有地私宅');
+  const h = rollingChart($('#rollHdb'), null, window.HDB_RPI, 'var(--s2)', 'HDB 转售指数');
+  const stat = rows => { const v = rows.map(r => r.v).sort((a, b) => a - b); const med = v[Math.floor(v.length / 2)]; return { n: v.length, med, neg: v.filter(x => x < 0).length, low: v.filter(x => x < 0.02).length, since2005: rows.filter(r => r.q >= '2005-Q1').map(r => r.v) }; };
+  const sc = stat(c), sh = stat(h);
+  const med = a => { const v = a.slice().sort((x, y) => x - y); return v[Math.floor(v.length / 2)]; };
+  $('#rollText').innerHTML = `私宅：${sc.n} 个 10 年窗口，中位年化 <b class="num">${pct(sc.med, 1)}</b>；<b class="num">${sc.neg}</b> 个窗口十年亏钱（1994–97 年买入的人），<b class="num">${sc.low}</b> 个窗口年化不到 2%（跑不赢通胀）；2005 年以后开始的窗口中位 <b class="num">${pct(med(sc.since2005), 1)}</b>。组屋：${sh.n} 个窗口，中位 <b class="num">${pct(sh.med, 1)}</b>，${sh.neg} 个负窗口，2005 后中位 <b class="num">${pct(med(sh.since2005), 1)}</b>。<br>结论：十年持有<b>大概率</b>正收益，但「每十年换一次就能吃到一轮红利」不是规律——它依赖你恰好买在周期低点（2005、2009、2016）；每换一次要付出房价 6–9% 的交易成本，相当于烧掉 2–3 年的平均涨幅。`;
+}
+function renderAll() { renderGlobal(); renderShocks(); renderTabs(); renderEditor(); renderAssets(); }
+
+$('#modeSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; G.mode = b.dataset.v; [...$('#modeSeg').children].forEach(x => x.classList.toggle('on', x === b)); run(); });
+$('#yearSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; G.years = +b.dataset.v; [...$('#yearSeg').children].forEach(x => x.classList.toggle('on', x === b)); run(); });
+$('#runBtn').addEventListener('click', run);
+document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') run(); });
+
+renderAll(); renderEvidence(); run();
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (results) renderResults(); renderEvidence(); }, 200); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>60 万怎么进场：可执行方案</title><style>
+:root{--bg:#F7F7F3;--paper:#fff;--ink:#1B2421;--ink2:#525E5A;--ink3:#8A948F;--line:#E2E6E1;--acc:#1B2421;--mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;--serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;--sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 var(--sans)}
+.nav{max-width:920px;margin:0 auto;padding:16px 28px 0;font-size:13px;color:var(--ink3)}.nav a{color:var(--ink2)}
+.page{max-width:920px;margin:0 auto;padding:16px 28px 80px}.sheet{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:40px 48px}
+@media(max-width:700px){.sheet{padding:24px 18px}}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:700;line-height:1.3;margin:1.4em 0 .5em}h1{font-size:30px;margin-top:0}h2{font-size:22px;border-top:1px solid var(--line);padding-top:18px}h3{font-size:17px}h4{font-size:15px}
+p{margin:.6em 0}code{font-family:var(--mono);font-size:.9em;background:var(--bg);padding:1px 5px;border-radius:4px}pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.55}pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;display:block;overflow-x:auto}th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--bg);font-weight:600;color:var(--ink2);font-size:12.5px;white-space:nowrap}
+ul,ol{padding-left:1.4em}li{margin:.25em 0}hr{border:0;border-top:1px solid var(--line);margin:24px 0}a{color:var(--ink)}blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:var(--ink2)}
+.foot{font-size:12px;color:var(--ink3);margin-top:22px}
+</style></head>
+<body><div class="nav"><a href="index.html">← 目录</a></div><div class="page"><div class="sheet"><h1>60 万怎么进场：一次性还是分批？——可执行方案</h1>
+<p>写于 2026-08-17。数字来自 <code>sim/engine.js</code>（新增 <code>entryMonths</code> 参数，沙盘「投资组合 → 分批入场（月）」可复现）。承接 <a href="analysis.html"><code>analysis.md</code></a> §7。<b>可交互版：<a href="entry-plan.html"><code>entry-plan.html</code></a></b>（七步向导，含日历生成、触发器演练、打卡）。</p>
+<hr>
+<h2>0. 答案</h2>
+<p><b>不是二选一，是分层：</b></p>
+<table><thead><tr><th>层</th><th>金额（稳健配置）</th><th>进场方式</th><th>为什么</th></tr></thead><tbody><tr><td>安全层：全球债 + 新加坡国债/SSB + 现金</td><td>S$210k（35%）</td><td><b>第 1 个月一次性到位</b></td><td>波动 ≤5%，等没有意义，只是少赚利息</td></tr><tr><td>黄金</td><td>S$30k（5%）</td><td>分 6 个月，每月 S$5k</td><td>波动像股票，量小</td></tr><tr><td>股票层：全球股 + STI + S-REIT</td><td>S$360k（60%）</td><td><b>分 12 个月等额，每月 S$30k；跌了加速（§4 触发器），涨了不减速</b></td><td>用 ~2% 的期望收益买「刚投就跌 40%」时少亏 S$100k+ 的保险</td></tr><tr><td>之后</td><td>每月 ~S$6.6k（住房预算结余）</td><td>自动定投，永久</td><td>这才是 B 方案的主引擎</td></tr></tbody></table>
+<p>一次性投的期望更高（60% 的情况下赢），但 12 个月分批只让 10 年后的中位数少 ~S$17k（1.8%），而在首年股灾里多保住 S$108k。对一对第一次拿 60 万现金做投资的夫妇，这个保险值得买；<b>买 12 个月，不要买 24 个月</b>（24 个月的代价翻倍、保险只多一点）。</p>
+<hr>
+<h2>1. 一次性 vs 分批：数学（600k 单独跑，不含房产和后续定投，4000 条路径）</h2>
+<p><b>稳健配置（60/40），10 年后</b></p>
+<table><thead><tr><th>入场方式</th><th>中位</th><th>P10</th><th>P90</th><th>一次性投更好的概率</th><th>首年 −40% 股灾时的中位</th></tr></thead><tbody><tr><td>一次性</td><td><b>S$938k</b></td><td>653k</td><td>1,345k</td><td>—</td><td>690k</td></tr><tr><td>分 6 个月</td><td>929k（−9k）</td><td>656k</td><td>1,322k</td><td>59%</td><td>744k（+54k）</td></tr><tr><td><b>分 12 个月</b></td><td><b>921k（−17k，−1.8%）</b></td><td>655k</td><td>1,299k</td><td>60%</td><td><b>798k（+108k）</b></td></tr><tr><td>分 24 个月</td><td>908k（−30k）</td><td>655k</td><td>1,272k</td><td>65%</td><td>846k（+156k）</td></tr></tbody></table>
+<p><b>进取配置（八成股），10 年后</b>：一次性 1,003k；分 12 个月 980k（−23k，−2.3%）；首年股灾时 650k vs 805k（+155k）。</p>
+<p><b>1 年后</b>（心理最难受的时段）：稳健配置一次性投，P10 = 561k（−6.5%）；分 12 个月 P10 = 582k（−3%）；股灾时 461k vs 533k。</p>
+<p>结论稳定：分批是花小钱买左尾保险，期限越长保费越贵、保额边际递减；12 个月是拐点。</p>
+<hr>
+<h2>2. 第 0 步：先把 600k 切开（假设应急金已另备；没有的话先切 S$50k 放定存）</h2>
+<p>目标配置（稳健预设，可在沙盘切「进取」重算）：</p>
+<table><thead><tr><th>资产</th><th>比例</th><th>金额</th><th>工具</th><th>进场节奏</th></tr></thead><tbody><tr><td>全球股票</td><td>45%</td><td>S$270k</td><td>VWRA（LSE，美元，累积）</td><td>12 个月 × S$22.5k</td></tr><tr><td>新加坡股票</td><td>10%</td><td>S$60k</td><td>ES3（SGX，新元）</td><td>12 个月 × S$5k</td></tr><tr><td>新加坡 REITs</td><td>5%</td><td>S$30k</td><td>CLR（SGX）</td><td>12 个月 × S$2.5k</td></tr><tr><td>全球投资级债</td><td>20%</td><td>S$120k</td><td>AGGU（LSE，美元对冲，累积）或新元债基</td><td>第 1 个月一次性</td></tr><tr><td>新加坡国债 / SSB</td><td>10%</td><td>S$60k</td><td>SSB（每人上限 20 万）+ 6 个月 T-bill 滚动</td><td>第 1 个月一次性</td></tr><tr><td>黄金</td><td>5%</td><td>S$30k</td><td>SGLN（LSE）或 UOB 金账户</td><td>6 个月 × S$5k</td></tr><tr><td>现金</td><td>5%</td><td>S$30k</td><td>高息活期 / 货币基金</td><td>立即</td></tr></tbody></table>
+<p><b>CPF OA 退回的那部分不在这 600k 里</b>——它只能：付组屋首付（最划算，省现金）、买 T-bill / CPFIS 基金（Endowus 可投 OA）、或躺着拿 2.5%。别把它算进股票层。</p>
+<hr>
+<h2>3. 12 个月日历</h2>
+<table><thead><tr><th>月</th><th>做什么</th><th>金额</th></tr></thead><tbody><tr><td><b>M0（卖房资金到账周）</b></td><td>开 IBKR（个人或联名）；开 SRS 户口（DBS/OCBC/UOB 任一，两人各一个）；确认 CPF 网站可做 RSTU；写下 §6 的纪律契约并签名</td><td>—</td></tr><tr><td><b>M1</b></td><td>① AGGU 一次性 S$120k ② SSB 申购 S$60k（或 30k SSB + 30k T-bill）③ 现金层 S$30k 放高息户 ④ 股票层第 1 笔：VWRA 22.5k + ES3 5k + CLR 2.5k ⑤ 黄金第 1 笔 5k</td><td>S$245k</td></tr><tr><td>M2–M6</td><td>每月同一天：VWRA 22.5k + ES3 5k + CLR 2.5k + SGLN 5k</td><td>每月 S$35k</td></tr><tr><td>M7–M12</td><td>每月同一天：VWRA 22.5k + ES3 5k + CLR 2.5k</td><td>每月 S$30k</td></tr><tr><td><b>M12 月底（假设 12 月）</b></td><td>SRS 各存 S$15,300（在 SRS 内买 ES3 / CLR，替代现金户里同额度的本地仓）；CPF RSTU 各 S$8,000（记入「新加坡国债」层，因为它是 4% 无风险）</td><td>S$46.6k（来自当月定投 + 现金层）</td></tr><tr><td>M13 起</td><td>600k 已全部就位；只跑「每月 6.6k」自动定投 + 每年 1 月再平衡（§5）</td><td>—</td></tr></tbody></table>
+<p>固定「每月同一天」（比如发薪后第 3 个工作日），不看行情。IBKR 有 Recurring Investment 功能可以把 VWRA 定投设成自动。</p>
+<hr>
+<h2>4. 加速触发器（只加速，永不减速）</h2>
+<p>以 VWRA 从「你开始买的那天起的最高收盘价」算回撤：</p>
+<table><thead><tr><th>触发</th><th>动作</th><th>例</th></tr></thead><tbody><tr><td>回撤 ≥ 10%</td><td>当月股票层买双份</td><td>该月投 60k 而不是 30k</td></tr><tr><td>回撤 ≥ 20%</td><td>把股票层<b>剩余额度的一半</b>当月投入</td><td>第 5 个月触发，剩 240k → 当月投 120k，余下 120k 继续按剩余月数等分</td></tr><tr><td>回撤 ≥ 30%</td><td>股票层剩余额度<b>全部</b>投入</td><td>直接完成入场</td></tr><tr><td>涨了</td><td>什么都不做，按原计划</td><td>不因为「涨太多」而暂停</td></tr></tbody></table>
+<p>理由：分批的全部价值就在下跌时的低位买入；如果跌了反而不敢买，等于花了保费不领赔付。把这三条写死，就不用临场判断。</p>
+<hr>
+<h2>5. 之后：持续定投与再平衡</h2>
+<table><thead><tr><th>项</th><th>规则</th></tr></thead><tbody><tr><td>每月定投</td><td>住房预算 10k − 组屋月供 3.25k − 杂费 ≈ <b>6.6k</b>：VWRA 3.0k · ES3 0.7k · CLR 0.3k · AGGU 1.3k · SSB/T-bill 0.7k · SGLN 0.3k · 现金 0.3k（按目标比例）</td></tr><tr><td>每年 12 月</td><td>SRS 各 15,300 + RSTU 各 8,000（省税 ~S$5–7k/年，边际税率 15% 时）</td></tr><tr><td>每年 1 月第一个交易日</td><td>看一眼各层比例，偏离目标 &gt;5 个百分点的调回去；先用新钱调，不够才卖</td></tr><tr><td>每 3 年</td><td>复查：收入变了？孩子上学开支？MOP 过了想换房？→ 调目标比例，不调工具</td></tr><tr><td>加薪</td><td>定投额随预算涨（沙盘「预算年增长」= 2%）</td></tr></tbody></table>
+<hr>
+<h2>6. 纪律契约（写在纸上、两人签字、贴在冰箱）</h2>
+<ol><li>这笔钱 5 年内不卖（组屋 MOP 也是 5 年——同一个锁定期）。唯一的卖出是每年 1 月的再平衡。</li><li>跌 30% 是计划内事件，不是意外。发生时只做一件事：检查触发器（§4）。</li><li>不因为「新加坡房价又涨了」中途拆组合去买二套私宅（20% ABSD）。</li><li>不买投连险 / 储蓄险 / 结构性产品当投资；单只个股不超过组合 5%。</li><li>不换策略。换工具可以（更便宜的 ETF），换比例每 3 年一次。</li><li>每季度看一次账户，每次不超过 30 分钟；不装行情 App 推送。</li></ol>
+<hr>
+<h2>7. 执行细节（省钱和避坑）</h2>
+<table><thead><tr><th>项</th><th>做法</th></tr></thead><tbody><tr><td>换汇</td><td>在 IBKR 用 IDEALPRO 直接把 SGD 换 USD（点差 ~0.002%，最低 USD 2 手续费），不要用银行电汇换汇（点差 0.5–1% = 每 30 万亏 S$1.5–3k）</td></tr><tr><td>下单</td><td>LSE 交易时段 15:00/16:00–23:30 新加坡时间（夏/冬令时）；用限价单，挂在买一卖一之间；VWRA 买美元线（不要买 VWRP 英镑线）</td></tr><tr><td>为什么不买 SPY / VOO / QQQ</td><td>美股注册 ETF：股息预扣税 30%（爱尔兰 15%）、美国遗产税（&gt;US$6 万部分 40%）、要手动再投股息</td></tr><tr><td>SGX 买 ES3 / CLR</td><td>每手 100 股；用 CDP 直接持有（IBKR 也可，但 SRS 只能通过本地券商 / 银行）</td></tr><tr><td>SSB</td><td>每月 1 日开放申购、月底截止，任一本地银行网银→ SGS；每人上限 20 万；一个月内可赎回、无罚</td></tr><tr><td>T-bill</td><td>每两周一次拍卖，网银申购；用现金或 SRS；到期自动回款，需要手动滚动</td></tr><tr><td>费用</td><td>VWRA TER 0.22%、AGGU 0.10%、ES3 0.30%、CLR 0.60%、SGLN 0.12%；加权 ~0.2%（沙盘默认值）</td></tr><tr><td>如果不想手动</td><td>Endowus（费率 0.25–0.6%，买 Dimensional/Vanguard 基金，支持现金 + SRS + CPF OA，自动再平衡）——每年多付 S$1.5–3.6k 换「不用自己动手」，对「怕自己乱来」的家庭是划算的</td></tr><tr><td>记录</td><td>一张 Google Sheet：每次买入日期、金额、单价；每年 1 月抄一次各层市值。这就是全部的账</td></tr></tbody></table>
+<hr>
+<h2>8. 什么情况下改方案</h2>
+<table><thead><tr><th>信号</th><th>改什么</th></tr></thead><tbody><tr><td>一年后发现夜里睡不着</td><td>把目标改成「保守」预设（两成股），不是清仓</td></tr><tr><td>一年后觉得「这么慢」</td><td>什么都不改；沙盘 20 年后再看</td></tr><tr><td>家庭收入下降、月供压力</td><td>先停定投，不动存量</td></tr><tr><td>MOP 满、真的想换回私宅</td><td>从组合里拿首付，其余继续；别为此把整个组合清掉</td></tr><tr><td>政策：新加坡开征资本利得税 / 美股预扣税变化</td><td>换工具，不换策略</td></tr></tbody></table>
+<hr>
+<h2>8b. 策略卡 v2（按所有起点搜出来的版本）</h2>
+<p>把入场节奏 × 触发器 × 均线调速 × 储备金 × 再平衡方式参数化，在真实每个起点 + 1,100 条自助抽样历史上按风险厌恶效用打分（<a href="strategy-doc.html"><code>strategy.md</code></a>）：结论是股票层入场 <b>6 个月</b>（省 0.5% 效用，最坏起点保护少 17k）、再平衡改为 <b>每月查、任一层偏离 &gt;10 个百分点才动</b>（+0.3%）；触发器保留（中性、行为价值）；储备金 / 新高减速 / 回撤倾斜都是负的或不稳健。可自动执行：<code>strategy/agent.py</code>。本文其余部分（切分、日历、触发器、契约、执行细节）不变，只把「12 个月」读成「默认 6、心理需要才 12」。</p>
+<h2>9. 回溯测试（真实数据）</h2>
+<p>把本方案放到 2004-01 → 2026-08 的真实月度数据上、从每个月起跑（<a href="backtest-doc.html"><code>backtest.md</code></a> / <a href="backtest.html"><code>backtest.html</code></a>）：10 年持有 152 个起点，计划比一次性中位少 S$28k（−1.3%），领先一次性的起点 27%；最坏起点头两年最低点 535k vs 一次性 503k；触发器对收益中性（+1k 中位），价值在行为。结论不变：买 12 个月的保险；一年内看到 −10% 会失眠的人可以选 24 个月（最坏起点最低点 602k，中位再少 21k）。</p>
+<h2>10. 沙盘里怎么看</h2>
+<p>方案 B → 投资组合 → 「分批入场（月）」填 12 → 重新计算；对比 0 和 24。压力情景勾「第一年股灾 −40%」看保险起效的样子。</p>
+<p><code>node sim/run.js</code> 末尾打印本文 §1 的表（600k、无房产、无后续定投、4000 条路径、<code>entryMonths</code> 0/6/12/24）。</p><p class="foot">由 entry-plan.md 生成 · 源文件、数据与脚本在本机 case-study-clavon-buy-or-sell/ 目录。</p></div></div></body></html>

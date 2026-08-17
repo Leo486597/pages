@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入场计划回溯测试</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F5F6F2; --panel:#FFFFFF; --ink:#1B2421; --ink2:#5E6A66; --ink3:#8C9793; --line:#E0E4DF; --line2:#CDD3CE;
+  --grid:#EEF0EA; --accent:#1B2421; --good:#0ca30c; --warn:#b26a00; --bad:#c22f2f;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;
+  --sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#171917; --panel:#1F2220; --ink:#F1F3EE; --ink2:#B9C1BC; --ink3:#7F8984; --line:#2E332F; --line2:#3D443F; --grid:#232725; --accent:#F1F3EE;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; }}
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#171917; --panel:#1F2220; --ink:#F1F3EE; --ink2:#B9C1BC; --ink3:#7F8984; --line:#2E332F; --line2:#3D443F; --grid:#232725; --accent:#F1F3EE; --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 var(--sans)}
+body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+h1,h2,h3{font-family:var(--serif);font-weight:700;margin:0}
+h1{font-size:32px;line-height:1.2}
+h2{font-size:18px;margin-bottom:8px}
+h3{font-size:15px;margin:12px 0 6px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:28px 24px 100px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.sub{color:var(--ink2);max-width:760px;margin-top:8px}
+.verdict{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:18px 0;font-family:var(--serif);font-size:18px;line-height:1.7}
+.verdict b{font-family:var(--mono);font-weight:600}
+.verdict small{display:block;font-family:var(--sans);font-size:12px;color:var(--ink3);margin-top:6px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.ctl{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:8px}
+.ctl label{font-size:12px;color:var(--ink2);display:block}
+.ctl input[type=number],.ctl select{font:inherit;font-family:var(--mono);font-size:13px;padding:6px 8px;border:1px solid var(--line2);border-radius:6px;background:var(--bg);color:var(--ink);width:120px}
+.ctl input[type=range]{width:100%;accent-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 12px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink2);margin:4px 0 8px}
+.legend span i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axis text{font-family:var(--mono);font-size:11px;fill:var(--ink3)}
+.axis line{stroke:var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left;white-space:nowrap}
+th{font-weight:600;color:var(--ink2);font-size:12px}
+td.num{font-family:var(--mono)}
+tr.hl td{background:color-mix(in srgb,var(--s1) 8%,transparent)}
+.tw{overflow-x:auto}
+.hint{font-size:12px;color:var(--ink3);margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:8px 0 12px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.kpi .l{font-size:11px;color:var(--ink3)}
+.kpi .v{font-family:var(--mono);font-size:17px;font-weight:600}
+.kpi .d{font-size:11px;color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.tip{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.12);z-index:10;display:none;min-width:180px}
+.tip .t{font-family:var(--mono);color:var(--ink3);margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:12px}
+.tip .r b{font-family:var(--mono);font-weight:600}
+.foot{color:var(--ink3);font-size:12px;margin-top:22px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Case study · Clementi · 回溯测试 · 2004-01 → 2026-08</div>
+  <h1>如果这套入场计划从过去任何一个月开始……</h1>
+  <div class="sub">把 <span class="num">entry-plan.md</span> 的规则（安全层一次性、黄金 6 个月、股票层 12 个月 + 下跌加速触发器、之后每月定投、每年再平衡）放到真实月度数据上，从 2004 年起的每一个月都跑一遍，和「一次性」「分 12 个月不带触发器」「分 24 个月」比。真实数据、新元计价、含股息。</div>
+
+  <div class="verdict" id="verdict">…</div>
+
+  <div class="panel">
+    <h2>参数</h2>
+    <div class="ctl" id="ctl"></div>
+    <div class="hint">股票层 = 全球股（60% 美股全市场 VTSMX + 40% 非美 VGTSX，美元→新元）+ 新加坡股（ES3 含息；2008 年前 STI 价格 + 3.5% 假设股息）；安全层 = 美国综合债 VBMFX（美元→新元）+ 新加坡短债（近似利率表）+ 现金；黄金 = 期货 GC=F（美元→新元）。REIT 因无长序列并入新加坡股。</div>
+  </div>
+
+  <div class="panel">
+    <h2>选一个起点看细节</h2>
+    <div class="ctl">
+      <div style="flex:1;min-width:280px"><label id="startLabel">起点</label><input type="range" id="startRange"></div>
+      <div><label>快速跳到</label><select id="jump"></select></div>
+    </div>
+    <div class="kpis" id="detailKpis"></div>
+    <div class="ctl" style="margin-bottom:4px"><div><label>线的口径</label><div class="seg" id="viewSeg"><button data-v="total" class="on">总资产（含未进场现金）</button><button data-v="deployed">已进场部分</button></div></div><div class="hint" id="viewHint" style="max-width:640px"></div></div>
+    <div class="legend" id="pathLegend"></div>
+    <div id="pathChart"></div>
+    <div class="hint">虚线 = 累计投入本金（60 万 + 之后每月定投）。下方条 = 全球股（新元）从起点最高点的回撤，▲ = 触发器动作月。</div>
+    <div id="ddChart"></div>
+  </div>
+
+  <div class="panel">
+    <h2>所有起点：计划 − 一次性（期末差额）</h2>
+    <div class="legend"><span><i style="background:var(--s3)"></i>计划领先</span><span><i style="background:var(--s2)"></i>一次性领先</span></div>
+    <div id="rollChart"></div>
+    <div class="hint" id="rollText"></div>
+  </div>
+
+  <div class="panel">
+    <h2>汇总（当前持有期）</h2>
+    <div class="tw"><table id="sumTable"></table></div>
+    <div class="hint">「前 24 个月最低点」= 入场头两年里组合市值的最低值（相对 60 万本金）——这就是分批想保护的东西。</div>
+  </div>
+
+  <div class="panel">
+    <h2>典型起点</h2>
+    <div class="tw"><table id="famousTable"></table></div>
+  </div>
+
+  <div class="foot">数据：Yahoo Finance 月末复权价（脚本 <span class="num">backtest/fetch_history.py</span>，2026-08-17 抓取）；汇率 SGD=X 自 2003-12 起，所以回溯从 2004-01 开始。新加坡短期利率为近似年表（⚠️ MAS API 抓取时维护中）。这是过去 22 年的一次实现，不是未来的分布——它包含了 2008、2020、2022 三次大跌，也包含了美股史上最强的十几年。</div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>window.HIST={"months":["2003-12","2004-01","2004-02","2004-03","2004-04","2004-05","2004-06","2004-07","2004-08","2004-09","2004-10","2004-11","2004-12","2005-01","2005-02","2005-03","2005-04","2005-05","2005-06","2005-07","2005-08","2005-09","2005-10","2005-11","2005-12","2006-01","2006-02","2006-03","2006-04","2006-05","2006-06","2006-07","2006-08","2006-09","2006-10","2006-11","2006-12","2007-01","2007-02","2007-03","2007-04","2007-05","2007-06","2007-07","2007-08","2007-09","2007-10","2007-11","2007-12","2008-01","2008-02","2008-03","2008-04","2008-05","2008-06","2008-07","2008-08","2008-09","2008-10","2008-11","2008-12","2009-01","2009-02","2009-03","2009-04","2009-05","2009-06","2009-07","2009-08","2009-09","2009-10","2009-11","2009-12","2010-01","2010-02","2010-03","2010-04","2010-05","2010-06","2010-07","2010-08","2010-09","2010-10","2010-11","2010-12","2011-01","2011-02","2011-03","2011-04","2011-05","2011-06","2011-07","2011-08","2011-09","2011-10","2011-11","2011-12","2012-01","2012-02","2012-03","2012-04","2012-05","2012-06","2012-07","2012-08","2012-09","2012-10","2012-11","2012-12","2013-01","2013-02","2013-03","2013-04","2013-05","2013-06","2013-07","2013-08","2013-09","2013-10","2013-11","2013-12","2014-01","2014-02","2014-03","2014-04","2014-05","2014-06","2014-07","2014-08","2014-09","2014-10","2014-11","2014-12","2015-01","2015-02","2015-03","2015-04","2015-05","2015-06","2015-07","2015-08","2015-09","2015-10","2015-11","2015-12","2016-01","2016-02","2016-03","2016-04","2016-05","2016-06","2016-07","2016-08","2016-09","2016-10","2016-11","2016-12","2017-01","2017-02","2017-03","2017-04","2017-05","2017-06","2017-07","2017-08","2017-09","2017-10","2017-11","2017-12","2018-01","2018-02","2018-03","2018-04","2018-05","2018-06","2018-07","2018-08","2018-09","2018-10","2018-11","2018-12","2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"],"series":{"VTSMX":[17.8084,18.2058,18.4662,18.2679,17.883,18.1236,18.5023,17.7989,17.8541,18.1649,18.4693,19.3343,20.0372,19.501,19.9049,19.5571,19.1027,19.8227,19.9831,20.8035,20.6142,20.7838,20.3964,21.2064,21.2351,21.9783,21.9783,22.3747,22.6233,21.8915,21.9291,21.9006,22.4071,22.9146,23.7238,24.2537,24.5283,24.9889,24.5859,24.8585,25.8554,26.809,26.36,25.4611,25.8308,26.7594,27.2544,26.0314,25.8742,24.301,23.5546,23.4192,24.5953,25.1098,23.0527,22.8755,23.2373,21.0832,17.3666,15.9941,16.2916,14.9464,13.3845,14.5407,16.0828,16.9479,17.0061,18.3363,19.009,19.8036,19.295,20.3805,20.9644,20.2312,20.9109,22.2218,22.7048,20.8881,19.7051,21.0834,20.0824,21.9831,22.8498,22.9813,24.547,25.0837,25.9859,26.1036,26.8844,26.5721,26.097,25.509,23.9725,22.1102,24.6545,24.5836,24.784,26.0434,27.1523,27.9852,27.8023,26.0687,27.0888,27.3684,28.0476,28.7706,28.2649,28.4736,28.8124,30.397,30.785,31.9791,32.5231,33.2781,32.8546,34.6567,33.6782,34.9112,36.3856,37.4341,38.4188,37.2251,38.9868,39.1861,39.2109,40.0622,41.0789,40.2658,41.9501,41.0527,42.1775,43.194,43.1927,41.9953,44.4153,43.9535,44.1385,44.7525,43.9867,44.7044,42.0191,40.7776,43.9764,44.2139,43.3134,40.8569,40.8398,43.7028,43.9769,44.7651,44.8647,46.637,46.7574,46.8307,45.7935,47.8247,48.7439,49.6743,51.5176,51.5518,52.0932,52.6171,53.1001,54.0911,54.17,55.4984,56.6959,58.4217,59.0024,62.1339,59.8251,58.6326,58.8546,60.4974,60.9063,62.9388,65.1052,65.2094,60.3828,61.6275,55.8943,60.6932,62.8181,63.7133,66.2469,61.9759,66.2944,67.2478,65.8857,67.0082,68.4126,70.9933,73.0169,72.9619,66.9948,57.7682,65.4208,68.9387,70.5025,74.479,79.824,76.973,75.3114,84.4921,88.2521,87.9539,90.7587,93.903,98.7257,99.1463,101.6516,103.3855,106.3378,101.5688,108.3833,106.7667,110.8378,104.1421,101.4827,104.767,95.3098,95.0545,87.0897,95.2718,91.7028,83.188,89.9727,94.68,89.1145,95.2507,93.0202,95.4568,96.4561,96.85,103.4617,107.1547,105.072,100.0263,97.3948,106.518,112.622,113.399,119.5182,123.3552,117.8886,123.4527,127.317,129.634,132.4399,135.1364,134.107,142.9893,138.6436,142.9209,140.1874,131.9174,131.0296,139.3158,146.3868,149.7104,153.1131,158.4065,161.8376,162.2938,162.2263,164.7815,163.9066,155.7634,171.8782,180.7434,180.14,179.22,186.79],"VGTSX":[5.81,5.9028,6.0502,6.0775,5.8864,5.9137,6.0557,5.8536,5.8973,6.0721,6.2686,6.7219,7.0202,6.9032,7.2263,7.0146,6.8697,6.8753,6.9645,7.2208,7.4269,7.7779,7.516,7.7166,8.1131,8.6703,8.6077,8.8806,9.3355,8.9204,8.8863,8.9887,9.2161,9.2388,9.6084,9.9666,10.2744,10.3732,10.379,10.6697,11.0884,11.4315,11.5012,11.3791,11.2977,12.0187,12.7281,12.1466,11.8678,10.8535,10.8893,10.8117,11.4442,11.6172,10.573,10.1852,9.6661,8.4012,6.5455,6.1338,6.638,5.8444,5.2846,5.7768,6.515,7.4501,7.3517,8.0838,8.3606,8.7974,8.6128,8.9389,9.0755,8.6157,8.6346,9.214,9.0566,8.0804,7.9859,8.8109,8.5275,9.4155,9.7493,9.3085,10.085,10.1554,10.4306,10.3858,10.9297,10.6162,10.4562,10.2962,9.4259,8.2677,9.1124,8.85,8.6241,9.2514,9.7268,9.6542,9.4825,8.4326,8.9344,8.974,9.2184,9.5525,9.6062,9.7807,10.1893,10.5294,10.4001,10.4933,10.8546,10.5342,10.1397,10.6025,10.4298,11.1819,11.5635,11.5773,11.7218,11.162,11.7638,11.812,11.967,12.1926,12.4045,12.205,12.3332,11.7147,11.6789,11.6502,11.2253,11.2397,11.8606,11.6779,12.2716,12.1558,11.8286,11.7335,10.8777,10.4535,11.1078,10.9608,10.7334,10.1334,9.9038,10.7145,10.9523,10.8408,10.7365,11.2101,11.2928,11.4475,11.2509,11.0089,11.2309,11.6655,11.8409,12.175,12.4427,12.8174,12.8834,13.3239,13.4089,13.6516,13.9157,14.0167,14.3069,15.107,14.3305,14.239,14.3569,14.0817,13.7878,14.1295,13.8196,13.8616,12.7038,12.8635,12.2377,13.1654,13.3913,13.4876,13.8598,13.0912,13.8561,13.5942,13.275,13.636,14.0969,14.2532,14.8616,14.3707,13.4054,11.2457,12.1551,12.7391,13.2795,13.8244,14.4196,14.1366,13.8245,15.6126,16.5204,16.5034,16.8866,17.1716,17.6495,18.2043,18.1187,17.8866,18.1961,17.5727,18.0309,17.2356,17.938,17.4293,16.9117,16.8391,15.785,16.0046,14.6748,15.2078,14.5859,13.1281,13.5747,15.3876,15.0555,16.3206,15.6429,16.0547,16.3263,15.774,16.4625,17.1031,16.3436,15.8007,15.2397,16.5365,17.3394,17.0594,17.582,18.1211,17.709,18.4208,18.2517,18.7613,19.2237,19.7188,18.7902,18.7429,18.2586,18.8656,19.2029,19.2553,19.8544,20.7722,21.5783,21.374,22.2691,23.0758,23.4277,23.4863,24.1107,25.4938,26.8471,24.5265,26.5281,27.5239,27.47,27.2,28.14],"VBMFX":[4.8457,4.8877,4.9382,4.9777,4.8479,4.8273,4.8543,4.9011,4.9964,5.0047,5.0471,5.0066,5.0528,5.0858,5.0542,5.0295,5.0978,5.1518,5.1805,5.1292,5.199,5.1417,5.1001,5.1247,5.1755,5.1699,5.1896,5.1379,5.1276,5.1229,5.1283,5.1974,5.2828,5.3259,5.3645,5.4242,5.3984,5.3943,5.4757,5.4769,5.505,5.4622,5.4414,5.487,5.5605,5.6008,5.653,5.7557,5.774,5.8775,5.8835,5.9014,5.878,5.8377,5.8372,5.8374,5.8783,5.813,5.6659,5.8725,6.0678,6.0256,5.9999,6.0889,6.1107,6.163,6.1964,6.285,6.3486,6.4241,6.4507,6.5385,6.4289,6.5303,6.5434,6.5385,6.5993,6.6572,6.7643,6.8276,6.929,6.9285,6.9534,6.9139,6.8348,6.8406,6.8517,6.8517,6.9421,7.0328,7.0054,7.1156,7.2201,7.2848,7.2969,7.2751,7.3537,7.4179,7.4146,7.3716,7.4559,7.5269,7.5296,7.6341,7.6362,7.6444,7.6534,7.6684,7.6528,7.5984,7.6399,7.6462,7.7157,7.5841,7.4585,7.4733,7.4256,7.4973,7.5557,7.5296,7.4809,7.5964,7.6326,7.6213,7.6805,7.7613,7.7699,7.7498,7.8376,7.7807,7.8536,7.905,7.9124,8.0952,8.0077,8.0399,8.0107,7.9747,7.8946,7.9551,7.9271,7.987,7.9878,7.9663,7.9358,8.0493,8.1024,8.1788,8.2096,8.2112,8.3702,8.4239,8.4095,8.4027,8.3352,8.1146,8.1345,8.1582,8.2119,8.2058,8.2681,8.3235,8.3251,8.3576,8.4289,8.3839,8.3933,8.3792,8.4168,8.3245,8.239,8.291,8.2224,8.2722,8.2747,8.2779,8.3209,8.2755,8.2148,8.2581,8.4066,8.4912,8.4864,8.6521,8.6563,8.8148,8.9165,8.937,9.1856,9.1308,9.1506,9.1449,9.1317,9.3252,9.4843,9.4288,9.5884,9.6402,9.7078,9.8583,9.7579,9.7654,9.7058,9.8135,9.8288,9.751,9.6037,9.4714,9.5615,9.5846,9.6588,9.7758,9.7562,9.6671,9.6646,9.6964,9.6569,9.4472,9.3401,9.077,8.7281,8.7785,8.6471,8.8469,8.6021,8.243,8.1297,8.4299,8.3787,8.6458,8.4253,8.6411,8.6885,8.594,8.5619,8.5575,8.5082,8.2965,8.1664,8.5343,8.8498,8.829,8.7066,8.7782,8.564,8.7098,8.7911,8.9944,9.1144,9.2338,9.0084,9.1109,8.9509,9.0076,9.1954,9.1965,9.2347,9.1689,9.3129,9.2851,9.3623,9.4599,9.519,9.5783,9.5511,9.5727,9.7189,9.5539,9.5648,9.5967,9.6175,9.49,9.52],"ES3":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1.8518,1.8795,1.8695,1.9704,2.0135,1.8596,1.8165,1.718,1.4778,1.133,1.096,1.1207,1.096,0.9914,1.0591,1.1884,1.4593,1.4593,1.6441,1.6379,1.6749,1.6749,1.7303,1.8165,1.7241,1.718,1.8103,1.8473,1.7611,1.7795,1.8657,1.835,1.9335,1.9766,1.9827,2.0197,1.9889,1.8842,1.9335,1.9889,1.9827,1.9643,1.9827,1.8042,1.6749,1.7919,1.6995,1.6872,1.835,1.8534,1.8657,1.8534,1.7426,1.8165,1.8842,1.8842,1.915,1.8965,1.9273,1.9827,2.0505,2.0505,2.0754,2.1128,2.0879,2.0006,2.0442,1.9334,2.0408,2.0535,2.0345,2.0408,1.9524,1.9929,2.0442,2.1019,2.1403,2.1083,2.1852,2.1823,2.1433,2.1498,2.2017,2.2082,2.246,2.2394,2.2592,2.3184,2.2592,2.2065,2.1659,1.9854,1.9052,2.0322,1.952,1.972,1.7929,1.8338,1.9497,1.9565,1.936,1.9633,1.9916,1.9777,2.0123,1.9777,2.04,2.033,2.1506,2.1806,2.2439,2.251,2.2932,2.3002,2.3689,2.3689,2.319,2.4403,2.4831,2.4617,2.5544,2.5494,2.4842,2.6341,2.5349,2.4052,2.4538,2.397,2.4323,2.2569,2.3269,2.2982,2.394,2.4144,2.4121,2.5622,2.3806,2.5374,2.5329,2.4043,2.4158,2.5068,2.4777,2.506,2.4517,2.3509,1.9344,2.0512,1.9874,2.059,2.0162,2.0332,1.987,1.956,2.261,2.3175,2.3414,2.3818,2.5675,2.6119,2.5868,2.5634,2.6022,2.542,2.5575,2.6551,2.5567,2.6076,2.7043,2.7063,2.8462,2.8212,2.7554,2.6423,2.7197,2.7556,2.6904,2.6641,2.8226,2.8056,2.8879,2.8177,2.8126,2.8514,2.7901,2.8333,2.9739,2.9004,2.8898,2.7585,2.7735,2.918,2.8431,2.8425,2.9138,3.0013,3.0581,3.0726,3.1889,3.232,3.3718,3.3459,3.5347,3.5643,3.6338,3.6835,3.7754,3.6673,3.7763,3.8284,4.0369,4.1844,4.2163,4.344,4.4698,4.5675,4.8336,4.9175,4.8053,4.8998,5.0385,5.193,5.6595,5.76],"STI":[1764.52,1848.36,1888.63,1858.92,1842.03,1788.66,1838.0,1891.71,1918.34,1984.74,1980.6899,2027.66,2066.1399,2096.3201,2119.3999,2141.4299,2125.25,2161.77,2212.6599,2352.5601,2275.4299,2305.1399,2216.77,2300.25,2347.3401,2412.0801,2481.96,2533.3999,2610.71,2383.8701,2435.3899,2445.4299,2482.3899,2568.8601,2701.75,2838.53,2985.8301,3125.5601,3104.1499,3231.24,3361.29,3511.1299,3548.2,3547.6599,3392.9099,3706.23,3805.7,3521.27,3482.3,2981.75,3026.45,3007.3601,3147.79,3192.6201,2947.54,2929.6499,2739.95,2358.9099,1794.2,1732.5699,1761.5601,1746.47,1594.87,1699.99,1920.28,2329.0801,2333.1399,2659.2,2592.8999,2672.5701,2651.1299,2732.1201,2879.76,2745.3501,2750.8601,2887.46,2974.6101,2752.6001,2835.51,2987.7,2950.3301,3097.6299,3142.6201,3144.7,3190.04,3179.72,3010.51,3105.8501,3172.73,3159.9299,3120.4399,3189.26,2885.26,2675.1599,2855.77,2702.46,2646.3501,2906.6899,2994.0601,3010.46,2978.5701,2772.54,2878.45,3036.3999,3025.46,3060.3401,3038.3701,3069.95,3167.0801,3282.6599,3269.95,3308.1001,3368.1799,3311.3701,3150.4399,3221.9299,3028.9399,3167.8701,3210.6699,3176.3501,3167.4299,3027.22,3110.78,3188.6201,3264.71,3295.8501,3255.6699,3374.0601,3327.0901,3276.74,3274.25,3350.5,3365.1499,3391.2,3402.8601,3447.01,3487.3899,3392.1101,3317.3301,3202.5,2921.4399,2790.8899,2998.3501,2855.9399,2882.73,2629.1101,2666.51,2840.8999,2838.52,2791.0601,2840.9299,2868.6899,2820.5901,2869.47,2813.8701,2905.1699,2880.76,3046.8,3096.6101,3175.1101,3175.4399,3210.8201,3226.48,3329.52,3277.26,3219.9099,3374.0801,3433.54,3402.9199,3533.99,3517.9399,3427.97,3613.9299,3428.1799,3268.7,3319.8501,3213.48,3257.05,3018.8,3117.6101,3068.76,3190.1699,3212.6899,3212.8799,3400.2,3117.76,3321.6101,3300.75,3106.52,3119.99,3229.8799,3193.9199,3222.8301,3153.73,3011.0801,2481.23,2624.23,2510.75,2589.9099,2529.8201,2532.51,2466.6201,2423.8401,2805.95,2843.8101,2902.52,2949.04,3165.3401,3218.27,3164.28,3130.46,3166.9399,3055.05,3086.7,3198.1699,3041.29,3123.6799,3249.5901,3242.24,3408.52,3356.8999,3232.49,3102.21,3211.5601,3221.6699,3130.24,3093.1101,3290.49,3251.3201,3365.6699,3262.6299,3258.8999,3270.51,3158.8,3205.9099,3373.98,3233.3,3217.4099,3067.74,3072.99,3240.27,3153.01,3141.8501,3224.01,3292.6899,3336.5901,3332.8,3455.9399,3442.9299,3585.29,3558.8799,3739.29,3787.6001,3855.8201,3895.7,3972.4299,3832.51,3894.6101,3964.29,4173.77,4269.7002,4300.1602,4428.6201,4523.96,4646.21,4905.1299,4995.0698,4885.4502,4912.6899,5037.8599,5170.6499,5628.5,5688.21],"GOLD":[415.7,402.2,396.4,427.3,387.0,394.0,392.6,391.0,410.4,418.7,428.5,451.3,437.5,421.8,436.5,428.7,435.0,416.3,435.9,429.9,433.8,469.0,465.1,494.6,517.1,570.8,561.6,581.8,651.8,642.5,613.5,634.2,625.9,598.6,604.1,646.9,635.2,652.0,669.4,663.0,680.5,661.0,648.1,666.9,673.0,742.8,792.0,782.2,834.9,922.7,972.1,916.2,862.8,887.3,926.2,913.9,829.3,874.2,716.8,816.2,883.6,927.3,941.5,922.6,890.7,978.8,927.1,953.7,951.7,1008.0,1039.7,1181.1,1095.2,1083.0,1118.3,1113.3,1180.1,1212.2,1245.5,1181.7,1248.3,1307.8,1357.1,1385.0,1421.1,1333.8,1409.3,1438.9,1556.0,1535.9,1502.3,1628.3,1828.5,1620.4,1724.2,1745.5,1565.8,1737.8,1709.9,1669.3,1663.4,1562.6,1603.5,1610.5,1684.6,1771.1,1717.5,1710.9,1674.8,1660.6,1577.7,1594.8,1472.2,1392.6,1223.8,1312.4,1396.1,1326.5,1323.6,1250.6,1201.9,1240.1,1321.4,1283.4,1295.6,1245.6,1321.8,1281.3,1285.8,1210.5,1171.1,1175.2,1183.9,1278.5,1212.6,1183.1,1182.4,1189.4,1171.5,1094.9,1131.6,1115.5,1141.5,1065.8,1060.3,1116.4,1233.9,1234.2,1289.2,1214.8,1318.4,1349.0,1306.9,1313.3,1271.5,1170.8,1150.0,1208.6,1252.6,1247.3,1266.1,1272.0,1240.7,1266.6,1316.2,1281.5,1267.0,1273.2,1306.3,1339.0,1315.5,1322.8,1316.2,1300.1,1251.3,1223.7,1200.3,1191.5,1212.3,1220.2,1278.3,1319.7,1312.8,1293.0,1282.8,1305.8,1409.7,1426.1,1519.1,1465.7,1511.4,1465.6,1519.5,1582.9,1564.1,1583.4,1684.2,1736.9,1793.0,1962.8,1967.6,1887.5,1877.4,1775.7,1893.1,1847.3,1728.1,1713.8,1767.3,1902.5,1770.8,1812.6,1815.0,1755.3,1783.0,1773.6,1827.5,1795.0,1899.4,1949.2,1909.3,1842.7,1804.1,1762.9,1712.8,1662.4,1635.9,1746.0,1819.7,1929.5,1828.9,1969.0,1990.1,1963.9,1921.1,1970.5,1938.2,1848.1,1985.2,2038.1,2062.3999,2048.3999,2045.7,2217.3999,2291.3999,2322.8999,2327.7,2426.5,2493.8,2636.1001,2738.3,2657.0,2629.2,2812.5,2836.8,3122.8,3305.0,3288.8999,3294.3999,3293.2,3473.7,3840.8,3982.2,4218.2998,4325.6001,4713.8999,5230.5,4647.6001,4614.7002,4560.5,4022.8999,4049.1001,4464.2998],"SGDUSD":[1.699,1.6929,1.7015,1.6707,1.7001,1.705,1.7142,1.7199,1.7066,1.6809,1.6632,1.637,1.6314,1.6363,1.6239,1.6584,1.637,1.6781,1.6932,1.6608,1.6765,1.6915,1.6942,1.6902,1.6624,1.6234,1.6201,1.6156,1.5785,1.581,1.5823,1.5784,1.5733,1.5853,1.5563,1.5391,1.5358,1.5357,1.5293,1.5165,1.5208,1.5303,1.5306,1.5169,1.5239,1.4764,1.4484,1.4477,1.439,1.417,1.3951,1.3781,1.3571,1.361,1.3588,1.3725,1.4249,1.437,1.4745,1.5117,1.4301,1.51,1.5446,1.519,1.4807,1.4413,1.4445,1.4387,1.4445,1.4156,1.3994,1.382,1.4039,1.4057,1.4059,1.3973,1.37,1.4119,1.3886,1.3594,1.3548,1.3154,1.3043,1.3209,1.2881,1.2874,1.2745,1.2601,1.2268,1.2321,1.2272,1.2029,1.2035,1.2974,1.2442,1.2968,1.2992,1.2572,1.2483,1.2589,1.2366,1.2876,1.2807,1.2457,1.2535,1.229,1.2193,1.2203,1.2229,1.2359,1.2363,1.2411,1.2313,1.2592,1.269,1.2708,1.2756,1.2552,1.2399,1.2556,1.267,1.2746,1.2644,1.2584,1.2529,1.2539,1.2467,1.2476,1.2491,1.2759,1.2773,1.3,1.3213,1.3527,1.3566,1.3733,1.3237,1.3489,1.3474,1.3745,1.4099,1.4235,1.4028,1.4131,1.4145,1.4274,1.4088,1.3483,1.3443,1.3774,1.3471,1.3422,1.3618,1.3646,1.3908,1.4248,1.4462,1.4202,1.4053,1.3972,1.3968,1.3836,1.3784,1.3555,1.3558,1.3583,1.3601,1.3467,1.3378,1.3117,1.3243,1.3109,1.3258,1.3385,1.3683,1.3614,1.367,1.3673,1.3848,1.3694,1.3662,1.3463,1.3479,1.3542,1.3597,1.38,1.3518,1.3744,1.3877,1.3822,1.3607,1.3656,1.3482,1.3623,1.3947,1.4217,1.4109,1.4117,1.3937,1.3712,1.3604,1.3647,1.3661,1.3375,1.3229,1.3286,1.3281,1.345,1.3254,1.3206,1.3447,1.353,1.3438,1.3582,1.3441,1.3684,1.3519,1.3559,1.359,1.3543,1.3865,1.3699,1.3901,1.3815,1.3986,1.4312,1.4118,1.3753,1.3435,1.3142,1.3465,1.3279,1.3346,1.3513,1.3562,1.3297,1.3503,1.366,1.3648,1.3324,1.3198,1.3393,1.346,1.3477,1.3652,1.3497,1.3547,1.3357,1.3026,1.2851,1.3219,1.3413,1.3593,1.3518,1.3479,1.3432,1.3056,1.2862,1.2707,1.2977,1.2836,1.2902,1.2992,1.2967,1.2839,1.2639,1.2632,1.2843,1.2728,1.2769,1.2941,1.282,1.2778]},"fetched":"2026-08-17"};</script>
+<script>/* ============================================================
+   Historical backtest of the entry plan (entry-plan.md) on real monthly data.
+   Shared by node (backtest/report.js) and the browser (backtest.html).
+   Input: HIST = {months:[YYYY-MM], series:{VTSMX,VGTSX,VBMFX,ES3,STI,GOLD,SGDUSD}} (adjusted month-end, native ccy)
+   ============================================================ */
+(function (root) {
+  'use strict';
+
+  /* Singapore short rate (3M SIBOR/SORA-ish yearly average, %). ⚠️ approximate table — MAS API was down at build time. */
+  const SG_SHORT = { 2004: 0.8, 2005: 2.2, 2006: 3.4, 2007: 2.7, 2008: 1.3, 2009: 0.7, 2010: 0.5, 2011: 0.4, 2012: 0.4, 2013: 0.4, 2014: 0.4, 2015: 0.9, 2016: 1.0, 2017: 1.1, 2018: 1.6, 2019: 1.9, 2020: 0.6, 2021: 0.4, 2022: 2.5, 2023: 3.7, 2024: 3.4, 2025: 2.2, 2026: 1.5 };
+  const STI_DIV_ASSUMED = 0.035; // used only before ES3 (SPDR STI ETF, TR) starts in 2008-01
+
+  /* Build monthly gross return factors in SGD for the 7 sleeves used by the plan. */
+  function buildReturns(H) {
+    const ms = H.months, S = H.series;
+    const idx = ms.indexOf('2003-12'); // first month with FX
+    const out = { months: [], f: { gEq: [], sgEq: [], gBond: [], gold: [], sgGov: [], cash: [], cpf: [] }, gEqIndex: [], notes: [] };
+    let gEqLevel = 1;
+    for (let i = idx + 1; i < ms.length; i++) {
+      const fx = S.SGDUSD[i] / S.SGDUSD[i - 1]; // SGD per USD change: USD asset value in SGD multiplies by this
+      if (S.VTSMX[i] == null || S.VGTSX[i] == null || S.VBMFX[i] == null || S.GOLD[i] == null || S.SGDUSD[i] == null) break;
+      const us = S.VTSMX[i] / S.VTSMX[i - 1], intl = S.VGTSX[i] / S.VGTSX[i - 1];
+      const gEq = (0.6 * us + 0.4 * intl) * fx;
+      const gBond = (S.VBMFX[i] / S.VBMFX[i - 1]) * fx;
+      const gold = (S.GOLD[i] / S.GOLD[i - 1]) * fx;
+      let sgEq;
+      if (S.ES3[i] != null && S.ES3[i - 1] != null) sgEq = S.ES3[i] / S.ES3[i - 1];
+      else sgEq = (S.STI[i] / S.STI[i - 1]) * Math.pow(1 + STI_DIV_ASSUMED, 1 / 12);
+      const y = +ms[i].slice(0, 4), r = (SG_SHORT[y] !== undefined ? SG_SHORT[y] : 1.5) / 100;
+      const sgGov = Math.pow(1 + r + 0.005, 1 / 12), cash = Math.pow(1 + Math.max(0.0005, r - 0.003), 1 / 12), cpf = Math.pow(1.04, 1 / 12);
+      out.months.push(ms[i]); out.f.gEq.push(gEq); out.f.sgEq.push(sgEq); out.f.gBond.push(gBond); out.f.gold.push(gold); out.f.sgGov.push(sgGov); out.f.cash.push(cash); out.f.cpf.push(cpf);
+      gEqLevel *= gEq; out.gEqIndex.push(gEqLevel);
+    }
+    return out;
+  }
+
+  /* Weights of the plan (balanced preset, REIT folded into sgEq for lack of a long S-REIT series) */
+  const PRESETS = {
+    balanced:     { gEq: 0.45, sgEq: 0.15, gBond: 0.20, sgGov: 0.10, gold: 0.05, cash: 0.05 },
+    growth:       { gEq: 0.75, sgEq: 0.05, gBond: 0.10, gold: 0.05, cash: 0.05 },
+    conservative: { gEq: 0.20, gBond: 0.30, sgGov: 0.25, cpf: 0.10, gold: 0.10, cash: 0.05 },
+  };
+  const LAYER = { gEq: 'equity', sgEq: 'equity', gBond: 'safe', sgGov: 'safe', cash: 'safe', cpf: 'safe', gold: 'gold' };
+
+  /* One strategy run.
+     opts = { start (index into R.months), horizon (months), amount, dca, weights,
+              entryMonths (0 = lump), goldMonths, triggers (bool), ter, rebalanceEvery (12) }
+     Returns { values:[monthly total value], invested:[cum contributions], fired:[{m,rule,dd}], minValue, mdd, terminal } */
+  function run(R, o) {
+    const keys = Object.keys(o.weights); const w = {}; let ws = 0; for (const k of keys) ws += o.weights[k]; for (const k of keys) w[k] = o.weights[k] / ws;
+    const hold = {}; for (const k of keys) hold[k] = 0;
+    const eqKeys = keys.filter(k => LAYER[k] === 'equity'), goldKeys = keys.filter(k => LAYER[k] === 'gold'), safeKeys = keys.filter(k => LAYER[k] === 'safe');
+    const A = o.amount, N = o.entryMonths | 0, G = Math.max(1, o.goldMonths | 0);
+    const eqTotal = eqKeys.reduce((s, k) => s + w[k] * A, 0), goldTotal = goldKeys.reduce((s, k) => s + w[k] * A, 0), safeTotal = safeKeys.reduce((s, k) => s + w[k] * A, 0);
+    let parked = A; // uninvested cash (earns cash rate)
+    let eqInvested = 0, goldInvested = 0, safeDone = false;
+    let eqLeft = eqTotal, gLeft = goldTotal;
+    let eqSchedMonths = N; // remaining scheduled months for equity
+    const values = [], invested = [], deployed = [], fired = [];
+    let cum = 0, peakEq = 1, peak = -Infinity, mdd = 0, minValue = Infinity;
+    const terIdx = 1 - (o.ter || 0) / 12;
+    for (let m = 0; m < o.horizon; m++) {
+      const i = o.start + m; if (i >= R.months.length) break;
+      // 1. buys at start of month m (before this month's returns)
+      // safe layer lump in month 1
+      if (!safeDone) { for (const k of safeKeys) hold[k] += w[k] * A; parked -= safeTotal; safeDone = true; }
+      // gold
+      if (gLeft > 1e-6) { const gm = Math.max(1, G - m); const slice = Math.min(gLeft, gLeft / gm); for (const k of goldKeys) hold[k] += slice * (w[k] * A / goldTotal); gLeft -= slice; parked -= slice; goldInvested += slice; }
+      // equity: staged with optional triggers on gEq drawdown (SGD, from running max since start)
+      if (eqLeft > 1e-6) {
+        let buy;
+        if (N === 0) buy = eqLeft;
+        else {
+          const monthsLeft = Math.max(1, N - m); // months remaining in original schedule incl. this one
+          buy = Math.min(eqLeft, eqLeft / monthsLeft);
+          if (o.triggers && m > 0) {
+            const lvl = R.gEqIndex[i - 1] / R.gEqIndex[o.start - 1 >= 0 ? o.start - 1 : 0]; // level at end of previous month relative to start
+            const dd = peakEq > 0 ? 1 - lvl / peakEq : 0;
+            if (dd >= 0.30) { buy = eqLeft; fired.push({ m, rule: 30, dd }); }
+            else if (dd >= 0.20) { buy = Math.min(eqLeft, eqLeft / 2 + 0); fired.push({ m, rule: 20, dd }); }
+            else if (dd >= 0.10) { buy = Math.min(eqLeft, 2 * eqTotal / N); fired.push({ m, rule: 10, dd }); }
+          }
+        }
+        for (const k of eqKeys) hold[k] += buy * (w[k] * A / eqTotal); eqLeft -= buy; parked -= buy; eqInvested += buy;
+      }
+      // 2. monthly DCA into target weights (from month 1 as well)
+      const dca = o.dca || 0; for (const k of keys) hold[k] += dca * w[k]; cum += dca;
+      // 3. apply month returns; parked cash earns cash rate
+      for (const k of keys) hold[k] *= R.f[k][i] * terIdx;
+      parked *= R.f.cash[i];
+      // track equity peak for drawdown (level at end of this month)
+      const lvlNow = R.gEqIndex[i] / R.gEqIndex[o.start - 1 >= 0 ? o.start - 1 : 0]; if (lvlNow > peakEq) peakEq = lvlNow;
+      // 4. annual rebalance once entry finished
+      if (o.rebalanceEvery && (m + 1) % o.rebalanceEvery === 0 && eqLeft <= 1e-6 && gLeft <= 1e-6) { let tot = 0; for (const k of keys) tot += hold[k]; for (const k of keys) hold[k] = tot * w[k]; }
+      let v = parked, dep = 0; for (const k of keys) { v += hold[k]; dep += hold[k]; }
+      values.push(v); invested.push(A + cum); deployed.push(dep);
+      if (v > peak) peak = v; const d = peak > 0 ? (v - peak) / peak : 0; if (d < mdd) mdd = d; if (v < minValue) minValue = v;
+    }
+    return { values, invested, deployed, fired, minValue, mdd, terminal: values[values.length - 1], eqInvested, months: values.length };
+  }
+
+  /* All rolling windows */
+  function rolling(R, base, horizon) {
+    const out = [];
+    for (let s = 1; s + horizon <= R.months.length; s++) {
+      const o = Object.assign({}, base, { start: s, horizon });
+      const plan = run(R, Object.assign({}, o, { entryMonths: base.entryMonths, triggers: true }));
+      const lump = run(R, Object.assign({}, o, { entryMonths: 0, triggers: false }));
+      const s12 = run(R, Object.assign({}, o, { entryMonths: 12, triggers: false }));
+      const s24 = run(R, Object.assign({}, o, { entryMonths: 24, triggers: false }));
+      out.push({ start: R.months[s], plan: plan.terminal, lump: lump.terminal, s12: s12.terminal, s24: s24.terminal,
+        planMin24: Math.min(...plan.values.slice(0, 24)), lumpMin24: Math.min(...lump.values.slice(0, 24)),
+        planMdd: plan.mdd, lumpMdd: lump.mdd, fired: plan.fired.length, firedRules: plan.fired.map(f => f.rule).join('/'), invested: plan.invested[plan.invested.length - 1] });
+    }
+    return out;
+  }
+  const q = (arr, p) => { const a = arr.slice().sort((x, y) => x - y); const i = (a.length - 1) * p; const lo = Math.floor(i), hi = Math.ceil(i); return a[lo] + (a[hi] - a[lo]) * (i - lo); };
+
+  const api = { buildReturns, run, rolling, PRESETS, LAYER, SG_SHORT, STI_DIV_ASSUMED, q };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BT = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ============================================================
+   Strategy family + evaluation across ALL starts and bootstrap histories
+   ============================================================ */
+(function (root) {
+  'use strict';
+  const BT = (typeof module !== 'undefined' && module.exports) ? module.exports : root.BT;
+  const LAYER = BT.LAYER;
+
+  /* rule = { N, G, trig:{t1,m1,t2,f2,t3} | null, trend:{below,above} | null, reserve (0..0.3), reserveDeploy:{d1,f1,d2}, maCap }
+     N: base months for equity layer (0 = lump); G: gold months
+     trig: dd>=t1 → buy m1×base; dd>=t2 → buy f2×remaining; dd>=t3 → all remaining
+     trend: during entry, if gEq (SGD) below its 10-month MA → this month's buy ×below; if at all-time-high (dd==0) and above MA → ×above (<1 = slow down). Remaining is always spread over remaining scheduled months; hard cap: finish by month maCap (default 2N).
+     reserve: fraction of amount kept permanently in cash as dry powder; deployed d1 (dd≥20%) → f1 of reserve, d2 (dd≥30%) → all; refilled first from monthly DCA until back to target.
+  */
+  function runRule(R, o) {
+    const rule = o.rule; const keys = Object.keys(o.weights); const w = {}; let ws = 0; for (const k of keys) ws += o.weights[k]; for (const k of keys) w[k] = o.weights[k] / ws;
+    const hold = {}; for (const k of keys) hold[k] = 0;
+    const eqKeys = keys.filter(k => LAYER[k] === 'equity'), goldKeys = keys.filter(k => LAYER[k] === 'gold'), safeKeys = keys.filter(k => LAYER[k] === 'safe');
+    const A0 = o.amount, resTarget = A0 * (rule.reserve || 0), A = A0 - resTarget;
+    const N = rule.N | 0, G = Math.max(1, rule.G | 0), cap = rule.maCap || Math.max(N * 2, 1);
+    const eqTotal = eqKeys.reduce((s, k) => s + w[k] * A, 0), goldTotal = goldKeys.reduce((s, k) => s + w[k] * A, 0);
+    const safeTotal = safeKeys.reduce((s, k) => s + w[k] * A, 0), S = Math.max(1, rule.S | 0 || 1);
+    let parked = A, reserve = resTarget, eqLeft = eqTotal, gLeft = goldTotal, sLeft = safeTotal;
+    const values = [], deployed = [], invested = [], fired = [];
+    let cum = 0, peakEq = 1, peak = -Infinity, mdd = 0, minValue = Infinity;
+    const terIdx = 1 - (o.ter || 0) / 12;
+    const base0 = R.gEqIndex[o.start - 1];
+    const ma = i => { let s = 0, n = 0; for (let j = i - 9; j <= i; j++) if (j >= 0) { s += R.gEqIndex[j]; n++; } return s / n; };
+    for (let m = 0; m < o.horizon; m++) {
+      const i = o.start + m; if (i >= R.months.length) break;
+      const lvlPrev = R.gEqIndex[i - 1] / base0, dd = Math.max(0, 1 - lvlPrev / peakEq);
+      const belowMA = R.gEqIndex[i - 1] < ma(i - 1);
+      if (sLeft > 1e-6) { const sm = Math.max(1, S - m); const slice = Math.min(sLeft, sLeft / sm); for (const k of safeKeys) hold[k] += slice * (w[k] * A / safeTotal); sLeft -= slice; parked -= slice; }
+      if (gLeft > 1e-6) { const gm = Math.max(1, G - m); const slice = Math.min(gLeft, gLeft / gm); for (const k of goldKeys) hold[k] += slice * (w[k] * A / goldTotal); gLeft -= slice; parked -= slice; }
+      if (eqLeft > 1e-6) {
+        let buy;
+        if (N === 0 || m >= cap - 1) buy = eqLeft;
+        else {
+          const monthsLeft = Math.max(1, N - m); buy = Math.min(eqLeft, eqLeft / monthsLeft);
+          const baseBuy = eqTotal / N;
+          if (rule.trend && m > 0) { if (belowMA) buy = Math.min(eqLeft, buy * (rule.trend.below || 1)); else if (dd === 0) buy = Math.min(eqLeft, buy * (rule.trend.above === undefined ? 1 : rule.trend.above)); }
+          if (rule.trig && m > 0) { const t = rule.trig; if (dd >= t.t3) { buy = eqLeft; fired.push({ m, rule: 't3' }); } else if (dd >= t.t2) { buy = Math.min(eqLeft, Math.max(buy, eqLeft * t.f2)); fired.push({ m, rule: 't2' }); } else if (dd >= t.t1) { buy = Math.min(eqLeft, Math.max(buy, baseBuy * t.m1)); fired.push({ m, rule: 't1' }); } }
+        }
+        for (const k of eqKeys) hold[k] += buy * (w[k] * A / eqTotal); eqLeft -= buy; parked -= buy;
+      }
+      // reserve deployment (any time, incl. after entry)
+      if (resTarget > 0 && reserve > 1 && m > 0) { const rd = rule.reserveDeploy || { d1: 0.20, f1: 0.5, d2: 0.30 }; let dep = 0; if (dd >= rd.d2) dep = reserve; else if (dd >= rd.d1) dep = reserve * rd.f1; if (dep > 0) { const eqW = eqKeys.reduce((s, k) => s + w[k], 0); for (const k of eqKeys) hold[k] += dep * w[k] / eqW; reserve -= dep; fired.push({ m, rule: 'reserve' }); } }
+      // monthly DCA: refill reserve first, rest to target weights
+      let dca = o.dca || 0; cum += dca;
+      if (resTarget > 0 && reserve < resTarget) { const fill = Math.min(dca, resTarget - reserve); reserve += fill; dca -= fill; }
+      for (const k of keys) hold[k] += dca * w[k];
+      // returns
+      for (const k of keys) hold[k] *= R.f[k][i] * terIdx; parked *= R.f.cash[i]; reserve *= R.f.cash[i];
+      const lvlNow = R.gEqIndex[i] / base0; if (lvlNow > peakEq) peakEq = lvlNow;
+      const entryDone = eqLeft <= 1e-6 && gLeft <= 1e-6 && sLeft <= 1e-6;
+      const rb = rule.rebal || { mode: 'annual' };
+      if (entryDone) {
+        // target weights, optionally tilted toward equity during deep drawdowns
+        let tw = w;
+        if (rb.mode === 'dip') { const ddNow = Math.max(0, 1 - lvlNow / peakEq); if (ddNow >= (rb.dipDD || 0.2)) { tw = {}; const eqW = eqKeys.reduce((s, k) => s + w[k], 0), tilt = Math.min(rb.dipTilt || 0.10, 1 - eqW); for (const k of keys) tw[k] = LAYER[k] === 'equity' ? w[k] * (eqW + tilt) / eqW : w[k] * (1 - eqW - tilt) / (1 - eqW); } }
+        let tot = 0; for (const k of keys) tot += hold[k];
+        let doRb = false;
+        if (rb.mode === 'annual' || !rb.mode) doRb = o.rebalanceEvery && (m + 1) % o.rebalanceEvery === 0;
+        else { for (const k of keys) if (Math.abs(hold[k] / tot - tw[k]) > (rb.band || 0.05)) doRb = true; if (!doRb && (m + 1) % 12 === 0) doRb = true; }
+        if (doRb && tot > 0) for (const k of keys) hold[k] = tot * tw[k];
+      }
+      let v = parked + reserve, dep = 0; for (const k of keys) { v += hold[k]; dep += hold[k]; }
+      values.push(v); deployed.push(dep); invested.push(A0 + cum);
+      if (v > peak) peak = v; const d = peak > 0 ? (v - peak) / peak : 0; if (d < mdd) mdd = d; if (v < minValue) minValue = v;
+    }
+    return { values, deployed, invested, fired, minValue, mdd, terminal: values[values.length - 1] };
+  }
+
+  /* stationary block bootstrap of the joint monthly return vectors → synthetic R objects */
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function bootstrap(R, nPaths, horizon, opts) {
+    opts = opts || {}; const rnd = mulberry32(opts.seed || 7); const meanBlock = opts.block || 12; const n = R.months.length; const keys = Object.keys(R.f);
+    const adj = {}; for (const k of keys) adj[k] = Math.pow(1 + (opts.muAdj && opts.muAdj[k] || 0), 1 / 12); // multiplicative monthly adjustment to the sleeve's mean
+    const paths = [];
+    for (let p = 0; p < nPaths; p++) {
+      const f = {}; for (const k of keys) f[k] = new Array(horizon + 1);
+      const months = new Array(horizon + 1); const gEqIndex = new Array(horizon + 1);
+      let i = Math.floor(rnd() * n), t = 0, lvl = 1;
+      while (t < horizon + 1) {
+        if (rnd() < 1 / meanBlock) i = Math.floor(rnd() * n); // start a new block
+        for (const k of keys) f[k][t] = R.f[k][i] * adj[k]; months[t] = 'p' + p + '-' + t; lvl *= f.gEq[t]; gEqIndex[t] = lvl;
+        t++; i = (i + 1) % n;
+      }
+      paths.push({ months, f, gEqIndex });
+    }
+    return paths;
+  }
+
+  /* metrics over a set of runs' terminal values etc. */
+  function metrics(runs, amount) {
+    const q = BT.q; const term = runs.map(r => r.terminal), min24 = runs.map(r => Math.min(...r.values.slice(0, 24))), mddA = runs.map(r => r.mdd);
+    const ce = g => { // CRRA certainty equivalent of terminal wealth
+      if (g === 1) return Math.exp(term.reduce((s, v) => s + Math.log(v), 0) / term.length);
+      const u = term.reduce((s, v) => s + Math.pow(v, 1 - g) / (1 - g), 0) / term.length; return Math.pow(u * (1 - g), 1 / (1 - g));
+    };
+    return { n: term.length, med: q(term, .5), p10: q(term, .1), p90: q(term, .9), mean: term.reduce((s, v) => s + v, 0) / term.length, worst: Math.min(...term), ce1: ce(1), ce3: ce(3), ce5: ce(5), min24med: q(min24, .5), min24worst: Math.min(...min24), mddMed: q(mddA, .5), mddWorst: Math.min(...mddA) };
+  }
+  function evalRule(Rs, rule, base, horizon, real) {
+    const runs = [];
+    if (real) { const R = Rs; for (let s = 1; s + horizon <= R.months.length; s++) runs.push(runRule(R, Object.assign({}, base, { rule, start: s, horizon }))); }
+    else for (const R of Rs) runs.push(runRule(R, Object.assign({}, base, { rule, start: 1, horizon })));
+    return { runs, m: metrics(runs, base.amount) };
+  }
+  Object.assign(BT, { runRule, bootstrap, metrics, evalRule, mulberry32 });
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function(){
+'use strict';
+const BT = window.BT; const R = BT.buildReturns(window.HIST);
+const $ = s => document.querySelector(s);
+const el = (t, a = {}, ...ch) => { const n = document.createElement(t); for (const k in a) { if (a[k] === null || a[k] === undefined) continue; if (k === 'class') n.className = a[k]; else if (k === 'html') n.innerHTML = a[k]; else if (k.startsWith('on')) n.addEventListener(k.slice(2), a[k]); else n.setAttribute(k, a[k]); } for (const c of ch) n.append(c); return n; };
+const money = v => { const s = v < 0 ? '−' : ''; v = Math.abs(v); if (v >= 1e6) return s + 'S$' + (v / 1e6).toFixed(2) + 'M'; return s + 'S$' + Math.round(v / 1e3) + 'k'; };
+const pct = (v, d = 0) => (v * 100).toFixed(d) + '%';
+const NS = 'http://www.w3.org/2000/svg'; const sv = (t, a = {}) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
+const tip = $('#tip'); function showTip(x, y, html) { tip.innerHTML = html; tip.style.display = 'block'; const w = tip.offsetWidth, h = tip.offsetHeight; let L = x + 14, T = y + 14; if (L + w > innerWidth - 8) L = x - w - 14; if (T + h > innerHeight - 8) T = y - h - 14; tip.style.left = L + 'px'; tip.style.top = T + 'px'; } function hideTip() { tip.style.display = 'none'; }
+const cw = c => Math.max(320, Math.round(c.clientWidth || 900));
+const niceTicks = (min, max, n = 5) => { const span = max - min || 1; const raw = span / n; const p = Math.pow(10, Math.floor(Math.log10(raw))); const f = raw / p; const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; const t = []; for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) t.push(+v.toFixed(10)); return t; };
+const mAxis = v => Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v / 1e3).toFixed(0) + 'k';
+
+const STRATS = [
+  { id: 'plan', name: '计划（12 个月 + 触发器）', color: 'var(--s1)', o: { entryMonths: 12, triggers: true } },
+  { id: 'lump', name: '一次性', color: 'var(--s2)', o: { entryMonths: 0, triggers: false } },
+  { id: 's12', name: '分 12 个月（无触发器）', color: 'var(--s3)', o: { entryMonths: 12, triggers: false } },
+  { id: 's24', name: '分 24 个月', color: 'var(--s4)', o: { entryMonths: 24, triggers: false } },
+];
+const P = { amount: 600000, dca: 6600, preset: 'balanced', horizon: 120, entryMonths: 12, goldMonths: 6, start: R.months.indexOf('2007-10'), view: 'total' };
+let rows = [];
+
+function base() { return { amount: P.amount, dca: P.dca, weights: BT.PRESETS[P.preset], entryMonths: P.entryMonths, goldMonths: P.goldMonths, triggers: true, ter: 0.002, rebalanceEvery: 12 }; }
+function renderCtl() {
+  const c = $('#ctl'); c.innerHTML = '';
+  const num = (label, key, step) => { const i = el('input', { type: 'number', value: P[key], step }); i.addEventListener('change', () => { P[key] = +i.value; recompute(); }); c.append(el('div', {}, el('label', {}, label), i)); };
+  num('起始金额 S$', 'amount', 10000); num('之后每月定投 S$', 'dca', 100); num('计划：股票层分几个月', 'entryMonths', 1); num('黄金分几个月', 'goldMonths', 1);
+  const sel = el('select'); for (const [k, l] of [['balanced', '稳健 60/40'], ['growth', '进取 80/20'], ['conservative', '保守 20/80']]) { const o = el('option', { value: k }, l); if (P.preset === k) o.selected = true; sel.append(o); } sel.addEventListener('change', () => { P.preset = sel.value; recompute(); }); c.append(el('div', {}, el('label', {}, '配置'), sel));
+  const seg = el('div', { class: 'seg' }); for (const h of [12, 36, 60, 120]) seg.append(el('button', { class: P.horizon === h ? 'on' : '', onclick: () => { P.horizon = h; recompute(); } }, h / 12 + ' 年')); c.append(el('div', {}, el('label', {}, '持有期'), seg));
+}
+function recompute() {
+  renderCtl();
+  rows = BT.rolling(R, base(), P.horizon);
+  const maxStart = R.months.length - P.horizon; if (P.start > maxStart) P.start = maxStart; if (P.start < 1) P.start = 1;
+  renderVerdict(); renderDetail(); renderRoll(); renderSummary(); renderFamous();
+}
+function renderVerdict() {
+  const win = rows.filter(r => r.plan > r.lump).length / rows.length;
+  const dmed = BT.q(rows.map(r => r.plan - r.lump), .5), d10 = BT.q(rows.map(r => r.plan - r.lump), .1), d90 = BT.q(rows.map(r => r.plan - r.lump), .9);
+  const pmin = Math.min(...rows.map(r => r.planMin24)), lmin = Math.min(...rows.map(r => r.lumpMin24));
+  const fired = rows.filter(r => r.fired > 0).length / rows.length;
+  $('#verdict').innerHTML = `${rows[0].start} 到 ${rows[rows.length - 1].start} 的 <b>${rows.length}</b> 个起点、各持有 ${P.horizon / 12} 年：计划比一次性<b>${dmed >= 0 ? '多' : '少'} ${money(Math.abs(dmed))}</b>（中位；P10 ${money(d10)}，P90 ${money(d90)}），计划领先的起点占 <b>${pct(win)}</b>。头两年最低点：计划最差 <b>${money(pmin)}</b>，一次性最差 <b>${money(lmin)}</b>。触发器在 <b>${pct(fired)}</b> 的起点里至少动过一次。<small>过去 22 年全球股新元年化 8.2%，2020、2022 两次下跌 7 / 26 个月就收复，只有 2007–2013 熬了 78 个月——这个样本偏向一次性；分批买的是「跌了不马上涨回来」的保险，样本里只兑现过一次。</small>`;
+}
+function renderDetail() {
+  const rng = $('#startRange'); rng.min = 1; rng.max = R.months.length - P.horizon; rng.value = P.start;
+  rng.oninput = () => { P.start = +rng.value; drawDetail(); };
+  const j = $('#jump'); j.innerHTML = '';
+  for (const m of ['2004-01', '2007-10', '2008-09', '2009-03', '2011-04', '2015-05', '2018-01', '2020-01', '2020-03', '2021-12', '2022-10']) { const i = R.months.indexOf(m); if (i < 1 || i > R.months.length - P.horizon) continue; const o = el('option', { value: i }, m); if (i === P.start) o.selected = true; j.append(o); }
+  j.onchange = () => { P.start = +j.value; rng.value = P.start; drawDetail(); };
+  drawDetail();
+}
+function drawDetail() {
+  const o = Object.assign(base(), { start: P.start, horizon: P.horizon });
+  const runs = STRATS.map(s => Object.assign({}, s, { r: BT.run(R, Object.assign({}, o, s.o)) }));
+  $('#startLabel').textContent = `起点 ${R.months[P.start]}（拖动）`;
+  [...$('#viewSeg').children].forEach(b => { b.classList.toggle('on', b.dataset.v === P.view); b.onclick = () => { P.view = b.dataset.v; drawDetail(); }; });
+  const k = $('#detailKpis'); k.innerHTML = '';
+  for (const s of runs) k.append(el('div', { class: 'kpi', style: 'border-top:3px solid ' + s.color }, el('div', { class: 'l' }, s.name), el('div', { class: 'v' }, money(s.r.terminal)), el('div', { class: 'd' }, `最低 ${money(s.r.minValue)} · 最大回撤 ${pct(s.r.mdd)}${s.id === 'plan' && s.r.fired.length ? ' · 触发 ' + s.r.fired.map(f => 'M' + (f.m + 1) + ':' + f.rule + '%').join(' ') : ''}`)));
+  const lg = $('#pathLegend'); lg.innerHTML = ''; for (const s of runs) lg.append(el('span', {}, el('i', { style: 'background:' + s.color }), s.name)); lg.append(el('span', {}, el('i', { style: 'background:var(--ink3);height:1px;border-top:2px dashed var(--ink3)' }), '累计投入'));
+  // path chart
+  const ser = s => P.view === 'deployed' ? s.r.deployed : s.r.values;
+  $('#viewHint').textContent = P.view === 'deployed' ? '只画已经买入的持仓市值（不含还放在现金里等待进场的钱）。分批的线从安全层起步、逐月爬升；一次性从第 1 个月就是全额。' : '画组合全部资产：已买入的持仓 + 还没进场、放在现金里的钱。没投的钱也是你的钱，所以四条线都从 60 万起步——这是比较财富的正确口径。';
+  const c = $('#pathChart'); c.innerHTML = '';
+  const W = cw(c), H = 320, m = { l: 62, r: 16, t: 12, b: 28 }; const n = runs[0].r.values.length;
+  let lo = Infinity, hi = -Infinity; for (const s of runs) for (const v of ser(s)) { lo = Math.min(lo, v); hi = Math.max(hi, v); } lo = P.view === 'deployed' ? 0 : Math.min(lo, P.amount * 0.9); hi *= 1.03;
+  const yt = niceTicks(lo, hi, 5); lo = Math.min(lo, yt[0]); hi = Math.max(hi, yt[yt.length - 1]);
+  const X = i => m.l + i / (n - 1) * (W - m.l - m.r), Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` }); const ax = sv('g', { class: 'axis' });
+  for (const t of yt) { ax.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) })); const tx = sv('text', { x: m.l - 8, y: Y(t) + 4, 'text-anchor': 'end' }); tx.textContent = mAxis(t); ax.append(tx); }
+  const stepM = n > 72 ? 24 : n > 30 ? 12 : 3; for (let i = 0; i < n; i += stepM) { const tx = sv('text', { x: X(i), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = R.months[P.start + i]; ax.append(tx); }
+  svg.append(ax);
+  svg.append(sv('polyline', { points: runs[0].r.invested.map((v, i) => `${X(i)},${Y(v)}`).join(' '), fill: 'none', stroke: 'var(--ink3)', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }));
+  for (const s of runs.slice().reverse()) svg.append(sv('polyline', { points: ser(s).map((v, i) => `${X(i)},${Y(v)}`).join(' '), fill: 'none', stroke: s.color, 'stroke-width': s.id === 'plan' ? 2.6 : 1.8, opacity: s.id === 's24' ? .8 : 1 }));
+  const cross = sv('line', { y1: m.t, y2: H - m.b, stroke: 'var(--ink3)', 'stroke-dasharray': '3 3', visibility: 'hidden' }); svg.append(cross);
+  const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' });
+  hit.addEventListener('mousemove', ev => { const bb = svg.getBoundingClientRect(); const px = (ev.clientX - bb.left) / bb.width * W; const i = Math.max(0, Math.min(n - 1, Math.round((px - m.l) / (W - m.l - m.r) * (n - 1)))); cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('visibility', 'visible'); let html = `<div class="t">${R.months[P.start + i]} · 第 ${i + 1} 个月</div>`; for (const s of runs) html += `<div class="r"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${s.color};margin-right:6px"></i>${s.name}</span><b>${money(ser(s)[i])}</b></div>` + (P.view === 'deployed' && s.r.values[i] - s.r.deployed[i] > 1 ? `<div class="r" style="color:var(--ink3)"><span>　未进场现金</span><span class="num">${money(s.r.values[i] - s.r.deployed[i])}</span></div>` : ''); html += `<div class="r" style="color:var(--ink3)"><span>累计投入</span><span class="num">${money(runs[0].r.invested[i])}</span></div>`; showTip(ev.clientX, ev.clientY, html); });
+  hit.addEventListener('mouseleave', () => { cross.setAttribute('visibility', 'hidden'); hideTip(); }); svg.append(hit);
+  c.append(svg);
+  // drawdown strip
+  const d = $('#ddChart'); d.innerHTML = '';
+  const H2 = 90, m2 = { l: 62, r: 16, t: 6, b: 6 };
+  const base0 = R.gEqIndex[P.start - 1]; let peak = 1; const dds = [];
+  for (let i = 0; i < n; i++) { const lvl = R.gEqIndex[P.start + i] / base0; if (lvl > peak) peak = lvl; dds.push(1 - lvl / peak); }
+  const maxdd = Math.max(0.35, ...dds);
+  const Y2 = v => m2.t + v / maxdd * (H2 - m2.t - m2.b);
+  const svg2 = sv('svg', { viewBox: `0 0 ${W} ${H2}` }); const ax2 = sv('g', { class: 'axis' });
+  for (const t of [0.1, 0.2, 0.3]) { ax2.append(sv('line', { x1: m2.l, x2: W - m2.r, y1: Y2(t), y2: Y2(t), 'stroke-dasharray': '2 3' })); const tx = sv('text', { x: m2.l - 8, y: Y2(t) + 4, 'text-anchor': 'end' }); tx.textContent = '−' + (t * 100) + '%'; ax2.append(tx); }
+  svg2.append(ax2);
+  svg2.append(sv('polygon', { points: [`${X(0)},${Y2(0)}`].concat(dds.map((v, i) => `${X(i)},${Y2(v)}`)).concat([`${X(n - 1)},${Y2(0)}`]).join(' '), fill: 'var(--s2)', opacity: .35 }));
+  const plan = runs[0].r; for (const f of plan.fired) { const t = sv('text', { x: X(f.m), y: Y2(0) + 10, 'text-anchor': 'middle', style: 'font:11px var(--mono);fill:var(--s1);font-weight:700' }); t.textContent = '▲' + f.rule; svg2.append(t); }
+  d.append(svg2);
+}
+function renderRoll() {
+  const c = $('#rollChart'); c.innerHTML = '';
+  const W = cw(c), H = 240, m = { l: 62, r: 16, t: 12, b: 28 }; const n = rows.length;
+  const diffs = rows.map(r => r.plan - r.lump); let lo = Math.min(0, ...diffs), hi = Math.max(0, ...diffs); const pad = (hi - lo) * .08; lo -= pad; hi += pad;
+  const yt = niceTicks(lo, hi, 5); lo = Math.min(lo, yt[0]); hi = Math.max(hi, yt[yt.length - 1]);
+  const X = i => m.l + i / n * (W - m.l - m.r), Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b), bw = (W - m.l - m.r) / n;
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}` }); const ax = sv('g', { class: 'axis' });
+  for (const t of yt) { ax.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) })); const tx = sv('text', { x: m.l - 8, y: Y(t) + 4, 'text-anchor': 'end' }); tx.textContent = mAxis(t); ax.append(tx); }
+  rows.forEach((r, i) => { if (r.start.endsWith('-01') && (+r.start.slice(0, 4)) % 2 === 0) { const tx = sv('text', { x: X(i), y: H - 8, 'text-anchor': 'middle' }); tx.textContent = r.start.slice(0, 4); ax.append(tx); } });
+  svg.append(ax); svg.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0), stroke: 'var(--ink3)' }));
+  rows.forEach((r, i) => { const v = r.plan - r.lump; const rect = sv('rect', { x: X(i), y: Math.min(Y(0), Y(v)), width: Math.max(1, bw - .5), height: Math.abs(Y(v) - Y(0)), fill: v >= 0 ? 'var(--s3)' : 'var(--s2)', opacity: i === P.start - 1 ? 1 : .8 }); rect.addEventListener('mousemove', ev => showTip(ev.clientX, ev.clientY, `<div class="t">起点 ${r.start} · ${P.horizon / 12} 年</div><div class="r"><span>计划</span><b>${money(r.plan)}</b></div><div class="r"><span>一次性</span><b>${money(r.lump)}</b></div><div class="r"><span>差</span><b>${money(v)}</b></div><div class="r"><span>触发</span><b>${r.firedRules || '—'}</b></div>`)); rect.addEventListener('mouseleave', hideTip); rect.addEventListener('click', () => { P.start = i + 1; $('#startRange').value = P.start; drawDetail(); }); svg.append(rect); });
+  c.append(svg);
+  const win = rows.filter(r => r.plan > r.lump).length; const fired = rows.filter(r => r.fired > 0); const fw = fired.filter(r => r.plan > r.lump).length; const nf = rows.filter(r => r.fired === 0); const nfw = nf.filter(r => r.plan > r.lump).length;
+  $('#rollText').innerHTML = `点一根柱可以跳到那个起点。计划领先 ${win}/${rows.length}。触发器动过的 ${fired.length} 个起点里计划领先 ${fw} 个（中位差 ${money(BT.q(fired.map(r => r.plan - r.lump), .5))}）；没动过的 ${nf.length} 个里领先 ${nfw} 个（中位差 ${money(BT.q(nf.map(r => r.plan - r.lump), .5))}）——分批只在「入场期真的跌了」时赚回保费。`;
+}
+function renderSummary() {
+  const T = $('#sumTable'); T.innerHTML = '';
+  const q = BT.q; const cols = [['plan', '计划'], ['lump', '一次性'], ['s12', '分 12 个月'], ['s24', '分 24 个月']];
+  T.append(el('thead', {}, el('tr', {}, el('th', {}, `${P.horizon / 12} 年 · ${rows.length} 个起点`), ...cols.map(c => el('th', {}, c[1])))));
+  const tb = el('tbody');
+  const line = (label, f, fmt) => tb.append(el('tr', {}, el('td', {}, label), ...cols.map(c => el('td', { class: 'num' }, fmt(f(c[0]))))));
+  line('期末 中位', k => q(rows.map(r => r[k]), .5), money);
+  line('期末 最差起点', k => Math.min(...rows.map(r => r[k])), money);
+  line('期末 最好起点', k => Math.max(...rows.map(r => r[k])), money);
+  line('相对一次性 中位差', k => q(rows.map(r => r[k] - r.lump), .5), money);
+  line('相对一次性 P10 差', k => q(rows.map(r => r[k] - r.lump), .1), money);
+  line('相对一次性 P90 差', k => q(rows.map(r => r[k] - r.lump), .9), money);
+  line('领先一次性的起点', k => rows.filter(r => r[k] > r.lump).length / rows.length, v => pct(v));
+  const min24 = { plan: 'planMin24', lump: 'lumpMin24' };
+  tb.append(el('tr', {}, el('td', {}, '前 24 个月最低点 中位'), ...cols.map(c => el('td', { class: 'num' }, min24[c[0]] ? money(q(rows.map(r => r[min24[c[0]]]), .5)) : '—'))));
+  tb.append(el('tr', {}, el('td', {}, '前 24 个月最低点 最差'), ...cols.map(c => el('td', { class: 'num' }, min24[c[0]] ? money(Math.min(...rows.map(r => r[min24[c[0]]]))) : '—'))));
+  const mdd = { plan: 'planMdd', lump: 'lumpMdd' };
+  tb.append(el('tr', {}, el('td', {}, '组合最大回撤 中位 / 最差'), ...cols.map(c => el('td', { class: 'num' }, mdd[c[0]] ? `${pct(q(rows.map(r => r[mdd[c[0]]]), .5))} / ${pct(Math.min(...rows.map(r => r[mdd[c[0]]])))}` : '—'))));
+  T.append(tb);
+}
+function renderFamous() {
+  const T = $('#famousTable'); T.innerHTML = '';
+  T.append(el('thead', {}, el('tr', {}, ...['起点', '发生了什么', '1 年后 计划 / 一次性', '1 年内最低 计划 / 一次性', '5 年后 计划 / 一次性', '10 年后 计划 / 一次性', '触发'].map(h => el('th', {}, h)))));
+  const F = [['2004-01', '平稳上行'], ['2007-10', '金融危机前的顶'], ['2008-09', '雷曼倒闭'], ['2009-03', '大底（最坏的分批起点）'], ['2011-04', '欧债危机前'], ['2015-05', 'A 股崩盘 / 油价'], ['2018-01', '波动率事件 + Q4 下跌'], ['2020-01', '新冠前'], ['2020-03', '新冠底'], ['2021-12', '2022 股债双杀前'], ['2022-10', '2022 底']];
+  const tb = el('tbody');
+  for (const [st, what] of F) {
+    const s = R.months.indexOf(st); if (s < 1) continue; const cells = [el('td', { class: 'num' }, st), el('td', {}, what)]; let firedTxt = '—';
+    for (const hz of [12, 60, 120]) {
+      if (s + hz > R.months.length) { cells.push(el('td', {}, '—')); if (hz === 12) cells.push(el('td', {}, '—')); continue; }
+      const o = Object.assign(base(), { start: s, horizon: hz }); const plan = BT.run(R, o), lump = BT.run(R, Object.assign({}, o, { entryMonths: 0, triggers: false }));
+      cells.push(el('td', { class: 'num', style: plan.terminal > lump.terminal ? 'color:var(--good)' : '' }, `${money(plan.terminal)} / ${money(lump.terminal)}`));
+      if (hz === 12) { cells.push(el('td', { class: 'num' }, `${money(plan.minValue)} / ${money(lump.minValue)}`)); firedTxt = plan.fired.map(f => 'M' + (f.m + 1) + ':' + f.rule).join(' ') || '—'; }
+    }
+    cells.push(el('td', { class: 'num' }, firedTxt));
+    tb.append(el('tr', { class: s === P.start ? 'hl' : '' }, ...cells));
+  }
+  T.append(tb);
+}
+recompute();
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawDetail(); renderRoll(); }, 200); });
+})();
+</script>
+</body>
+</html>

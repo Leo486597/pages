@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>策略卡 v2：规则搜索与自动执行</title><style>
+:root{--bg:#F7F7F3;--paper:#fff;--ink:#1B2421;--ink2:#525E5A;--ink3:#8A948F;--line:#E2E6E1;--acc:#1B2421;--mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;--serif:"Songti SC","STSong","Noto Serif CJK SC","Noto Serif SC",Georgia,serif;--sans:-apple-system,"PingFang SC","Helvetica Neue","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 var(--sans)}
+.nav{max-width:920px;margin:0 auto;padding:16px 28px 0;font-size:13px;color:var(--ink3)}.nav a{color:var(--ink2)}
+.page{max-width:920px;margin:0 auto;padding:16px 28px 80px}.sheet{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:40px 48px}
+@media(max-width:700px){.sheet{padding:24px 18px}}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:700;line-height:1.3;margin:1.4em 0 .5em}h1{font-size:30px;margin-top:0}h2{font-size:22px;border-top:1px solid var(--line);padding-top:18px}h3{font-size:17px}h4{font-size:15px}
+p{margin:.6em 0}code{font-family:var(--mono);font-size:.9em;background:var(--bg);padding:1px 5px;border-radius:4px}pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.55}pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;display:block;overflow-x:auto}th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--bg);font-weight:600;color:var(--ink2);font-size:12.5px;white-space:nowrap}
+ul,ol{padding-left:1.4em}li{margin:.25em 0}hr{border:0;border-top:1px solid var(--line);margin:24px 0}a{color:var(--ink)}blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:var(--ink2)}
+.foot{font-size:12px;color:var(--ink3);margin-top:22px}
+</style></head>
+<body><div class="nav"><a href="index.html">← 目录</a></div><div class="page"><div class="sheet"><h1>策略卡 v2：什么时候加仓、什么时候平稳、什么时候加速——按所有起点搜出来的规则</h1>
+<p>写于 2026-08-17。搜索代码 <code>backtest/optimize.js</code>（543 条规则）+ <code>backtest/optimize2.js</code>（再平衡 / 抄底规则）；结果 <code>backtest/strategy_results*.json</code>。可自动执行的版本：<code>strategy/agent.py</code> + <code>strategy/rules.json</code>（§4）。</p>
+<hr>
+<h2>0. 结论</h2>
+<p><b>「无论何时入场都最优」的规则不是一条择时规则，而是一套「尽快进场 + 固定定投 + 宽带宽机械再平衡」的纪律。</b> 我把规则族参数化（入场节奏 × 回撤触发器 × 均线调速 × 机会储备金 × 再平衡方式），在真实 2004–2026 的每一个起点、再加 1,100 条自助抽样出的替代历史上跑，用风险厌恶效用（CRRA，γ=3；也看了 γ=1 和 5）打分。结果非常一致：</p>
+<table><thead><tr><th>规则族里的旋钮</th><th>对效用的影响（相对一次性 = 1.0000）</th><th>判断</th></tr></thead><tbody><tr><td>入场节奏 N</td><td>N=3：0.9927 · N=6：0.9902 · N=12：0.9863 · N=24：0.9794（各参数下平均）</td><td><b>越快越好；每多等 6 个月约付 0.3–0.4%</b></td></tr><tr><td>回撤触发器（10/20/30 等 5 种）</td><td>0.9865–0.9867，与「无」无差别</td><td><b>对期望中性</b>，只在行为上有价值</td></tr><tr><td>均线调速：均线下 ×2</td><td>+0.0004（唯一为正的调速）</td><td>微弱正向，可用</td></tr><tr><td>均线调速：新高时减速 ×0.5</td><td>−0.0007 ~ −0.0011</td><td><b>负向，不做</b></td></tr><tr><td>机会储备金 5% / 10%</td><td>−0.5% / −1.0%</td><td><b>负向，不做</b></td></tr><tr><td>再平衡：10% 带宽（每月查）vs 每年一次</td><td><b>+0.3%</b></td><td>正向，采用</td></tr><tr><td>再平衡：回撤 ≥15% 时股票 +10pp 倾斜</td><td>真实样本中位 +2%，但自助样本 CE −0.2%、P10 更低</td><td>不稳健，不做</td></tr><tr><td>再平衡：回撤 ≥30% 时股票 +15pp</td><td>真实 CE +0.5%，自助 CE −1.2%</td><td>不稳健，不做</td></tr></tbody></table>
+<p>于是「最优解」长这样（§1）。它和 <a href="entry-plan-doc.html"><code>entry-plan.md</code></a> 的差别只有两处：股票层入场从 12 个月缩到 <b>6 个月</b>（省 0.5% 效用），再平衡从「每年一次」改成 <b>「每月查、偏离 &gt;10 个百分点才动」</b>（+0.3%）。触发器保留但不指望它赚钱。</p>
+<p>一句大白话：<b>加仓的时机由「权重偏离」决定，不由「感觉便宜」决定；平稳是默认状态；加速只发生在入场期。</b></p>
+<hr>
+<h2>1. 策略卡 v2</h2>
+<table><thead><tr><th>阶段</th><th>规则</th><th>触发条件</th><th>动作</th></tr></thead><tbody><tr><td><b>入场 · 安全层</b>（债 + 短债 + 现金，35%）</td><td>一次性</td><td>第 1 个月</td><td>全部买入</td></tr><tr><td><b>入场 · 黄金</b>（5%）</td><td>6 个月等额</td><td>每月</td><td>1/剩余月数</td></tr><tr><td><b>入场 · 股票层</b>（60%）</td><td><b>6 个月等额为底</b></td><td>每月同一天</td><td>剩余额度 ÷ 剩余月数</td></tr><tr><td></td><td>加速 ①：均线</td><td>信号（VWRA 新元价）低于 10 月均线</td><td>本月 <b>×2</b></td></tr><tr><td></td><td>加速 ②：回撤</td><td>自起投最高点回撤 ≥10% / ≥20% / ≥30%</td><td>本月 ×2 / 投剩余的一半 / 全部投入</td></tr><tr><td></td><td>平稳</td><td>创新高、涨得快</td><td><b>不减速</b>，按底速</td></tr><tr><td></td><td>硬上限</td><td>第 12 个月</td><td>剩余全部投入</td></tr><tr><td><b>入场之后 · 定投</b></td><td>固定</td><td>每月同一天</td><td>S$6,600 按目标比例；不因行情增减</td></tr><tr><td><b>入场之后 · 加仓 / 减仓</b></td><td><b>10% 带宽再平衡</b></td><td>每月查一次：任一层（安全 / 黄金 / 股票）权重偏离目标 &gt;10 个百分点</td><td>用当月定投 + 卖超配层，把所有层调回目标（股票跌多了 = 自动加仓；涨多了 = 自动减仓）</td></tr><tr><td></td><td>强制再平衡</td><td>每年 1 月</td><td>无论偏离多少，调回目标</td></tr><tr><td><b>不做</b></td><td>储备金等大跌 · 新高时放慢 · 回撤时额外倾斜股票 · 择时停投</td><td></td><td>数据说这些都是负的或不稳健的</td></tr></tbody></table>
+<p>参数都在 <code>strategy/rules.json</code>，改数字不改代码。</p>
+<hr>
+<h2>2. 证据</h2>
+<h3>2.1 评估集</h3>
+<table><thead><tr><th>集</th><th>内容</th><th>用途</th></tr></thead><tbody><tr><td>真实 10 年</td><td>2004-02 起每个月起投，152 个起点</td><td>真实序列相关性、真实危机</td></tr><tr><td>真实 5 年</td><td>212 个起点</td><td>更多起点</td></tr><tr><td>自助 10 年 ×400</td><td>把 272 个真实月度收益向量（7 个层联动）按平均 12 个月一块随机拼接成 400 条 10 年历史</td><td>「无论何时入场」——起点被随机化了；保留资产间相关性和年内动量</td></tr><tr><td>自助 10 年 ×400，压低均值</td><td>同上，但股票年化 −2%、黄金 −5%</td><td>「未来比过去差」的稳健性检验</td></tr><tr><td>自助 20 年 ×300</td><td>长持有期</td><td>再平衡规则的长期效果</td></tr></tbody></table>
+<p>打分：CRRA 效用的确定性等价（CE），γ=3，取 4 个集相对一次性的几何平均。也看 γ=1（对数效用）和 γ=5（很厌恶风险）——三种口径的排序几乎一样。</p>
+<h3>2.2 入场节奏 × 规则（真实 10 年 / 自助 10 年，S$，起始 60 万 + 每月 6,600）</h3>
+<table><thead><tr><th>规则</th><th>真实 中位</th><th>真实 P10</th><th>头两年最低（最差起点）</th><th>自助 中位</th><th>自助 P10</th><th>自助 CE(γ=3)</th><th>压低均值 CE</th><th>CE 相对一次性（真实 / 自助）</th></tr></thead><tbody><tr><td>一次性 + 年度再平衡</td><td>2,109k</td><td>1,907k</td><td>505k</td><td>2,223k</td><td>1,660k</td><td>2,082k</td><td>1,831k</td><td>1.0000 / 1.0000</td></tr><tr><td><b>一次性 + 10% 带宽</b></td><td>2,114k</td><td>1,919k</td><td>505k</td><td>2,234k</td><td>1,671k</td><td>2,089k</td><td>1,836k</td><td><b>1.0034 / 1.0033</b></td></tr><tr><td>3 个月 + 均线×2 + 10% 带宽</td><td>2,104k</td><td>1,914k</td><td>511k</td><td>2,228k</td><td>1,661k</td><td>2,084k</td><td>1,834k</td><td>1.0018 / 1.0013</td></tr><tr><td><b>6 个月 + 触发器 + 均线×2 + 10% 带宽（策略卡 v2）</b></td><td>2,100k</td><td>1,910k</td><td><b>518k</b></td><td>2,225k</td><td>1,664k</td><td>2,078k</td><td>1,831k</td><td><b>0.9992 / 0.9980</b></td></tr><tr><td>同上 + 回撤 30% 股票倾斜 +15pp</td><td>2,102k</td><td>1,938k</td><td>492k</td><td>2,227k</td><td>1,664k</td><td>2,056k</td><td>1,818k</td><td>1.0052 / 0.9877 ← 不稳健</td></tr><tr><td>12 个月 + 触发器 + 年度（<a href="entry-plan-doc.html"><code>entry-plan.md</code></a> 原计划）</td><td>2,096k</td><td>1,892k</td><td>535k</td><td>2,208k</td><td>1,646k</td><td>2,061k</td><td>1,821k</td><td>0.9919 / 0.9901</td></tr><tr><td>12 个月 + 触发器 + 均线×2 + 10% 带宽</td><td>2,090k</td><td>1,896k</td><td>532k</td><td>2,209k</td><td>1,648k</td><td>2,069k</td><td>1,827k</td><td>0.9949 / 0.9937</td></tr></tbody></table>
+<p>读法：</p>
+<ul><li>从上到下就是「舒适度的价签」：一次性 → 3 个月 → 6 个月 → 12 个月，每一档约 0.2–0.5% 的效用，换的是「头两年最低点」从 505k → 511k → 518k → 535k。策略卡选 6 个月：付 0.2–0.5%，买到 +13k 的最坏情况保护 + 一个可执行的入场流程。心理上需要 12 个月的人，价签是再 0.5%。</li><li>10% 带宽再平衡在每一行都加 0.3%（对比同节奏的年度再平衡）：它在股票相对跌 25–30% 时会自动从债 / 现金里买回股票，在涨多了时自动卖——<b>这就是「什么时候加仓」的数学答案，而且不需要预测</b>。</li><li>「回撤倾斜加仓」（跌了不只买回目标、还额外超配）在真实样本里赚了（因为 2009、2020 都是 V 形），在随机化起点的自助样本里亏了——典型的过拟合信号，所以不进策略卡。</li></ul>
+<h3>2.3 触发器到底有没有用</h3>
+<p>543 条规则里，5 种触发器参数的平均分 0.9865–0.9867，「无触发器」0.9867。触发器动过的起点里胜负大约 55:45，中位差 +1–2k。<b>它不是收益工具，是行为工具</b>：跌的时候手里有一条写死的规则，比「再看看」强。保留。</p>
+<h3>2.4 为什么「尽快进场」在效用上赢，但策略卡还是留了 6 个月</h3>
+<p>CE 打分只看 10 年后的财富分布，看不见「第 3 个月账户 −12% 时的那个晚上」。60/40 组合本身已经把回撤压到 −9%（中位）/ −24%（最差），所以在数学上多等是净成本；6 个月是我在数学（0.2–0.5%）和执行现实（一对第一次投 60 万的夫妇）之间选的点。这个选择在 <code>strategy/rules.json</code> 里是一个数字，随时可以改成 3 或 12。</p>
+<hr>
+<h2>3. 局限（照旧诚实）</h2>
+<ul><li>规则族是我定义的；没有搜过「按估值（CAPE）调速」「按波动率调仓」等，那些在文献里对个人投资者也基本是中性的，但没在这里验证。</li><li>自助抽样打乱了跨年份的长周期结构（比如 2008 后 13 年的长牛），保留了年内结构。压低均值的集是对「未来更差」的粗糙检验，不是预测。</li><li>效用函数是 CRRA 终值；没有对路径痛苦（回撤持续时间）建模。</li><li>新加坡短期利率近似年表、REIT 并入新加坡股、汇率起点 2003-12——与 <a href="backtest-doc.html"><code>backtest.md</code></a> 相同。</li></ul>
+<hr>
+<h2>4. 写成代码、自动运行</h2>
+<h3>4.1 文件</h3>
+<table><thead><tr><th>文件</th><th>作用</th></tr></thead><tbody><tr><td><code>strategy/rules.json</code></td><td>策略卡的全部参数（金额、比例、工具代码、入场月数、触发器、均线、带宽）</td></tr><tr><td><code>strategy/state.json</code></td><td>状态：起投月、持仓（份数 / 现金金额）、未进场现金、入场进度、已记账月份、历史</td></tr><tr><td><code>strategy/agent.py</code></td><td>每月跑一次：拉最新价（Yahoo：VWRA.L / ES3.SI / CLR.SI / AGGU.L / IGLN.L / SGD=X），算信号（VWRA 新元价、10 月均线、自起投最高点回撤），按策略卡生成<b>本月动作清单</b>（入场买入 / 定投 / 再平衡买卖，金额 + 约合份数），写 <code>strategy/log/YYYY-MM.md</code></td></tr></tbody></table>
+<h3>4.2 用法</h3>
+<pre><code>python3 strategy/agent.py --init 2026-09        # 起投月（资金到账的下一个月）
+python3 strategy/agent.py                        # 每月：看这个月该做什么（不改状态）
+python3 strategy/agent.py --apply                # 在券商执行完之后：按建议价记账
+python3 strategy/agent.py --set gEq=180.03 sgEq=1725 cash=30000   # 用真实持仓（份数 / 新元）覆盖记账</code></pre>
+<ul><li>同一个月重复运行只更新那份日志；<code>--apply</code> 同月只记一次。</li><li>现金类（SSB / T-bill / 高息户）按新元金额记，不拉价。</li><li>已用 2026-08 的真实行情干跑过：信号 VWRA 新元 249.96、10 月均线 229.91（之上）、回撤 0% → 第 1 个月动作 = 安全层 21 万 + 黄金 5k + 股票层 6 万（45k VWRA / 10k ES3 / 5k CLR）+ 定投 6,600，合计 S$281,600。再平衡分支用伪造的失衡持仓测过（股票权重低 → 买股票卖债）。</li></ul>
+<h3>4.3 每月自动跑（macOS）</h3>
+<p>crontab（<code>crontab -e</code>）——每月 3 号早上 9 点：</p>
+<pre><code>0 9 3 * * cd /Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell &amp;&amp; /usr/bin/python3 strategy/agent.py &gt;&gt; strategy/log/cron.out 2&gt;&amp;1</code></pre>
+<p>或 launchd：把下面存为 <code>~/Library/LaunchAgents/sg.clavon.strategy.plist</code>，<code>launchctl load</code> 一次。</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;sg.clavon.strategy&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;&lt;array&gt;&lt;string&gt;/usr/bin/python3&lt;/string&gt;&lt;string&gt;strategy/agent.py&lt;/string&gt;&lt;/array&gt;
+  &lt;key&gt;WorkingDirectory&lt;/key&gt;&lt;string&gt;/Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell&lt;/string&gt;
+  &lt;key&gt;StartCalendarInterval&lt;/key&gt;&lt;dict&gt;&lt;key&gt;Day&lt;/key&gt;&lt;integer&gt;3&lt;/integer&gt;&lt;key&gt;Hour&lt;/key&gt;&lt;integer&gt;9&lt;/integer&gt;&lt;key&gt;Minute&lt;/key&gt;&lt;integer&gt;0&lt;/integer&gt;&lt;/dict&gt;
+  &lt;key&gt;StandardOutPath&lt;/key&gt;&lt;string&gt;/Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell/strategy/log/launchd.out&lt;/string&gt;
+  &lt;key&gt;StandardErrorPath&lt;/key&gt;&lt;string&gt;/Users/leo/Documents/finantial-analysi/case-study-clavon-buy-or-sell/strategy/log/launchd.err&lt;/string&gt;
+&lt;/dict&gt;&lt;/plist&gt;</code></pre>
+<p>它不会替你下单（也不该）：它产出的是当月那张「动作清单」，你在券商执行后 <code>--apply</code> 记账。这一步的人工确认是有意保留的。</p>
+<h3>4.4 想改规则</h3>
+<p>改 <code>strategy/rules.json</code> 即可；要重新验证某个改动是否更好，把参数填进 <code>backtest/optimize2.js</code> 的 <code>ENTRIES</code> / <code>REBALS</code> 跑一遍（<code>node backtest/optimize2.js</code>，约 30 秒），看 CE 相对一次性的分数——只有在真实和自助两个集上都 ≥ 现有规则才采用。这就是「策略升级」的流程，也写死了。</p><p class="foot">由 strategy.md 生成 · 源文件、数据与脚本在本机 case-study-clavon-buy-or-sell/ 目录。</p></div></div></body></html>
