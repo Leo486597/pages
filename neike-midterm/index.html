@@ -11,6 +11,17 @@
 :root{--bg:#fbfbf9;--fg:#111;--mute:#6b6b66;--line:#dcdcd6;--red:#e3120b;--ok:#1d7a3a;--warn:#b86e00;--soft:#f0f0ec;
   --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --cn:-apple-system,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif}
+.model{display:grid;gap:0;margin:12px 0}
+.model div{border:1.5px solid var(--fg);padding:10px 12px;margin-top:-1.5px}
+.model div b{font:800 15px/1.3 var(--cn)}.model div span{display:block;font-size:14px;color:var(--mute)}
+.model .arr{border:0;padding:2px 0 2px 16px;margin:0;color:var(--red);font-weight:700;font-size:13px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;margin:10px 0}
+.vs div{background:var(--soft);padding:10px}
+.tag{display:inline-block;font-size:12px;padding:1px 6px;border:1px solid var(--mute);color:var(--mute);margin-left:4px}
+details.intro{border:2px solid var(--fg);padding:0 14px;margin:16px 0}
+details.intro>summary{cursor:pointer;font:800 16px/1.3 var(--cn);padding:12px 0;list-style:none}
+details.intro>summary::-webkit-details-marker{display:none}
+details.intro>summary::after{content:" ＋";color:var(--red)}details.intro[open]>summary::after{content:" －"}
 @media (prefers-color-scheme:dark){:root{--bg:#121211;--fg:#f2f2ee;--mute:#9a9a93;--line:#34342f;--red:#ff4136;--ok:#45c06a;--warn:#f0a020;--soft:#1d1d1b;color-scheme:dark}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
@@ -143,6 +154,26 @@ function weakPoints(n){const out=[];for(const c of Object.values(CH))for(const p
   if(s.n>=2)out.push({c,p,qs,s,m:(s.ok+1)/(s.n+2)})}return out.sort((a,b)=>a.m-b.m).slice(0,n)}
 function mock(n){const all=Object.values(Q).filter(q=>q.t!=="多选"||Math.random()<.3);return shuffle(all).slice(0,n)}   // 多选 rarer, like the 作业 paper (A + B 型 only)
 let sortWeak=false;
+const TYPES=[["0","总论","每个病都走同一条链: 病因 → 病机 → 证 → 治法 → 方。后面 7 类反复用到的病邪 (六淫、内风、痰、瘀) 和各脏病机，在这里先学一次。"],
+ ["1","气机逆乱","肺气、胃气本该往下走，反冲上来就是 咳 喘 哮 呕 痛 痞。治法都带「降、顺、通」。"],
+ ["2","痰浊伏邪","痰平时藏着，遇诱因被引发，跟着气走到哪里就病在哪里 (哮 痫 癫狂 眩晕 肺胀)。发作治标，平时治本。"],
+ ["3","本虚标实","底子虚 (气阴阳精血) + 上面压着实邪 (痰 瘀 水 火 风)。补虚泻实，先看缓急。"],
+ ["4","实邪阻窍","风 火 痰 瘀 往上冲，扰乱或蒙住脑和心神 (中风 痴呆 癫狂 痫 头痛 眩晕 不寐)。同一种邪在不同病里用同一路方。"],
+ ["5","中焦阻滞","胃以通降为顺，从食道到胃脘哪里堵住就 痛 痞 呕 噎。治法核心是「通」。"],
+ ["6","津气耗伤","津、阴、气被耗，脏腑失养 (不荣)。滋阴生津、益气养阴，忌燥热苦寒。"],
+ ["7","外邪侵袭","以风为首的外邪打到哪里 (肺卫、头、胃)，哪里就不通不宣。先辨风寒 / 风热 / 夹湿，再祛邪。"]];
+const INTRO=`<p><b>为什么不一章一章学？</b>22 个病、150 多个证，一章一章背，背到后面前面就混了。而选择题的干扰项，恰恰是<mark>别的病里长得像的证</mark>。</p>
+<div class="vs"><div><b>以前: 按章</b><br>感冒 → 咳嗽 → 哮病 → …<br>每章从头背到尾，病和病之间没有连起来</div><div><b>现在: 按类</b><br>先学一个病机，再看它在几个病里各长什么样<br>学一次，认出好几处</div></div>
+<p><b>七类是怎么分的：</b>每个病都是同一条链 病因 → <b>病机</b> → 证 → 治法 → 方。七类就是<mark>按「病机」这一环</mark>把病分组：病机相同的病放一起。</p>
+<div class="tbl"><table><thead><tr><th>类</th><th>一句话病机</th></tr></thead><tbody>${TYPES.map(t=>`<tr><td>${t[0]} ${t[1]}</td><td>${t[2]}</td></tr>`).join("")}</tbody></table></div>
+<p><b>一个病会出现在好几类。</b>因为一个病有好几个证，证不同病机就不同。比如 眩晕：痰湿中阻证在 2 (痰浊)，气血亏虚、肾精不足在 3 (本虚)，肝阳上亢、瘀血阻窍在 4 (实邪上扰)。第一次学完，后面再遇到就是换个角度复习，进度是同一份。</p>
+<p><b>四层，从大到小：</b></p>
+<div class="model"><div><b>类 · 共同病机</b><span>开篇课: 这几个病哪里一样、最容易混的 3 对</span></div><div class="arr">↓ 主症定病</div>
+<div><b>章 · 一个病</b><span>进度、预计掌握、学习时长</span></div><div class="arr">↓ 拆成考点</div>
+<div><b>考点 · 一个能出题的点</b><span>一个证型 (或 2-3 个易混的证放一起)，或 概念 / 病机 / 鉴别。2 分钟讲解，看「辨点」</span></div><div class="arr">↓ 练</div>
+<div><b>题 · 题库里考这个点的题</b><span>即时对错 + 解析；错题 1 / 3 / 7 天后回来</span></div></div>
+<p><b>考试时反过来用：</b>病例题 (占 29%) 给你症状 → 先认出病机 (类) → 主症定病 → 辨点定证 → 选方。干扰项多半是同一类里别的证，所以一起学正好练鉴别。</p>
+<p><b>每天怎么用：</b>① 首页「复习」先做该复习的 → ② 今天的类: 读开篇课 → ③ 每章每个考点: 先读讲解，再「练这个考点」 → ④ 章节「推荐 10 题」查漏。</p>`;
 function home(){
   cur=null;
   const all=Object.values(Q),s=stats(all),due=all.filter(q=>isDue(q.id)),wrong=all.filter(q=>isWrong(q.id));
@@ -156,6 +187,8 @@ function home(){
   const order=sortWeak?[{name:"按预计掌握, 最低在前",cs:Object.keys(CH).sort((a,b)=>est(CH[a].q)-est(CH[b].q))}]:rows;
   app.innerHTML=`<div class="k">中医内科学 · 十四五 · <b>期中 10-30</b> · 还有 ${left} 天</div><h1>总论 → 噎膈</h1>
   <div class="stats"><div><b>${s.n}</b><span>已做 / ${all.length}</span></div><div><b>${estP(all)}</b><span>预计掌握</span></div><div><b>${due.length}</b><span>今天该复习</span></div><div><b>${fmtT(Object.values(st.t).reduce((a,b)=>a+b,0))}</b><span>累计学习</span></div></div>
+  <details class="intro" ${st.intro?"":"open"}><summary>先看这个: 为什么分成 7 类，怎么学</summary><div class="teach">${INTRO}</div>
+  <button class="btn ghost" id="gotit" style="margin-bottom:14px">${st.intro?"收起":"知道了，收起"}</button></details>
   <h2>今天</h2>
   ${plan?`<div class="frame"><b>${plan[0]}</b> · ${esc(plan[1])}</div>`:""}
   ${plan&&typeof plan[2]==="number"?`<button class="btn red" id="today">开始: ${plan[2]} ${esc(D.parts[plan[2]].name)}</button>`:""}
@@ -179,6 +212,7 @@ function home(){
   $("#today")&&($("#today").onclick=()=>location.hash="#/p/"+plan[2]);
   $("#mock")&&($("#mock").onclick=()=>start("模拟 50 题",mock(50)));
   $("#mock2").onclick=()=>start("模拟 50 题",mock(50));
+  $("#gotit").onclick=()=>{st.intro=1;save();$("details.intro").open=false};
   $("#s1").onclick=()=>{sortWeak=false;home()};$("#s2").onclick=()=>{sortWeak=true;home()};
   $("#due").onclick=()=>start("今天该复习",recommend(due,20));
   $("#wrong").onclick=()=>location.hash="#/w";
@@ -196,11 +230,13 @@ function part(i){
   const p=D.parts[i];lastPart=i;cur="part:"+p.k;const qs=partQs(p);
   app.innerHTML=`<button class="back" onclick="location.hash='#/'">← 全部</button>
   <div class="big">${i}</div><h1>${esc(p.name)}</h1>
-  ${p.frame?`<div class="frame teach">${tbl(p.frame)}</div>`:""}
+  <p class="mute">${esc((TYPES[i]||[])[2]||"")}</p>
+  ${p.frame?`<h2>开篇课: 这一类哪里一样</h2><div class="frame teach">${tbl(p.frame)}</div>`:""}
+  <p class="mute">读完开篇课，按下面的章节顺序：每章每个考点先读讲解再练。标「学过」的章在前面的类出现过，这里换个角度复习，进度共用。</p>
   <div class="btns"><button class="btn red" id="rec">推荐 10 题</button><button class="btn ghost" id="all">全部 ${qs.length} 题</button></div>
   <h2>章节</h2>${p.ch.map(code=>{const c=CH[code],s=stats(c.q),need=c.q.filter(q=>isDue(q.id)).length;
     return `<button class="row" data-c="${code}"><span class="n" style="font-size:15px">${code.slice(-2)}</span><span><span class="t">${esc(c.name)}</span>
-      <br><span class="s">${c.points.length} 个考点 · ${c.q.length} 题${need?` · <b style="color:var(--red)">该复习 ${need}</b>`:""}</span><div class="bar"><i style="width:${s.n/s.total*100}%"></i></div></span>
+      ${(f=>f<i?`<span class="tag">第 ${f} 类学过</span>`:"")(D.parts.findIndex(x=>x.ch.includes(code)))}<br><span class="s">${c.points.length} 个考点 · ${c.q.length} 题${need?` · <b style="color:var(--red)">该复习 ${need}</b>`:""}</span><div class="bar"><i style="width:${s.n/s.total*100}%"></i></div></span>
       <span class="r">${s.n}/${s.total}<br>掌握 ${estP(c.q)}<br><span class="mute">${fmtT(st.t[code])}</span></span></button>`}).join("")}`;
   app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>location.hash="#/c/"+b.dataset.c);
   $("#rec").onclick=()=>start(p.name+" · 推荐",recommend(qs));
@@ -214,7 +250,7 @@ function chapter(code){
   <div><b>${pct(cs)}</b><span>已做的正确率</span></div><div><b>${fmtT(st.t[code])}</b><span>本章学习时长</span></div></div>
   <div class="btns"><button class="btn red" id="rec">推荐 10 题</button><button class="btn ghost" id="all">全部 ${c.q.length} 题</button></div>
   ${wrong.length?`<button class="btn ghost" id="wr">这章错题 ${wrong.length}</button>`:""}
-  <h2>考点</h2><div class="legend"><span><i class="dot"></i>没做</span><span><i class="dot weak"></i>&lt;60%</span><span><i class="dot mid"></i>60–80%</span><span><i class="dot good"></i>≥80%</span></div>
+  <h2>考点</h2><p class="mute">一个考点 = 一个能出题的知识点。从上往下: 先概念、病机、鉴别，再一个个证型。点开读 2 分钟讲解 (红字是辨点)，再练这个考点的题。</p><div class="legend"><span><i class="dot"></i>没做</span><span><i class="dot weak"></i>&lt;60%</span><span><i class="dot mid"></i>60–80%</span><span><i class="dot good"></i>≥80%</span></div>
   ${c.points.map(p=>{const qs=c.q.filter(q=>q.p===p.id),s=stats(qs),todo=qs.filter(q=>!rec(q.id)||isWrong(q.id));
     return `<details class="pt"><summary><i class="dot ${lvl(s)}"></i><span><b>${esc(p.name)}</b> <span class="mute">${qs.length} 题</span></span><span class="r mute">${s.n?`${s.ok}/${s.n}`:""}</span></summary>
       <div class="body">${p.teach?`<div class="teach">${tbl(p.teach)}</div>`:""}${p.src?`<div class="src">来源: ${esc(p.src)}</div>`:""}
