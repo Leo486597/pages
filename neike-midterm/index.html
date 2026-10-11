@@ -29,9 +29,9 @@ main{max-width:600px;margin:0 auto;padding:0 var(--s-12) calc(env(safe-area-inse
 button{font:inherit;color:inherit}
 a{color:inherit;text-decoration:none}
 /* top bar: 目录 on the left, back next to it */
-.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:var(--s-16);margin:0 calc(-1 * var(--s-12));padding:calc(env(safe-area-inset-top) + var(--s-6)) var(--s-12) var(--s-6);background:#f5eddcf2;backdrop-filter:blur(8px);border-bottom:1px solid #00000010}
+.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:var(--s-16);margin:0 calc(-1 * var(--s-12));padding:calc(env(safe-area-inset-top) + var(--s-6)) var(--s-12) var(--s-6);background:#f5eddcf2;backdrop-filter:blur(8px);border-bottom:1px solid #00000010}
 .nb,.mb{all:unset;cursor:pointer;font:var(--t-base)/1 var(--kai);color:var(--brown);padding:var(--s-8) 0}
-.mb{display:inline-flex;align-items:center;gap:var(--s-6)}
+.mb{display:inline-flex;align-items:center;justify-content:center;min-width:var(--h-row);min-height:var(--h-row);margin-right:calc(-1 * var(--s-8))}
 .hb{width:14px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;display:inline-block}
 .kick{font-size:var(--t-sm);color:var(--ink-soft);margin-top:var(--s-12)}
 h1{font:var(--t-2xl)/1.3 var(--kai);color:var(--ink);margin:var(--s-2) 0 var(--s-4)}
@@ -86,10 +86,10 @@ details.full>summary::-webkit-details-marker{display:none}details.full>summary::
 .src{font-size:var(--t-sm);color:var(--ink-soft);margin:var(--s-8) var(--s-4) 0}
 .pn{display:flex;justify-content:space-between;margin:var(--s-12) var(--s-4) 0;font-size:var(--t-md)}.pn a{color:var(--brown)}
 .foot{display:block;text-align:center;color:var(--ink-soft);font-size:var(--t-md);margin-top:var(--s-24)}
-/* 目录 drawer (left) */
-dialog#menu{margin:0;inset:0 auto 0 0;padding:0 var(--s-12) var(--s-32);border:0;width:min(86vw,400px);max-width:none;height:100%;max-height:none;color:var(--ink);overflow:auto;overscroll-behavior:contain;box-shadow:2px 0 24px rgba(80,55,25,.25);background:var(--paper)}
+/* 目录 drawer (right, under its icon) */
+dialog#menu{margin:0;inset:0 0 0 auto;padding:0 var(--s-12) var(--s-32);border:0;width:min(86vw,400px);max-width:none;height:100%;max-height:none;color:var(--ink);overflow:auto;overscroll-behavior:contain;box-shadow:-2px 0 24px rgba(80,55,25,.25);background:var(--paper)}
 dialog#menu::backdrop{background:rgba(43,33,24,.3)}
-dialog#menu[open]{animation:drawer .22s ease-out}@keyframes drawer{from{transform:translateX(-100%)}}@media (prefers-reduced-motion:reduce){dialog#menu[open]{animation:none}}
+dialog#menu[open]{animation:drawer .22s ease-out}@keyframes drawer{from{transform:translateX(100%)}}@media (prefers-reduced-motion:reduce){dialog#menu[open]{animation:none}}
 .mtop{position:sticky;top:0;z-index:2;background:var(--paper);padding-bottom:var(--s-2)}.mtop .bar{position:static;margin:0;justify-content:space-between;background:none;border:0}
 details.md{border-top:1px solid var(--line)}details.md:first-of-type{border-top:0}
 details.md>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:var(--s-8);min-height:var(--h-row);padding:0 var(--ind-0);background:var(--paper-2);font-size:var(--t-base)}
@@ -215,9 +215,9 @@ const chRow=(code,pi)=>{const c=CH[code],k=cnt([code]),due=c.q.filter(q=>isDue(q
     <span class="s">学过 ${k.read}/${k.n} 个考点${k.good?` · 掌握 ${k.good}`:""}${st.t[code]?" · "+fmtT(st.t[code]):""}${due?` · 该复习 ${due} 题`:""}${o.length?` · 也在第 ${o.join("、")} 类`:""}</span></span></a>`};
 function start(title,qs,pt){if(!qs.length)return;sess={title,list:qs.map(q=>q.id),i:0,ans:{},sel:"",back:location.hash||"#/",pt};location.hash="#/s";render()}
 /* Top bar on every page: back on the left, 目录 on the right (opens the whole map, from anywhere). */
-const navBack=(label,href)=>`<div class="bar"><button class="mb" data-menu aria-label="目录"><i class="hb"></i>目录</button>${href?`<a class="nb" href="${href}">‹ ${esc(label)}</a>`:""}</div>`;
+const navBack=(label,href)=>`<div class="bar">${href?`<a class="nb" href="${href}">‹ ${esc(label)}</a>`:"<span></span>"}<button class="mb" data-menu aria-label="目录"><i class="hb"></i></button></div>`;
 document.addEventListener("click",e=>{if(e.target.closest("[data-menu]"))openMenu()});
-/* 目录: a left drawer. 按章 by default, so every 考点 has exactly one place; it opens on the 考点 you are on,
+/* 目录: a drawer from the right (where its icon is). 按章 by default, so every 考点 has exactly one place; it opens on the 考点 you are on,
    or the last one you read, already expanded and scrolled into view. */
 function openMenu(){
   const d=$("#menu"),mode=st.menu||"ch",hm=location.hash.split("/");
@@ -237,7 +237,7 @@ function openMenu(){
   d.style.setProperty("--mt",d.querySelector(".mtop").offsetHeight+"px");   // open chapter header sticks under the 目录 bar
   const here=d.querySelector(".it.here")||d.querySelector("details[open]");
   d.scrollTop=0;here&&(d.scrollTop=here.offsetTop-d.clientHeight/3);
-  d.onclick=e=>{const r=d.getBoundingClientRect();if(e.clientX>r.right||e.target.closest("a"))d.close()};   // tap outside the drawer or on a link
+  d.onclick=e=>{const r=d.getBoundingClientRect();if(e.clientX<r.left||e.target.closest("a"))d.close()};   // tap outside the drawer or on a link
   d.querySelectorAll("[data-mm]").forEach(b=>b.onclick=()=>{st.menu=b.dataset.mm;save();openMenu()});
   $("#mx").onclick=()=>d.close();$("#mdue").onclick=()=>{const due=Object.values(Q).filter(q=>isDue(q.id));if(!due.length)return;d.close();start("该复习",recommend(due,20))};$("#mmock").onclick=()=>{d.close();start("模拟 50 题",mock(50))};
 }
