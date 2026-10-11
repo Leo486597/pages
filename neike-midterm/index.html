@@ -15,8 +15,6 @@
 .model div{border:1.5px solid var(--fg);padding:10px 12px;margin-top:-1.5px}
 .model div b{font:800 15px/1.3 var(--cn)}.model div span{display:block;font-size:14px;color:var(--mute)}
 .model .arr{border:0;padding:2px 0 2px 16px;margin:0;color:var(--red);font-weight:700;font-size:13px}
-.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;margin:10px 0}
-.vs div{background:var(--soft);padding:10px}
 .tag{display:inline-block;font-size:12px;padding:1px 6px;border:1px solid var(--mute);color:var(--mute);margin-left:4px}
 details.intro{border:2px solid var(--fg);padding:0 14px;margin:16px 0}
 details.intro>summary{cursor:pointer;font:800 16px/1.3 var(--cn);padding:12px 0;list-style:none}
@@ -35,9 +33,6 @@ h2{font:800 18px/1.3 var(--cn);margin:28px 0 8px;padding-top:10px;border-top:2px
 .big{font:900 64px/.9 var(--cn);color:var(--red)}
 .mute{color:var(--mute);font-size:14px}
 .back{all:unset;cursor:pointer;font:700 14px/1 var(--sans);color:var(--mute);padding:10px 0;display:inline-block}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);border-block:2px solid var(--fg);margin:16px 0}
-.stats div{padding:10px 0;border-bottom:1px solid var(--line)}.stats div:nth-last-child(-n+2){border-bottom:0}.stats b{display:block;font:800 24px/1.1 var(--sans);font-variant-numeric:tabular-nums}
-.stats span{font-size:12px;color:var(--mute)}
 .btn{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;text-align:center;font:700 16px/1 var(--cn);padding:15px 16px;background:var(--fg);color:var(--bg);margin:8px 0}
 .btn.red{background:var(--red);color:#fff}
 .btn.ghost{background:none;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}
@@ -47,7 +42,7 @@ h2{font:800 18px/1.3 var(--cn);margin:28px 0 8px;padding-top:10px;border-top:2px
 .row .n{font:900 26px/1 var(--cn);color:var(--red)}
 .row .t{font-weight:700}.row .s{font-size:13px;color:var(--mute);line-height:1.4}
 .row .r{font:700 13px/1.2 var(--sans);text-align:right;font-variant-numeric:tabular-nums}
-.bar{height:4px;background:var(--line);margin-top:6px}.bar i{display:block;height:100%;background:var(--fg)}
+.bar{display:block;height:4px;background:var(--line);margin-top:6px}.bar i{display:block;height:100%;background:var(--fg)}
 .frame{background:var(--soft);padding:12px 14px;margin:12px 0;border-left:3px solid var(--red)}
 .teach{font-size:16px}.teach p{margin:8px 0}.teach mark{background:none;color:var(--red);font-weight:700}
 .teach ul,.teach ol{padding-left:20px;margin:8px 0}
@@ -56,12 +51,8 @@ table{border-collapse:collapse;min-width:100%;font-size:14px}
 th{font:700 12px/1.3 var(--sans);text-align:left;border-bottom:2px solid var(--fg);padding:6px 8px 6px 0;white-space:nowrap}
 td{border-bottom:1px solid var(--line);padding:8px 8px 8px 0;vertical-align:top}
 td:first-child{min-width:4.5em;font-weight:700}
-details.pt{border-bottom:1px solid var(--line)}
-details.pt summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:center;padding:14px 0}
-details.pt summary::-webkit-details-marker{display:none}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--line)}
 .dot.weak{background:var(--red)}.dot.mid{background:var(--warn)}.dot.good{background:var(--ok)}
-.pt .body{padding:0 0 16px 24px}
 .src{font-size:12px;color:var(--mute);margin-top:6px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin:6px 0}
 .legend span{display:flex;gap:6px;align-items:center}
@@ -87,7 +78,36 @@ details.pt summary::-webkit-details-marker{display:none}
 .dock .in{max-width:680px;margin:0 auto}.dock .btn{margin:0}
 .tools{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
 .link{all:unset;cursor:pointer;font-size:14px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
-.btn:focus-visible,.opt:focus-visible,.row:focus-visible,.link:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.line{font-size:14px;color:var(--mute);margin:2px 0 10px}.line b{color:var(--fg);font-family:var(--sans)}
+.today{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:2px solid var(--fg);padding:10px 12px;margin:12px 0 8px}
+.today b{font-size:16px}.btn.sm{width:auto;padding:12px 18px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{all:unset;cursor:pointer;font:700 14px/1 var(--cn);padding:10px 14px;box-shadow:inset 0 0 0 1.5px var(--fg)}
+.chip.red{background:var(--red);color:#fff;box-shadow:none}.chip[disabled]{opacity:.35;cursor:default}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--fg);margin:22px 0 6px}
+.seg button{all:unset;cursor:pointer;text-align:center;padding:13px 0;font:800 16px/1 var(--cn)}
+.seg button[aria-selected=true]{background:var(--fg);color:var(--bg)}.seg small{font:700 11px var(--sans);color:var(--red);margin-left:4px}
+details.chb{border-bottom:1px solid var(--line)}
+details.chb>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px 1fr auto 16px;gap:10px;align-items:center;padding:14px 0}
+details.chb>summary::-webkit-details-marker{display:none}
+details.chb>summary::after{content:"＋";color:var(--red);font-weight:700}details.chb[open]>summary::after{content:"－"}
+.chb .n{font:900 15px/1 var(--sans);color:var(--red);white-space:nowrap}.chb .t{font-weight:700}.chb .s{font-size:13px;color:var(--mute);line-height:1.4}
+.chb>summary .r{font:800 16px/1.1 var(--sans);text-align:right}.chb>summary .r .s{font:12px var(--cn)}
+.chb>.chips{margin:0 0 4px 44px}
+.lyr{font:700 12px/1.4 var(--sans);color:var(--mute);letter-spacing:.04em;margin:14px 0 2px 44px}
+.prow{all:unset;cursor:pointer;display:grid;grid-template-columns:12px 1fr auto 10px;gap:10px;align-items:center;margin-left:44px;width:calc(100% - 44px);box-sizing:border-box;padding:12px 0;border-top:1px solid var(--line)}
+.prow .t{font-weight:600}.prow .r{font:600 13px var(--sans);color:var(--mute)}.prow::after{content:"›";color:var(--mute);font-weight:700}
+.hd{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}.hd .big{font-size:56px}.hd h1{margin:0;font-size:24px}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;font-size:14px}
+.pn a{color:var(--fg);text-decoration:none;border-top:2px solid var(--fg);padding-top:8px}.pn a:last-child{text-align:right}
+/* Phones: every table becomes a stack of cards; the column name is printed before each cell. */
+@media (max-width:640px){
+ .tbl{overflow:visible}.tbl table,.tbl tbody,.tbl tr,.tbl td{display:block;min-width:0}.tbl thead{display:none}
+ .tbl tr{border:1.5px solid var(--line);border-left:3px solid var(--fg);padding:8px 12px;margin:8px 0;background:var(--bg)}
+ .tbl td{border:0;padding:3px 0}.tbl td:first-child{font:800 16px/1.35 var(--cn);padding-bottom:4px;min-width:0}
+ .tbl td:not(:first-child):not([data-l=""])::before{content:attr(data-l);display:inline-block;min-width:3.4em;margin-right:8px;font:700 12px/1.6 var(--sans);color:var(--mute)}
+}
+.btn:focus-visible,.chip:focus-visible,.prow:focus-visible,.seg button:focus-visible,.opt:focus-visible,.row:focus-visible,.link:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -108,7 +128,8 @@ const fmtT=s=>{s=s||0;const h=s/3600|0,m=Math.round(s%3600/60);return h?`${h}h${
 const chT=codes=>codes.reduce((a,c)=>a+(st.t[c]||0),0);
 const save=()=>{try{localStorage.setItem("nk2",JSON.stringify(st))}catch(e){}};
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const tbl=h=>(h||"").replace(/<table>/g,'<div class="tbl"><table>').replace(/<\/table>/g,"</table></div>");
+const tbl=h=>(h||"").replace(/<table>([\s\S]*?)<\/table>/g,(_,t)=>{const hs=[...t.matchAll(/<th>([\s\S]*?)<\/th>/g)].map(m=>m[1].replace(/<[^>]+>/g,""));
+  return '<div class="tbl"><table>'+t.replace(/<tr>([\s\S]*?)<\/tr>/g,(_,r)=>{let i=0;return "<tr>"+r.replace(/<td>/g,()=>`<td data-l="${esc(hs[i++]||"")}">`)+"</tr>"})+"</table></div>"});
 const $=s=>document.querySelector(s),app=$("#app");
 const rec=id=>st.r[id];                                   // [answeredAt, ok 1/0, correct streak]
 const dueAt=r=>r[1]?r[0]+GAP[Math.min(r[2],3)]*DAY:r[0];
@@ -124,7 +145,7 @@ const pct=s=>s.n?Math.round(s.acc*100)+"%":"—";
    so a 考点 you have not tried counts as 50% and the estimate firms up as you answer more. Uses your latest answer per question. */
 function est(qs){const by={};for(const q of qs)(by[q.c+"|"+q.p]??=[]).push(q);let e=0;
   for(const g of Object.values(by)){const s=stats(g);e+=g.length/qs.length*(s.ok+1)/(s.n+2)}return qs.length?e:0}
-const estP=qs=>Math.round(est(qs)*100)+"%";
+const estP=qs=>stats(qs).n?Math.round(est(qs)*100)+"%":"—";   // nothing answered yet → no estimate
 
 /* What to practise next, from your own answers:
    1 due reviews (wrong ones first)  2 unseen questions in weak points (<80%)
@@ -162,58 +183,71 @@ const TYPES=[["0","总论","每个病都走同一条链: 病因 → 病机 → �
  ["5","中焦阻滞","胃以通降为顺，从食道到胃脘哪里堵住就 痛 痞 呕 噎。治法核心是「通」。"],
  ["6","津气耗伤","津、阴、气被耗，脏腑失养 (不荣)。滋阴生津、益气养阴，忌燥热苦寒。"],
  ["7","外邪侵袭","以风为首的外邪打到哪里 (肺卫、头、胃)，哪里就不通不宣。先辨风寒 / 风热 / 夹湿，再祛邪。"]];
-const INTRO=`<p><b>为什么不一章一章学？</b>22 个病、150 多个证，一章一章背，背到后面前面就混了。而选择题的干扰项，恰恰是<mark>别的病里长得像的证</mark>。</p>
-<div class="vs"><div><b>以前: 按章</b><br>感冒 → 咳嗽 → 哮病 → …<br>每章从头背到尾，病和病之间没有连起来</div><div><b>现在: 按类</b><br>先学一个病机，再看它在几个病里各长什么样<br>学一次，认出好几处</div></div>
-<p><b>七类是怎么分的：</b>每个病都是同一条链 病因 → <b>病机</b> → 证 → 治法 → 方。七类就是<mark>按「病机」这一环</mark>把病分组：病机相同的病放一起。</p>
-<div class="tbl"><table><thead><tr><th>类</th><th>一句话病机</th></tr></thead><tbody>${TYPES.map(t=>`<tr><td>${t[0]} ${t[1]}</td><td>${t[2]}</td></tr>`).join("")}</tbody></table></div>
-<p><b>一个病会出现在好几类。</b>因为一个病有好几个证，证不同病机就不同。比如 眩晕：痰湿中阻证在 2 (痰浊)，气血亏虚、肾精不足在 3 (本虚)，肝阳上亢、瘀血阻窍在 4 (实邪上扰)。第一次学完，后面再遇到就是换个角度复习，进度是同一份。</p>
-<p><b>四层，从大到小：</b></p>
-<div class="model"><div><b>类 · 共同病机</b><span>开篇课: 这几个病哪里一样、最容易混的 3 对</span></div><div class="arr">↓ 主症定病</div>
-<div><b>章 · 一个病</b><span>进度、预计掌握、学习时长</span></div><div class="arr">↓ 拆成考点</div>
-<div><b>考点 · 一个能出题的点</b><span>一个证型 (或 2-3 个易混的证放一起)，或 概念 / 病机 / 鉴别。2 分钟讲解，看「辨点」</span></div><div class="arr">↓ 练</div>
-<div><b>题 · 题库里考这个点的题</b><span>即时对错 + 解析；错题 1 / 3 / 7 天后回来</span></div></div>
-<p><b>考试时反过来用：</b>病例题 (占 29%) 给你症状 → 先认出病机 (类) → 主症定病 → 辨点定证 → 选方。干扰项多半是同一类里别的证，所以一起学正好练鉴别。</p>
-<p><b>每天怎么用：</b>① 首页「复习」先做该复习的 → ② 今天的类: 读开篇课 → ③ 每章每个考点: 先读讲解，再「练这个考点」 → ④ 章节「推荐 10 题」查漏。</p>`;
+const INTRO=`<p><b>进去以后都一样</b>：点开一个病 → 选一个考点 → 读 2 分钟讲解 → 练这个考点的题。两种学法只是<mark>病怎么排</mark>不同。</p>
+<p><b>按类学（推荐）</b>：把<mark>病机相同</mark>的病放在一起。比如「1 气机逆乱」= 咳嗽、喘证、哮病、呕吐、胃痛……选择题的干扰项，多半是别的病里长得像的证，放一起学正好练鉴别。</p>
+<p><b>按章学</b>：课本顺序，一个病一个病看。适合回查某一章、对着讲义复习。</p>
+<p><b>一个病会出现在好几类</b>：眩晕的痰湿中阻在 2 类，气血亏虚在 3 类，肝阳上亢在 4 类。第二次遇到就是换个角度复习，进度两边共用。</p>
+<div class="model"><div><b>类</b><span>病机相同的几个病 · 开篇课讲哪里一样</span></div><div class="arr">↓</div>
+<div><b>病（章）</b><span>进度、预计掌握、学习时长</span></div><div class="arr">↓</div>
+<div><b>考点</b><span>一个能出题的点：概念、病机、鉴别，或一个证型。红字 = 辨点</span></div><div class="arr">↓</div>
+<div><b>题</b><span>即时对错 + 解析；做错的 1 / 3 / 7 天后回来</span></div></div>
+<p><b>考试时反过来用</b>：症状 → 认出病机 → 主症定病 → 辨点定证 → 选方。</p>`;
+const MODE={type:"病机相同的病放一起学，专练选择题里最难分的相似证。",ch:"课本顺序，一个病一个病看，适合回查某一章。"};
+const num=c=>c<"04"?"总":+c.slice(0,2)+"-"+ +c.slice(3);   // lecture numbering: 4-1 感冒
+const OPEN=new Set();let listHash="#/";
+/* 考点 layers inside a chapter, so you see the structure before the list: 基础 → 证型 → 出处. Name-based. */
+function layer(code,name){
+  if(code==="03-00")return /^(风|寒|暑|湿|燥)/.test(name)?"病邪：六淫与内生五邪":/六经|卫气/.test(name)?"辨证体系":/气病|血与/.test(name)?"气血津液":"脏腑";
+  if(code<"04")return "";
+  return /医家|出处|调护|预防/.test(name)?"出处 · 调护":/概念|病因|病机|诊断|鉴别|治则|辨证|部位|分期|经络|惊悸|主症/.test(name)?"基础：概念 · 病机 · 鉴别 · 治则":"证型";
+}
+function ptList(code){
+  const c=CH[code];let last=null,h="";
+  for(const p of c.points){const L=layer(code,p.name),qs=c.q.filter(q=>q.p===p.id),s=stats(qs);
+    if(L&&L!==last){h+=`<div class="lyr">${esc(L)}</div>`;last=L}
+    h+=`<button class="prow" data-k="${code}/${p.id}"><i class="dot ${lvl(s)}"></i><span class="t">${esc(p.name)}</span><span class="r">${s.n}/${qs.length}</span></button>`}
+  return h}
+/* One block per disease, the same on the home page (按章) and on a type page (按类): tap to open its 考点. */
+function chBlock(code,pi){
+  const c=CH[code],s=stats(c.q),w=c.q.filter(q=>isWrong(q.id)).length,due=c.q.filter(q=>isDue(q.id)).length,f=pi==null?-1:D.parts.findIndex(x=>x.ch.includes(code));
+  return `<details class="chb" data-o="${code}" ${OPEN.has(code)?"open":""}><summary><span class="n">${num(code)}</span>
+    <span><span class="t">${esc(c.name)}</span>${f>=0&&f<pi?`<span class="tag">第 ${f} 类学过</span>`:""}${due?` <span class="s" style="color:var(--red)">该复习 ${due}</span>`:""}
+    <span class="bar"><i style="width:${s.n/s.total*100}%"></i></span><span class="s">${c.points.length} 个考点 · ${s.n}/${s.total} 题 · ${fmtT(st.t[code])}</span></span>
+    <span class="r">${estP(c.q)}<br><span class="s">掌握</span></span></summary>
+    <div class="chips"><button class="chip red" data-cr="${code}">本章推荐 10 题</button><button class="chip" data-ca="${code}">全部 ${s.total}</button>${w?`<button class="chip" data-cw="${code}">错题 ${w}</button>`:""}</div>
+    ${ptList(code)}</details>`}
+const LEGEND=`<div class="legend"><span><i class="dot"></i>没做</span><span><i class="dot weak"></i>&lt;60%</span><span><i class="dot mid"></i>60–80%</span><span><i class="dot good"></i>≥80%</span><span>数字 = 已做/题数</span></div>`;
 function home(){
-  cur=null;
-  const all=Object.values(Q),s=stats(all),due=all.filter(q=>isDue(q.id)),wrong=all.filter(q=>isWrong(q.id));
+  cur=null;listHash="#/";
+  const all=Object.values(Q),s=stats(all),due=all.filter(q=>isDue(q.id)),wrong=all.filter(q=>isWrong(q.id)),mode=st.mode||"type";
   const today=new Date(),md=String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
   const plan=PLAN.find(x=>x[0]===md)||(md<PLAN[0][0]?PLAN[0]:null),left=Math.max(0,Math.ceil((new Date(today.getFullYear(),9,30)-today)/DAY));
-  const wk=weakPoints(3);
-  const rows=SYS.map(([name,pre])=>{const cs=Object.keys(CH).filter(c=>c.startsWith(pre));return {name,cs}});
-  const chRow=code=>{const c=CH[code],cs=stats(c.q),nd=c.q.filter(q=>isDue(q.id)).length;
-    return `<button class="row" data-c="${code}"><span class="n" style="font-size:15px">${code.slice(-2)}</span><span><span class="t">${esc(c.name)}</span>${nd?` <span class="s" style="color:var(--red)">该复习 ${nd}</span>`:""}
-      <div class="bar"><i style="width:${cs.n/cs.total*100}%"></i></div><span class="s">${cs.n}/${cs.total} 题 · ${fmtT(st.t[code])}</span></span><span class="r" style="font-size:18px">${estP(c.q)}</span></button>`};
-  const order=sortWeak?[{name:"按预计掌握, 最低在前",cs:Object.keys(CH).sort((a,b)=>est(CH[a].q)-est(CH[b].q))}]:rows;
+  const wk=weakPoints(3),go=plan&&(typeof plan[2]==="number"||plan[2]==="mock"||plan[2]==="wrong");
+  const list=mode==="type"
+    ?D.parts.map((p,i)=>{const qs=partQs(p),ps=stats(qs);
+      return `<button class="row" data-p="${i}"><span class="n">${i}</span><span><span class="t">${esc(TYPES[i][1])}</span><br><span class="s">${p.ch.map(c=>CH[c].name).join(" · ")}</span>
+        <span class="bar"><i style="width:${ps.total?ps.n/ps.total*100:0}%"></i></span></span><span class="r">${estP(qs)}<br><span class="s">掌握</span></span></button>`}).join("")
+    :SYS.map(([name,pre])=>`<div class="meta">${esc(name)}</div>`+Object.keys(CH).filter(c=>c.startsWith(pre)||(pre==="01"&&c<"04")).map(c=>chBlock(c)).join("")).join("")+LEGEND;
   app.innerHTML=`<div class="k">中医内科学 · 十四五 · <b>期中 10-30</b> · 还有 ${left} 天</div><h1>总论 → 噎膈</h1>
-  <div class="stats"><div><b>${s.n}</b><span>已做 / ${all.length}</span></div><div><b>${estP(all)}</b><span>预计掌握</span></div><div><b>${due.length}</b><span>今天该复习</span></div><div><b>${fmtT(Object.values(st.t).reduce((a,b)=>a+b,0))}</b><span>累计学习</span></div></div>
-  <details class="intro" ${st.intro?"":"open"}><summary>先看这个: 为什么分成 7 类，怎么学</summary><div class="teach">${INTRO}</div>
-  <button class="btn ghost" id="gotit" style="margin-bottom:14px">${st.intro?"收起":"知道了，收起"}</button></details>
-  <h2>今天</h2>
-  ${plan?`<div class="frame"><b>${plan[0]}</b> · ${esc(plan[1])}</div>`:""}
-  ${plan&&typeof plan[2]==="number"?`<button class="btn red" id="today">开始: ${plan[2]} ${esc(D.parts[plan[2]].name)}</button>`:""}
-  ${plan&&plan[2]==="mock"?`<button class="btn red" id="mock">模拟 50 题</button>`:""}
-  <div class="btns"><button class="btn ${plan&&typeof plan[2]==="number"?"ghost":"red"}" id="due" ${due.length?"":"disabled"}>复习 ${Math.min(due.length,20)} 题</button><button class="btn ghost" id="wrong" ${wrong.length?"":"disabled"}>错题本 ${wrong.length}</button></div>
-  ${wk.length?`<h2>最弱的考点</h2>${wk.map((w,i)=>`<button class="row" data-w="${i}"><i class="dot ${lvl(w.s)}"></i><span><span class="t">${esc(w.p.name)}</span><br><span class="s">${esc(w.c.name)} · ${w.s.ok}/${w.s.n}</span></span><span class="r">练 →</span></button>`).join("")}`:""}
-  <h2>按顺序学</h2>${D.parts.map((p,i)=>{const ps=stats(partQs(p));
-    return `<button class="row" data-p="${i}"><span class="n">${i}</span><span><span class="t">${esc(p.name)}</span><br><span class="s">${p.ch.map(c=>CH[c].name).join(" · ")}</span>
-      <div class="bar"><i style="width:${ps.total?ps.n/ps.total*100:0}%"></i></div></span><span class="r">${ps.n}/${ps.total}<br>掌握 ${estP(partQs(p))}<br><span class="mute">${fmtT(chT([...new Set(p.ch)])+(st.t["part:"+p.k]||0))}</span></span></button>`}).join("")}
-  <h2>全部章节</h2><div class="btns"><button class="btn ${sortWeak?"ghost":""}" id="s1">按系</button><button class="btn ${sortWeak?"":"ghost"}" id="s2">最弱在前</button></div>
-  ${order.map(g=>`<div class="meta">${esc(g.name)}</div>${g.cs.map(chRow).join("")}`).join("")}
-  <button class="btn ghost" id="mock2" style="margin-top:16px">模拟考 50 题 (全范围随机)</button>
-  <p class="mute">预计掌握 = 按考点加权的答对率估计；没做过的考点按 50% 算，做得越多越准。学习时长只算你在这一章页面或做这一章题、且 2 分钟内有操作的时间。</p>
-  <h2>进度</h2><div class="mute">进度只存在这个浏览器里。换手机或清缓存前先复制备份。</div>
+  <div class="line">已做 <b>${s.n}</b>/${all.length} · 预计掌握 <b>${estP(all)}</b> · 累计 <b>${fmtT(Object.values(st.t).reduce((a,b)=>a+b,0))}</b></div>
+  ${plan?`<div class="today"><div><span class="k">今天 ${plan[0]}</span><br><b>${esc(plan[1])}</b></div>${go?`<button class="btn red sm" id="today">开始 →</button>`:""}</div>`:""}
+  <div class="chips"><button class="chip" id="due" ${due.length?"":"disabled"}>该复习 ${due.length}</button><button class="chip" id="wrong" ${wrong.length?"":"disabled"}>错题本 ${wrong.length}</button><button class="chip" id="mock2">模拟 50 题</button></div>
+  ${wk.length?`<div class="meta">最弱的考点</div>${wk.map((w,i)=>`<button class="prow" style="margin-left:0;width:100%" data-w="${i}"><i class="dot ${lvl(w.s)}"></i><span class="t">${esc(w.p.name)} <span class="mute">${esc(w.c.name)}</span></span><span class="r">${w.s.ok}/${w.s.n}</span></button>`).join("")}`:""}
+  <div class="seg" role="tablist"><button role="tab" aria-selected="${mode==="type"}" data-m="type">按类学<small>推荐</small></button><button role="tab" aria-selected="${mode==="ch"}" data-m="ch">按章学</button></div>
+  <p class="mute" style="margin:6px 0">${MODE[mode]}</p>
+  <details class="intro" ${st.intro?"":"open"}><summary>两种学法有什么不同？</summary><div class="teach">${INTRO}</div>
+  <button class="btn ghost" id="gotit" style="margin-bottom:14px">知道了，收起</button></details>
+  ${list}
+  <details class="intro" style="margin-top:28px"><summary>更多：备份 · 说明</summary>
+  <p class="mute">预计掌握 = 按考点加权的答对率估计；没做过的考点按 50% 算，做得越多越准。学习时长只算你在这一章、且 2 分钟内有操作的时间。</p>
+  <p class="mute">进度只存在这个浏览器里。换手机或清缓存前先复制备份。</p>
   <div class="tools"><button class="link" id="exp">复制备份</button><button class="link" id="imp">导入备份</button><button class="link" id="rep">复制薄弱点给 Claude</button></div>
-  <div class="mute" id="msg" style="margin-top:8px"></div>
-  <p class="mute" style="margin-top:28px">讲解来自胡秋荣讲义和十四五题库解析。不懂的地方回终端直接问 Claude。</p>`;
-  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>location.hash="#/p/"+b.dataset.p);
-  app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>location.hash="#/c/"+b.dataset.c);
+  <div class="mute" id="msg" style="margin:8px 0 14px"></div>
+  <p class="mute">讲解来自胡秋荣讲义和十四五题库解析。</p></details>`;
   app.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const w=wk[+b.dataset.w];start(w.c.name+" · "+w.p.name,shuffle(w.qs.filter(q=>!rec(q.id)||isWrong(q.id))).concat(w.qs.filter(q=>rec(q.id)&&!isWrong(q.id))).slice(0,10))});
-  $("#today")&&($("#today").onclick=()=>location.hash="#/p/"+plan[2]);
-  $("#mock")&&($("#mock").onclick=()=>start("模拟 50 题",mock(50)));
+  $("#today")&&($("#today").onclick=()=>plan[2]==="mock"?start("模拟 50 题",mock(50)):location.hash=plan[2]==="wrong"?"#/w":"#/p/"+plan[2]);
   $("#mock2").onclick=()=>start("模拟 50 题",mock(50));
   $("#gotit").onclick=()=>{st.intro=1;save();$("details.intro").open=false};
-  $("#s1").onclick=()=>{sortWeak=false;home()};$("#s2").onclick=()=>{sortWeak=true;home()};
   $("#due").onclick=()=>start("今天该复习",recommend(due,20));
   $("#wrong").onclick=()=>location.hash="#/w";
   const msg=t=>$("#msg").textContent=t,copy=t=>navigator.clipboard?.writeText(t).then(()=>msg("已复制"),()=>prompt("复制下面的内容",t));
@@ -227,48 +261,44 @@ function report(){
   return `内科期中 进度 ${new Date().toISOString().slice(0,10)}\n`+(lines.join("\n")||"还没做题");
 }
 function part(i){
-  const p=D.parts[i];lastPart=i;cur="part:"+p.k;const qs=partQs(p);
-  app.innerHTML=`<button class="back" onclick="location.hash='#/'">← 全部</button>
-  <div class="big">${i}</div><h1>${esc(p.name)}</h1>
-  <p class="mute">${esc((TYPES[i]||[])[2]||"")}</p>
-  ${p.frame?`<h2>开篇课: 这一类哪里一样</h2><div class="frame teach">${tbl(p.frame)}</div>`:""}
-  <p class="mute">读完开篇课，按下面的章节顺序：每章每个考点先读讲解再练。标「学过」的章在前面的类出现过，这里换个角度复习，进度共用。</p>
-  <div class="btns"><button class="btn red" id="rec">推荐 10 题</button><button class="btn ghost" id="all">全部 ${qs.length} 题</button></div>
-  <h2>章节</h2>${p.ch.map(code=>{const c=CH[code],s=stats(c.q),need=c.q.filter(q=>isDue(q.id)).length;
-    return `<button class="row" data-c="${code}"><span class="n" style="font-size:15px">${code.slice(-2)}</span><span><span class="t">${esc(c.name)}</span>
-      ${(f=>f<i?`<span class="tag">第 ${f} 类学过</span>`:"")(D.parts.findIndex(x=>x.ch.includes(code)))}<br><span class="s">${c.points.length} 个考点 · ${c.q.length} 题${need?` · <b style="color:var(--red)">该复习 ${need}</b>`:""}</span><div class="bar"><i style="width:${s.n/s.total*100}%"></i></div></span>
-      <span class="r">${s.n}/${s.total}<br>掌握 ${estP(c.q)}<br><span class="mute">${fmtT(st.t[code])}</span></span></button>`}).join("")}`;
-  app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>location.hash="#/c/"+b.dataset.c);
+  const p=D.parts[i],qs=partQs(p),s=stats(qs),chs=[...new Set(p.ch)];cur="part:"+p.k;listHash="#/p/"+i;
+  app.innerHTML=`<button class="back" onclick="location.hash='#/'">← 首页</button>
+  <div class="hd"><span class="big">${i}</span><div><h1>${esc(p.name)}</h1><div class="line" style="margin:4px 0 0">${chs.length} 个病 · ${s.n}/${s.total} 题 · 掌握 ${estP(qs)} · ${fmtT(chT(chs)+(st.t[cur]||0))}</div></div></div>
+  <div class="frame">${esc(TYPES[i][2])}</div>
+  ${p.frame?`<details class="intro"><summary>① 先读开篇课：这几个病哪里一样 <span class="mute">· 3 分钟</span></summary><div class="teach">${tbl(p.frame)}</div></details>`:""}
+  <div class="meta">② 点开一个病 → 选考点</div>${LEGEND}
+  ${chs.map(c=>chBlock(c,i)).join("")}
+  <div class="dock"><div class="in btns"><button class="btn red" id="rec">本类推荐 10 题</button><button class="btn ghost" id="all">本类全部 ${qs.length}</button></div></div>`;
   $("#rec").onclick=()=>start(p.name+" · 推荐",recommend(qs));
   $("#all").onclick=()=>start(p.name+" · 全部",shuffle(qs));
 }
-function chapter(code){
-  const c=CH[code],wrong=c.q.filter(q=>isWrong(q.id)),back=lastPart!=null?"#/p/"+lastPart:"#/",cs=stats(c.q);cur=code;
-  app.innerHTML=`<button class="back" onclick="location.hash='${back}'">← ${lastPart!=null?esc(D.parts[lastPart].name):"全部"}</button>
-  <div class="k">${code}${c.lecture?` · 讲义 ${esc(c.lecture)}`:""}</div><h1>${esc(c.name)}</h1>
-  <div class="stats"><div><b>${cs.n}/${cs.total}</b><span>已做</span><div class="bar"><i style="width:${cs.n/cs.total*100}%"></i></div></div><div><b>${estP(c.q)}</b><span>预计掌握</span></div>
-  <div><b>${pct(cs)}</b><span>已做的正确率</span></div><div><b>${fmtT(st.t[code])}</b><span>本章学习时长</span></div></div>
-  <div class="btns"><button class="btn red" id="rec">推荐 10 题</button><button class="btn ghost" id="all">全部 ${c.q.length} 题</button></div>
-  ${wrong.length?`<button class="btn ghost" id="wr">这章错题 ${wrong.length}</button>`:""}
-  <h2>考点</h2><p class="mute">一个考点 = 一个能出题的知识点。从上往下: 先概念、病机、鉴别，再一个个证型。点开读 2 分钟讲解 (红字是辨点)，再练这个考点的题。</p><div class="legend"><span><i class="dot"></i>没做</span><span><i class="dot weak"></i>&lt;60%</span><span><i class="dot mid"></i>60–80%</span><span><i class="dot good"></i>≥80%</span></div>
-  ${c.points.map(p=>{const qs=c.q.filter(q=>q.p===p.id),s=stats(qs),todo=qs.filter(q=>!rec(q.id)||isWrong(q.id));
-    return `<details class="pt"><summary><i class="dot ${lvl(s)}"></i><span><b>${esc(p.name)}</b> <span class="mute">${qs.length} 题</span></span><span class="r mute">${s.n?`${s.ok}/${s.n}`:""}</span></summary>
-      <div class="body">${p.teach?`<div class="teach">${tbl(p.teach)}</div>`:""}${p.src?`<div class="src">来源: ${esc(p.src)}</div>`:""}
-      <div class="btns" style="margin-top:12px"><button class="btn" data-pa="${p.id}">练这个考点 ${qs.length}</button><button class="btn ghost" data-pt="${p.id}" ${todo.length?"":"disabled"}>没做+做错 ${todo.length}</button></div></div></details>`}).join("")}
-  <p class="mute" style="margin-top:24px">原文: 讲义 ${esc(c.lecture||"")}。讲解看不懂就回终端问 Claude。</p>`;
-  $("#rec").onclick=()=>start(c.name+" · 推荐",recommend(c.q));
-  $("#all").onclick=()=>start(c.name+" · 全部",c.q);
-  $("#wr")&&($("#wr").onclick=()=>start(c.name+" · 错题",wrong));
-  const pq=id=>c.q.filter(q=>q.p===id),nm=id=>c.points.find(p=>p.id===id).name;
-  app.querySelectorAll("[data-pa]").forEach(b=>b.onclick=()=>start(c.name+" · "+nm(b.dataset.pa),pq(b.dataset.pa)));
-  app.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>start(c.name+" · "+nm(b.dataset.pt),pq(b.dataset.pt).filter(q=>!rec(q.id)||isWrong(q.id))));
+function point(code,pid){
+  const c=CH[code],i=c.points.findIndex(p=>p.id===pid),p=c.points[i];
+  if(!p){location.hash=listHash;return}
+  cur=code;
+  const qs=c.q.filter(q=>q.p===pid),s=stats(qs),todo=qs.filter(q=>!rec(q.id)||isWrong(q.id)),L=layer(code,p.name),prev=c.points[i-1],next=c.points[i+1];
+  const bl=listHash==="#/"?"首页":D.parts[+listHash.split("/")[2]].name;
+  app.innerHTML=`<button class="back" onclick="location.hash='${listHash}'">← ${esc(bl)}</button>
+  <div class="k">${esc(c.name)}${L?" · "+esc(L.split("：")[0]):""} · 考点 ${i+1}/${c.points.length}</div><h1>${esc(p.name)}</h1>
+  <div class="line"><i class="dot ${lvl(s)}" style="display:inline-block;vertical-align:-1px"></i> 已做 <b>${s.n}</b>/${qs.length}${s.n?` · 正确率 <b>${pct(s)}</b>`:""}</div>
+  <div class="teach">${tbl(p.teach)||'<p class="mute">这个考点没有讲解，直接练题。</p>'}</div>${p.src?`<div class="src">来源：${esc(p.src)}</div>`:""}
+  <div class="pn">${prev?`<a href="#/k/${code}/${prev.id}">← ${esc(prev.name)}</a>`:"<span></span>"}${next?`<a href="#/k/${code}/${next.id}">${esc(next.name)} →</a>`:""}</div>
+  <div class="dock"><div class="in btns"><button class="btn red" id="pa">练这个考点 ${qs.length}</button><button class="btn ghost" id="pt" ${todo.length?"":"disabled"}>没做+做错 ${todo.length}</button></div></div>`;
+  $("#pa").onclick=()=>start(c.name+" · "+p.name,qs);
+  $("#pt").onclick=()=>start(c.name+" · "+p.name,todo);
 }
+/* Clicks shared by every list page. */
+app.addEventListener("click",e=>{const b=e.target.closest("[data-k],[data-p],[data-cr],[data-ca],[data-cw],[data-m]");if(!b)return;const d=b.dataset;
+  if(d.k)location.hash="#/k/"+d.k;else if(d.p)location.hash="#/p/"+d.p;else if(d.m){st.mode=d.m;save();home()}
+  else{const code=d.cr||d.ca||d.cw,c=CH[code];
+    if(d.cr)start(c.name+" · 推荐",recommend(c.q));else if(d.ca)start(c.name+" · 全部",c.q);else start(c.name+" · 错题",c.q.filter(q=>isWrong(q.id)))}});
+app.addEventListener("toggle",e=>{const o=e.target.dataset&&e.target.dataset.o;if(o)e.target.open?OPEN.add(o):OPEN.delete(o)},true);
 function wrongBook(){
   cur=null;
   const ws=Object.values(Q).filter(q=>isWrong(q.id)),by={};for(const q of ws)(by[q.c]??=[]).push(q);
   app.innerHTML=`<button class="back" onclick="location.hash='#/'">← 全部</button><h1>错题本</h1><div class="mute">上次做错的题。做对一次就移出，之后按 1/3/7 天回来复习。</div>
   <button class="btn red" id="all" ${ws.length?"":"disabled"}>全部错题 ${ws.length}</button>
-  ${Object.entries(by).map(([code,qs])=>`<button class="row" data-c="${code}"><span class="n" style="font-size:15px">${code.slice(-2)}</span><span class="t">${esc(CH[code].name)}</span><span class="r">${qs.length}</span></button>`).join("")||'<p class="mute">还没有错题。</p>'}`;
+  ${Object.entries(by).map(([code,qs])=>`<button class="row" data-c="${code}"><span class="n" style="font-size:15px">${num(code)}</span><span class="t">${esc(CH[code].name)}</span><span class="r">${qs.length}</span></button>`).join("")||'<p class="mute">还没有错题。</p>'}`;
   $("#all").onclick=()=>start("错题本",shuffle(ws));
   app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>start(CH[b.dataset.c].name+" · 错题",by[b.dataset.c]));
 }
@@ -304,13 +334,18 @@ function summary(){
   $("#again")&&($("#again").onclick=()=>start(s.title.replace(/ · 再练$/,"")+" · 再练",bad,s.back));
   $("#back").onclick=()=>{const b=s.back;sess=null;location.hash=b};
 }
+/* Lists remember where you were: open diseases (OPEN) and scroll position per page. */
+const SCR={};let prevH=null;
 function render(){
-  const h=location.hash.slice(1)||"/",m=h.split("/");
+  if(prevH)SCR[prevH]=scrollY;
+  const h=location.hash||"#/",m=h.slice(1).split("/");prevH=h;
   if(m[1]==="p"&&D.parts[+m[2]])part(+m[2]);
-  else if(m[1]==="c"&&CH[m[2]])chapter(m[2]);
+  else if(m[1]==="k"&&CH[m[2]])point(m[2],m[3]);
+  else if(m[1]==="c"&&CH[m[2]]){OPEN.add(m[2]);st.mode="ch";home()}   // old chapter links
   else if(m[1]==="w")wrongBook();
-  else if(m[1]==="s")session();
+  else if(m[1]==="s")return session();
   else home();
+  scrollTo(0,m[1]==="p"||!m[1]?SCR[h]||0:0);
 }
 addEventListener("hashchange",render);render();
 </script>
