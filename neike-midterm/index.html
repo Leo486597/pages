@@ -20,7 +20,9 @@ main{max-width:640px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 6px) 
 button{font:inherit;color:inherit}
 a{color:inherit;text-decoration:none}
 .bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--bg);margin:0 -16px;padding:calc(env(safe-area-inset-top) + 4px) 16px 4px}
-.nb,.mb{all:unset;cursor:pointer;font:600 17px/1 var(--cn);color:var(--fg);padding:12px 0}.mb{padding-left:16px}
+.nb,.mb{all:unset;cursor:pointer;font:600 17px/1 var(--cn);color:var(--fg);padding:12px 0}.mb{display:inline-flex;align-items:center;gap:6px;padding-right:18px}
+.hb{width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;display:inline-block}
+.bar .nb{margin-right:auto}.bar{justify-content:flex-start}
 .kick{font:600 13px/1.4 var(--cn);color:var(--mute);margin-top:6px}
 h1{font:700 28px/1.25 var(--cn);margin:2px 0 6px}
 .sub{color:var(--mute);font-size:15px;margin:0 0 18px}
@@ -54,8 +56,12 @@ h1{font:700 28px/1.25 var(--cn);margin:2px 0 6px}
 .teach{font-size:16px;line-height:1.65}.teach p{margin:8px 0}
 .key p{margin:4px 0;font:500 18px/1.55 var(--cn)}.key mark{background:none;color:var(--red);font-weight:700}
 details.full{margin-top:12px}details.full>summary{list-style:none;cursor:pointer;font:600 17px/1 var(--cn);padding:14px 4px}details.full>summary::-webkit-details-marker{display:none}details.full>summary::after{content:" ›";color:var(--mute)}details.full[open]>summary::after{content:" ⌄"}
-dialog#menu{margin:0;padding:0 16px 40px;border:0;width:100%;max-width:100%;height:100%;max-height:100%;background:var(--bg);color:var(--fg)}dialog#menu .in{max-width:640px;margin:0 auto}dialog#menu::backdrop{background:var(--bg)}
-details.md{background:var(--card);border-radius:12px;margin:8px 0;overflow:hidden}details.md>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 16px}details.md>summary::-webkit-details-marker{display:none}details.md>summary .tx{flex:1}.it.here{background:var(--soft)}.it.here .t{font-weight:700}details.md>summary .v{color:var(--mute);font-size:15px}details.md .grp{border-radius:0;border-top:1px solid var(--line)}.teach mark{background:none;color:var(--red);font-weight:700}
+dialog#menu{margin:0;inset:0 auto 0 0;padding:0 12px 40px;border:0;width:min(86vw,420px);max-width:none;height:100%;max-height:none;background:var(--bg);color:var(--fg);overflow:auto;overscroll-behavior:contain;box-shadow:2px 0 24px rgba(0,0,0,.25)}
+dialog#menu::backdrop{background:rgba(0,0,0,.35)}
+dialog#menu[open]{animation:drawer .22s ease-out}@keyframes drawer{from{transform:translateX(-100%)}}@media (prefers-reduced-motion:reduce){dialog#menu[open]{animation:none}}
+details.md[open]>summary{position:sticky;top:var(--mt,100px);z-index:1;background:var(--card);border-bottom:1px solid var(--line)}details.md[open] .grp{border-top:0}
+.mtop{position:sticky;top:0;z-index:2;background:var(--bg);padding-bottom:2px}.mtop .bar{position:static;margin:0;padding-left:4px;padding-right:4px;justify-content:space-between}
+details.md{background:var(--card);border-radius:12px;margin:8px 0;overflow:clip}details.md>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 16px}details.md>summary::-webkit-details-marker{display:none}details.md>summary .tx{flex:1}.it.here{background:var(--soft)}.it.here .t{font-weight:700}details.md>summary .v{color:var(--mute);font-size:15px}details.md .grp{border-radius:0;border-top:1px solid var(--line)}.teach mark{background:none;color:var(--red);font-weight:700}
 .teach ul,.teach ol{padding-left:20px;margin:8px 0}
 .model div{border-left:3px solid var(--fg);padding:4px 10px;margin:6px 0}.model span{display:block;font-size:14px;color:var(--mute)}
 /* Tables become stacked cards; each cell shows its column name. */
@@ -183,20 +189,30 @@ const chRow=(code,pi)=>{const c=CH[code],k=cnt([code]),due=c.q.filter(q=>isDue(q
     <span class="s">学过 ${k.read}/${k.n} 个考点${k.good?` · 掌握 ${k.good}`:""}${st.t[code]?" · "+fmtT(st.t[code]):""}${due?` · 该复习 ${due} 题`:""}${o.length?` · 也在第 ${o.join("、")} 类`:""}</span></span></a>`};
 function start(title,qs,pt){if(!qs.length)return;sess={title,list:qs.map(q=>q.id),i:0,ans:{},sel:"",back:location.hash||"#/",pt};location.hash="#/s";render()}
 /* Top bar on every page: back on the left, 目录 on the right (opens the whole map, from anywhere). */
-const navBack=(label,href)=>`<div class="bar">${href?`<a class="nb" href="${href}">‹ ${esc(label)}</a>`:"<span></span>"}<button class="mb" data-menu>目录</button></div>`;
+const navBack=(label,href)=>`<div class="bar"><button class="mb" data-menu aria-label="目录"><i class="hb"></i>目录</button>${href?`<a class="nb" href="${href}">‹ ${esc(label)}</a>`:""}</div>`;
 document.addEventListener("click",e=>{if(e.target.closest("[data-menu]"))openMenu()});
+/* 目录: a left drawer. 按章 by default, so every 考点 has exactly one place; it opens on the 考点 you are on,
+   or the last one you read, already expanded and scrolled into view. */
 function openMenu(){
-  const d=$("#menu"),mode=st.mode||"type",hm=location.hash.split("/"),hc=["c","k"].includes(hm[1])?hm[2]:null,hp=hm[1]==="c"?hm[3]:hm[1]==="k"?hm[4]:null;
-  const isHere=(code,pi)=>code===hc&&(hp==null||pi==null||String(pi)===hp);   // open only the copy you came from
-  const hk=hm[1]==="k"?hm[3]:null,pts=(code,pi)=>CH[code].points.map(p=>`<a class="it${isHere(code,pi)&&p.id===hk?" here":""}" href="#/k/${code}/${p.id}${pi==null?"":"/"+pi}"><i class="dot ${pstate(code,p.id)}"></i><span class="tx"><span class="t">${esc(p.name)}</span>${p.key?`<span class="s">${esc(plain(p.key))}</span>`:""}</span></a>`).join("");
+  const d=$("#menu"),mode=st.menu||"ch",hm=location.hash.split("/");
+  let tc=null,tk=null,tp=null,past=false;
+  if(hm[1]==="k"&&CH[hm[2]]){tc=hm[2];tk=hm[3];tp=hm[4]}else if(hm[1]==="c"&&CH[hm[2]]){tc=hm[2];tp=hm[3]}else if(st.last&&CH[st.last[0]]){[tc,tk]=st.last;past=true}
+  if(mode==="type"&&tc&&tp==null)tp=String(D.parts.findIndex(x=>x.ch.includes(tc)));
+  const isHere=(code,pi)=>code===tc&&(mode==="ch"||String(pi)===tp);
+  const pts=(code,pi)=>CH[code].points.map(p=>`<a class="it${isHere(code,pi)&&p.id===tk?" here":""}" href="#/k/${code}/${p.id}${pi==null?"":"/"+pi}"><i class="dot ${pstate(code,p.id)}"></i><span class="tx"><span class="t">${esc(p.name)}</span>${p.key?`<span class="s">${esc(plain(p.key))}</span>`:""}</span></a>`).join("");
   const ch=(code,pi)=>{const k=cnt([code]);return `<details class="md" ${isHere(code,pi)?"open":""}><summary><span class="tx"><span class="t">${num(code)}${esc(CH[code].name)}</span></span><span class="v">${k.read}/${k.n}</span></summary><div class="grp">${pts(code,pi)}</div></details>`};
   const body=mode==="type"?D.parts.map((p,i)=>`<div class="hdr">${i} ${esc(TYPES[i][1])}</div>${chOrder(p).map(c=>ch(c,i)).join("")}`).join("")
     :SYS.map(([name,pre])=>`<div class="hdr">${esc(name)}</div>${Object.keys(CH).filter(c=>pre==="01"?c<"04":c.startsWith(pre)).map(c=>ch(c)).join("")}`).join("");
-  d.innerHTML=`<div class="in"><div class="bar"><b>目录</b><button class="mb" id="mx">完成</button></div>
+  d.innerHTML=`<div class="mtop"><div class="bar"><b>目录</b><button class="mb" id="mx">关闭</button></div>
+    <div class="seg" style="margin:4px 0 8px"><button aria-selected="${mode==="ch"}" data-mm="ch">按章</button><button aria-selected="${mode==="type"}" data-mm="type">按类</button></div></div>
     <div class="grp"><a class="it go" href="#/"><span class="tx t">首页</span></a><button class="it go" id="mdue"><span class="tx t">该复习</span><span class="v">${Object.values(Q).filter(q=>isDue(q.id)).length} 题</span></button><a class="it go" href="#/w"><span class="tx t">错题本</span></a><button class="it go" id="mmock"><span class="tx t">模拟考</span><span class="v">50 题</span></button></div>
-    <p class="sub" style="margin:14px 4px 0">${mode==="type"?"按类":"按章"}排列 · 点病名展开考点，每个考点下面是一句话重点</p>${body}</div>`;
-  d.showModal();d.scrollTop=0;const o=d.querySelector("details[open]");o&&(d.scrollTop=o.offsetTop-110);
-  d.onclick=e=>{if(e.target.closest("a"))d.close()};
+    ${tc?`<p class="sub" style="margin:14px 4px 0">${past?"上次在这里":"你在这里"}：${esc(CH[tc].name)}${tk?" · "+esc((CH[tc].points.find(x=>x.id===tk)||{}).name||""):""}</p>`:""}${body}`;
+  if(!d.open)d.showModal();
+  d.style.setProperty("--mt",d.querySelector(".mtop").offsetHeight+"px");   // open chapter header sticks under the 目录 bar
+  const here=d.querySelector(".it.here")||d.querySelector("details[open]");
+  d.scrollTop=0;here&&(d.scrollTop=here.offsetTop-d.clientHeight/3);
+  d.onclick=e=>{const r=d.getBoundingClientRect();if(e.clientX>r.right||e.target.closest("a"))d.close()};   // tap outside the drawer or on a link
+  d.querySelectorAll("[data-mm]").forEach(b=>b.onclick=()=>{st.menu=b.dataset.mm;save();openMenu()});
   $("#mx").onclick=()=>d.close();$("#mdue").onclick=()=>{const due=Object.values(Q).filter(q=>isDue(q.id));if(!due.length)return;d.close();start("该复习",recommend(due,20))};$("#mmock").onclick=()=>{d.close();start("模拟 50 题",mock(50))};
 }
 function home(){
