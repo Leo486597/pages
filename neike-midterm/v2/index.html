@@ -83,6 +83,8 @@ td:first-child{white-space:nowrap}
 #toc a.l3{padding-left:22px}
 #toc a:hover{color:var(--fg)}
 #toc a[aria-current]{color:var(--red);border-color:var(--red)}
+#toc .tl{color:var(--mute);font-size:12px;padding:8px 0 2px 22px;border-left:2px solid var(--line)}
+#toc a .dot{margin-right:7px;vertical-align:1px}
 @media (max-width:1180px){.wrap{grid-template-columns:240px minmax(0,1fr)}#toc{display:none}}
 /* 考点 links, 题库 controls, 错题本 groups */
 .kpl{display:inline-block;margin-top:8px;font-size:13px;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line)}
@@ -203,12 +205,15 @@ function subAnchors(root){ // table rows and list items inside a block: #7/lesso
   });
 }
 let tocSpy;
-function toc(p){ // right TOC from the h2/h3 blocks of the current tab; click scrolls only (no re-render, answered cases keep their state)
-  const t=$("#toc"),hs=[...p.querySelectorAll(".blk>h2,.blk>h3")];removeEventListener("scroll",tocSpy);
-  t.innerHTML=hs.map(h=>`<a href="#${esc(h.parentElement.id)}" class="${h.tagName==="H3"?"l3":""}">${esc(h.textContent)}</a>`).join("");
-  const links=[...t.querySelectorAll("a")];
-  links.forEach((a,i)=>a.onclick=e=>{e.preventDefault();history.replaceState(null,"",a.getAttribute("href"));hs[i].parentElement.scrollIntoView({block:"start"})});
-  let raf=0;tocSpy=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;let i=-1;hs.forEach((h,k)=>{if(h.getBoundingClientRect().top<140)i=k}); // current = last heading above the fold line
+function toc(p){ // right TOC (☰ drawer on a phone): the tab's h2/h3; on 考点 = 病 → 基础/证型/出处 → each 考点 with its dot. Click scrolls only (answered cases keep their state)
+  const t=$("#toc"),kp=state.tab==="kp"&&state.g!=="wrong";removeEventListener("scroll",tocSpy);
+  const it=[...p.querySelectorAll(kp?".blk>h3,.lay,.kpc":".blk>h2,.blk>h3")].map(e=>e.classList.contains("lay")?{lab:e.textContent}
+    :e.classList.contains("kpc")?{el:e,txt:D.kp[e.dataset.kp].name,cls:"l3",dot:kpState(e.dataset.kp)}
+    :{el:e.parentElement,txt:e.textContent,cls:e.tagName==="H3"&&!kp?"l3":""});
+  t.innerHTML=it.map(x=>x.lab?`<span class="tl">${esc(x.lab)}</span>`:`<a href="#${esc(x.el.id)}" class="${x.cls}">${x.dot?`<i class="dot ${x.dot}"></i>`:""}${esc(x.txt)}</a>`).join("");
+  const hs=it.filter(x=>x.el).map(x=>x.el),links=[...t.querySelectorAll("a")];
+  links.forEach((a,i)=>a.onclick=e=>{e.preventDefault();history.replaceState(null,"",a.getAttribute("href"));hs[i].scrollIntoView({block:"start"})});
+  let raf=0;tocSpy=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;let i=-1;hs.forEach((h,k)=>{if(h.getBoundingClientRect().top<140)i=k}); // current = last entry above the fold line
     links.forEach((a,k)=>a.toggleAttribute("aria-current",k===i));links[i]?.scrollIntoView({block:"nearest"})})};
   addEventListener("scroll",tocSpy,{passive:true});tocSpy();
 }
@@ -356,7 +361,8 @@ function wireCard(c){const id=c.dataset.kp,k=D.kp[id];
   const head=()=>{const s=kpStat(id),todo=kpQs(id).filter(q=>ANS()[q.id]!==1);
     c.querySelector(".kph").innerHTML=`<i class="dot ${kpState(id)}"></i><span class="kpn">${esc(k.name)}</span><span class="note">${s.total} 题</span><span class="kps">${s.n?`对 ${s.ok}/${s.n}`:""}</span>`;
     c.querySelector(".kpb").innerHTML=`<button class="btn" data-pr="all">练这个考点 ${s.total}</button><button class="btn ghost" data-pr="todo" ${todo.length?"":"disabled"}>没做+做错 ${todo.length}</button>${k.home?`<a class="kpl" href="${esc(kpHref(id))}">→ 教</a>`:""}`;
-    c.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>practise(b.dataset.pr==="all"?kpQs(id):todo))};
+    c.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>practise(b.dataset.pr==="all"?kpQs(id):todo));
+    const td=[...document.querySelectorAll("#toc a")].find(a=>a.getAttribute("href")==="#"+c.id)?.querySelector(".dot");if(td)td.className="dot "+kpState(id)};
   const practise=list=>{const box=c.querySelector(".kpq"),st={done:{},sel:{}};list=shuf([...list]);
     const paint=()=>{box.innerHTML=list.map((q,i)=>qHTML(q,i,st,`${c.id}/${qid(q)}`)).join("");wire(box,list,st,()=>{paint();head()})};paint();box.scrollIntoView({block:"start",behavior:"smooth"})};
   c.querySelector(".kpfull").addEventListener("toggle",e=>{if(e.target.open){const s=store.get("nk-seen",{});s[id]=1;store.set("nk-seen",s);head()}});
