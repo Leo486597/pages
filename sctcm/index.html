@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SCTCM 学习页面索引</title>
+<style>
+:root {
+  --bg: #f7f6f3; --card: #fff; --fg: #1d1d1f; --muted: #6b6b70; --line: #e4e2dc;
+  --accent: #8a3b12; --tag-gh: #24292f; --tag-cf: #c2570c; --tag-bg: #efede8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141414; --card: #1e1e1f; --fg: #ececec; --muted: #9a9aa0; --line: #2e2e30;
+    --accent: #e8a27a; --tag-gh: #d0d7de; --tag-cf: #f5a25d; --tag-bg: #2a2a2c;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.55 "PingFang SC", -apple-system, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+main { max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
+h1 { font-size: 22px; margin: 4px 0 4px; }
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+h2 { font-size: 15px; color: var(--accent); margin: 28px 0 8px; letter-spacing: .05em; }
+ul { list-style: none; margin: 0; padding: 0; }
+li.item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+.title { font-weight: 600; font-size: 17px; }
+.what { color: var(--muted); font-size: 14px; margin: 2px 0 8px; }
+.tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 6px; background: var(--tag-bg); margin-left: 6px; vertical-align: 2px; font-weight: 500; }
+.gh { color: var(--tag-gh); } .cf { color: var(--tag-cf); }
+a.link {
+  display: flex; flex-direction: column; justify-content: center; min-height: 44px;
+  padding: 6px 10px; margin-top: 6px; border-radius: 8px; background: var(--tag-bg);
+  color: var(--fg); text-decoration: none; overflow-wrap: anywhere;
+}
+a.link:active { opacity: .7; }
+a.link b { font-size: 14px; color: var(--accent); }
+a.link span { font-size: 12px; color: var(--muted); }
+footer { color: var(--muted); font-size: 12px; margin-top: 32px; }
+</style>
+</head>
+<body>
+<main>
+<h1>SCTCM 学习页面索引</h1>
+<p class="sub">我为中医学习做的所有在线页面。2026-10-12 整理，只收录能正常打开的链接。</p>
+
+<h2>内科</h2>
+<ul>
+<li class="item">
+  <div class="title">内科期中 · 总论→噎膈<span class="tag gh">GitHub Pages</span></div>
+  <div class="what">中医内科学期中备考：考点讲解 + 十四五题库 1538 题，手机用。三个版本进度不完全共用。</div>
+  <a class="link" href="https://leo486597.github.io/pages/neike-midterm/"><b>第一版</b><span>leo486597.github.io/pages/neike-midterm/</span></a>
+  <a class="link" href="https://leo486597.github.io/pages/neike-midterm/staging/"><b>staging · 最新版</b><span>leo486597.github.io/pages/neike-midterm/staging/</span></a>
+  <a class="link" href="https://leo486597.github.io/pages/neike-midterm/v2/"><b>v2 · NotebookLM 版（七类）</b><span>leo486597.github.io/pages/neike-midterm/v2/</span></a>
+</li>
+</ul>
+
+<h2>针灸</h2>
+<ul>
+<li class="item">
+  <div class="title">针灸学 · 老师划的重点<span class="tag cf">Cloudflare</span></div>
+  <div class="what">针灸学讲义 12 讲，带老师重点、全文检索和 PDF 阅读器。两个地址内容相同。</div>
+  <a class="link" href="https://zhenjiu1.pages.dev/"><b>主线</b><span>zhenjiu1.pages.dev</span></a>
+  <a class="link" href="https://sctcm-leo.zhenjiu1.pages.dev/"><b>sctcm-leo 分支</b><span>sctcm-leo.zhenjiu1.pages.dev</span></a>
+</li>
+<li class="item">
+  <div class="title">经络腧穴 · 视频索引<span class="tag cf">Cloudflare</span></div>
+  <div class="what">按经络与腧穴检索针灸教学视频，点穴位跳到讲解片段，旁边可看讲义。</div>
+  <a class="link" href="https://zhenjiu-clips.pages.dev/"><b>打开</b><span>zhenjiu-clips.pages.dev</span></a>
+</li>
+</ul>
+
+<h2>方剂 · 中药</h2>
+<ul>
+<li class="item">
+  <div class="title">方药<span class="tag cf">Cloudflare</span></div>
+  <div class="what">可交互的方药学习 App：方剂卡片 + 中药卡片（v0.0.11）。</div>
+  <a class="link" href="https://fangyao.app/"><b>正式版</b><span>fangyao.app</span></a>
+  <a class="link" href="https://staging.herbcards.pages.dev/"><b>staging</b><span>staging.herbcards.pages.dev</span></a>
+  <a class="link" href="https://sctcm-leo.herbcards.pages.dev/"><b>sctcm-leo 分支</b><span>sctcm-leo.herbcards.pages.dev</span></a>
+</li>
+<li class="item">
+  <div class="title">方剂学<span class="tag cf">Cloudflare</span></div>
+  <div class="what">方剂学学习页（较早的版本，2026-07）。两个地址内容相同。</div>
+  <a class="link" href="https://fangji1.pages.dev/"><b>主线</b><span>fangji1.pages.dev</span></a>
+  <a class="link" href="https://sctcm-leo.fangji1.pages.dev/"><b>sctcm-leo 分支</b><span>sctcm-leo.fangji1.pages.dev</span></a>
+</li>
+</ul>
+
+<h2>推拿 · 儿科</h2>
+<ul>
+<li class="item">
+  <div class="title">小儿推拿 · 咳喘方穴位定位图解<span class="tag gh">GitHub Pages</span></div>
+  <div class="what">咳喘方 11 个穴位的定位、手法方向与流派歧义，配 21 张实拍图和动图。</div>
+  <a class="link" href="https://leo486597.github.io/pages/xiaoer-tuina-kechuan/"><b>打开</b><span>leo486597.github.io/pages/xiaoer-tuina-kechuan/</span></a>
+</li>
+</ul>
+
+<h2>课表</h2>
+<ul>
+<li class="item">
+  <div class="title">夜班三年级 · 上学期课表<span class="tag cf">Cloudflare</span></div>
+  <div class="what">2026 夜班三年级上学期课程表。</div>
+  <a class="link" href="https://sctcm-leo.pages.dev/static/calendar/2026-night-grade-3/"><b>打开</b><span>sctcm-leo.pages.dev/static/calendar/2026-night-grade-3/</span></a>
+</li>
+</ul>
+
+<h2>不确定是否属于中医学习</h2>
+<ul>
+<li class="item">
+  <div class="title">haolangzhong（好郎中？）<span class="tag cf">Cloudflare</span></div>
+  <div class="what">单页应用，页面标题只有 haolangzhong，看不出内容。</div>
+  <a class="link" href="https://haolangzhong.nodebook.space/"><b>打开</b><span>haolangzhong.nodebook.space</span></a>
+</li>
+</ul>
+
+<footer>GitHub Pages 来自 Leo486597/pages；Cloudflare 来自 Pages 项目 zhenjiu1、zhenjiu-clips、herbcards、fangji1、sctcm-leo、haolangzhong。</footer>
+</main>
+</body>
+</html>

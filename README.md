@@ -11,6 +11,7 @@ Leo 的个人 artifact 发布站。**一个 folder = 一个 topic**，每个 top
 
 | Topic | 内容 | 发布 | 在线 |
 |---|---|---|---|
+| [`sctcm/`](sctcm/) | SCTCM 学习页面索引 —— 我为中医学习做的所有在线页面：内科、针灸、方剂·中药、推拿·儿科、课表，GitHub Pages 与 Cloudflare 一页看全 | 2026-10-12 | [打开](https://leo486597.github.io/pages/sctcm/) |
 | [`neike-midterm/`](neike-midterm/) | 内科期中 · 总论→噎膈 —— 中医内科学期中备考: 0 总论 → 1-7 证型 (由表入里) → 8 跨病基础, 按类学覆盖全部 1538 题, 手机用 | 2026-10-10 | [打开](https://leo486597.github.io/pages/neike-midterm/) |
 | [`how-i-work-with-claude/`](how-i-work-with-claude/) | How I work with Claude —— Sessions, context and skills: how I set up ~/.claude and ~/.agents so every new Claude session starts ahead | 2026-10-05 | [打开](https://leo486597.github.io/pages/how-i-work-with-claude/) |
 | [`xiaoer-tuina-kechuan/`](xiaoer-tuina-kechuan/) | 小儿推拿 · 咳喘方穴位定位图解 —— 11 个穴位的解剖定位、手法方向与流派歧义辨析，含 21 张实拍图与动图 | 2026-09-02 | [打开](https://leo486597.github.io/pages/xiaoer-tuina-kechuan/) |
