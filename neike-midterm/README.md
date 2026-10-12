@@ -13,4 +13,5 @@
 版本:
 - `/` = 第一版 (0ae9ee2, 2026-10-10): 0 总论 → 1–7 七类, 每类先读开篇课
 - `/staging/` = 最新版 (520a095, 2026-10-11): 方药视觉, 目录抽屉, 类 = 跨病证型主题 + 类 8 跨病基础
+- `/v2/` = NotebookLM 版 (2026-10-12): 七类全部由 NotebookLM 出 (教 + 易混 + 手把手案例), 逐条按十四五题库核对改正; 考点与测试用主站考点; 手机布局 (顶部标签栏 + ☰ 抽屉)。源: `/Users/leo/tcm/lectures/7. 内科学/notebooklm/page/` (`build.py` → `site/neike.html`)。进度存在 localStorage `nk-*`, 与上面两版不共用
 - 两个页面同源, 共用同一份浏览器进度 (localStorage `nk2`)
