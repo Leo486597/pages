@@ -24,12 +24,19 @@ button{border:0;background:none;padding:0;cursor:pointer;text-align:inherit}
 :focus-visible{outline:2px solid var(--dai);outline-offset:2px;border-radius:4px}
 select{height:32px;border:1px solid var(--sep);border-radius:8px;background:#fff;padding:0 8px;font-size:14px;min-width:0}
 
+/* thin, quiet scrollbars: the page and every inner scroll area */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.32)}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.18) transparent}}
+
 /* top bar */
 .bar{position:sticky;top:0;z-index:20;height:var(--bar);display:grid;grid-template-columns:calc(var(--side) - 24px) 1fr minmax(240px,380px);align-items:center;gap:24px;padding:0 24px;background:rgba(242,242,239,.92);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--sep)}
 .brand b{font-size:18px;font-weight:600;letter-spacing:.04em}
 .brand select{margin-left:10px;height:28px;font-size:13px;max-width:170px;color:var(--ink-2)}
 .tabs{display:flex;gap:2px;padding:3px;background:var(--fill-2);border-radius:10px;justify-self:start}
-.tabs button{padding:5px 20px;border-radius:8px;font-size:14px;color:var(--ink-2);text-align:center}
+.tabs a{padding:5px 20px;text-decoration:none;border-radius:8px;font-size:14px;color:var(--ink-2);text-align:center}
 .tabs [aria-selected=true]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .search{position:relative}
 .search input{width:100%;height:36px;padding:0 36px 0 12px;border:0;border-radius:10px;background:var(--fill-2);font-size:15px}
@@ -38,11 +45,9 @@ select{height:32px;border:1px solid var(--sep);border-radius:8px;background:#fff
 
 /* shell */
 .shell{display:grid;grid-template-columns:var(--side) minmax(0,1fr)}
-body[data-v=find] .shell{grid-template-columns:minmax(0,1fr)}
-body[data-v=find] #side{display:none}
 #side{position:sticky;top:var(--bar);height:calc(100vh - var(--bar));overflow:auto;padding:20px 16px 48px 24px;border-right:1px solid var(--sep)}
 #main{min-width:0;padding:28px 40px 80px;max-width:1120px}
-body[data-v=find] #main{max-width:900px;margin:0 auto;width:100%}
+body[data-v=find] #main>*{max-width:720px}  /* reading width; the frame is the same on every tab */
 body[data-v=grid] #main{max-width:none}
 .head{margin-bottom:24px;max-width:48em}
 .head h1{font-size:32px;line-height:1.2;font-weight:600;margin:0 0 8px}
@@ -128,7 +133,7 @@ dialog.drawer::backdrop{background:rgba(0,0,0,.22)}
 .kl{margin-bottom:6px}
 .why{font-size:13px;color:var(--ink-2);margin:3px 0 8px;line-height:1.65}
 .tl{display:inline-block;font-size:11px;line-height:17px;padding:0 5px;border-radius:4px;border:1px solid var(--sep);color:var(--ink-2);margin-right:4px;vertical-align:1px;white-space:nowrap}
-.chip{display:inline-block;padding:2px 9px;margin:0 4px 4px 0;border-radius:6px;background:var(--fill-2);font-size:13px;line-height:1.7}
+.chip{display:inline-block;color:inherit;text-decoration:none;padding:2px 9px;margin:0 4px 4px 0;border-radius:6px;background:var(--fill-2);font-size:13px;line-height:1.7}
 .chip:hover{background:var(--dai-bg);color:var(--dai)}
 .chip.k{background:var(--zhu-bg);color:var(--zhu);font-weight:600}
 .ev{font-size:12px;color:var(--ink-3)}
@@ -223,7 +228,7 @@ dialog.drawer::backdrop{background:rgba(0,0,0,.22)}
 .seg2 button{padding:3px 12px;border-radius:6px;font-size:13px;color:var(--ink-2)}
 .seg2 [aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
 .warn{color:var(--zhu);font-size:13px;margin:8px 8px 0}
-.gw{overflow:auto;max-height:calc(100vh - var(--bar) - 150px);background:var(--card);border-radius:var(--r);border:1px solid var(--sep)}
+.gw{width:fit-content;max-width:100%;overflow:auto;max-height:calc(100vh - var(--bar) - 150px);background:var(--card);border-radius:var(--r);border:1px solid var(--sep)}
 .pt{border-collapse:separate;border-spacing:0;font-size:13px;line-height:1.5}
 .pt th,.pt td{border-right:1px solid var(--sep);border-bottom:1px solid var(--sep);padding:5px 9px;vertical-align:top;text-align:left}
 .pt td{min-width:6.5em;max-width:17em}
@@ -233,7 +238,8 @@ dialog.drawer::backdrop{background:rgba(0,0,0,.22)}
 .pt .ct{color:var(--ink-3);font-weight:400;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .pt .it{display:inline;line-height:1.5}
 .pt .it.b{display:block}
-.pt .it:not(.b)+.it:not(.b)::before{content:"、";color:var(--ink-3)}
+.pt .it:not(.b){white-space:nowrap}  /* a word keeps its 、 */
+.pt .it:not(.b):not(:last-child)::after{content:"、";color:var(--ink-3)}
 .pt .it small{color:var(--ink-3);font-weight:400;font-size:11px;margin-left:4px}
 .pt button.it:hover{color:var(--dai);text-decoration:underline}
 .pt td.n{text-align:center;padding:0;background:rgba(31,78,140,calc(var(--a)*.45 + .04))}
@@ -248,11 +254,9 @@ dialog.drawer::backdrop{background:rgba(0,0,0,.22)}
 .pt.tr td{min-width:12em;max-width:24em}
 .pt small.pp{display:block;font-weight:400;color:var(--ink-3);font-size:11px}
 .pt .rk em{display:inline-block;margin:0 12px 2px 0;font-style:normal;font-size:16px;font-weight:600;color:var(--zhu);line-height:2.1;-webkit-text-emphasis:filled dot var(--zhu);text-emphasis:filled dot var(--zhu);-webkit-text-emphasis-position:under;text-emphasis-position:under right}
-.pk{margin-right:6px;cursor:pointer}
-.pk input{vertical-align:-2px}
-.pkbar{display:flex;align-items:center;gap:12px;min-height:30px;margin:0 2px 6px;font-size:13px;color:var(--ink-2)}
-.pkbar .pri{height:30px;font-size:13px}
-.pkbar button:not(.pri){color:var(--dai)}
+.side-chips{padding:0 4px}
+.pkbar{margin:0 2px 8px;font-size:13px;color:var(--ink-3)}  /* one quiet line while 只看 some rows */
+.pkbar button{color:var(--dai)}
 .grpsel{width:100%}
 .chq{width:100%;height:36px;margin-top:4px;border:1px solid var(--sep);border-radius:8px;padding:0 10px;font-size:15px}
 .chl{max-height:58dvh;overflow:auto;margin-top:10px;background:var(--card);border-radius:var(--r)}
@@ -264,8 +268,6 @@ dialog.drawer::backdrop{background:rgba(0,0,0,.22)}
 .chb{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .chb button:not(.pri){height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--sep);background:#fff}
 
-.noside .shell{grid-template-columns:minmax(0,1fr)}
-.noside #side{display:none}
 /* 题库 */
 .qb{padding:0}
 .qg>summary{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--sep);cursor:pointer;list-style:none}
@@ -306,7 +308,7 @@ dialog#pal::backdrop{background:rgba(0,0,0,.25)}
 .pfoot{display:flex;gap:16px;padding:8px 14px;border-top:1px solid var(--sep);font-size:12px;color:var(--ink-3)}
 
 /* 学习 (learn/learn.css): routes → plan → 秒杀表 → one question at a time. Ink on paper; 朱 stays for 秒杀词 and the main button, 青 marks the right answer. */
-.l-wrap{max-width:780px}
+.l-wrap{max-width:720px}
 .l-top{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin:0 0 18px;font-size:14px;color:var(--ink-2)}
 .l-top>button{color:var(--dai)}
 .l-cnt{margin-left:auto;font-variant-numeric:tabular-nums}
@@ -322,15 +324,15 @@ dialog#pal::backdrop{background:rgba(0,0,0,.25)}
 .l-alt,.l-next>.l-alt{display:flex;flex-wrap:wrap;gap:6px 20px;margin:14px 0 0;font-size:14px;color:var(--ink-2)}
 .l-alt button{color:var(--dai)}
 .l-alt button:hover,.l-lk:hover{text-decoration:underline}
-.l-rn{display:flex;align-items:center;gap:14px;font-size:16px}
-.l-rn button,.l-rc small{color:var(--ink-2)}
-.l-rn button{color:var(--dai);font-size:14px}
-.l-rn button:hover{text-decoration:underline}
-.l-ro{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
-.l-ro .l-sec{height:34px;font-size:14px}
+.l-rc small{color:var(--ink-2)}
+.l-sd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;padding:0 8px;font-size:14px;color:var(--ink-2)}
+.l-sd b{color:var(--ink);font-weight:600}
+.l-sd button{color:var(--dai);font-size:13px;white-space:nowrap}
+.l-sd button:hover{text-decoration:underline}
+.l-sd .l-sec{height:auto;padding:0;border:0;background:none;font-size:13px}
 .l-g{margin-top:14px}
-.l-g>summary{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 4px;cursor:pointer;font-size:15px}
-.l-g>summary span{font-size:13px;color:var(--ink-3)}
+.l-gh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 4px;font-size:15px}
+.l-gh span{font-size:13px;color:var(--ink-3)}
 .l-steps{list-style:none;margin:0;padding:0;background:var(--card);border-radius:var(--r);overflow:hidden}
 .l-sr{display:grid;grid-template-columns:minmax(0,1fr) 8em auto;gap:14px;align-items:center;padding:12px 16px;border-top:1px solid var(--sep)}
 .l-steps li:first-child .l-sr{border-top:0}
@@ -363,7 +365,6 @@ dialog#pal::backdrop{background:rgba(0,0,0,.25)}
 #l-bar button{height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--sep);color:var(--dai);font-size:14px}
 #l-bar button.pri{background:var(--zhu);border-color:var(--zhu);color:#fff}
 #l-bar button:disabled{opacity:.4}
-.l-pk{display:flex;flex-wrap:wrap;gap:8px}
 .l-chip{padding:8px 14px;border-radius:10px;background:var(--card);border:1px solid var(--sep);font-size:15px;line-height:1.3}
 .l-chip small{display:block;font-size:12px;color:var(--ink-3)}
 .l-chip:hover{border-color:var(--ink-3)}
@@ -775,7 +776,7 @@ mark.m-l.m-n{box-shadow:inset 0 -2px 0 var(--ink-3)}
   :root{--bar:0px}
   .bar{position:static;height:auto;grid-template-columns:1fr;gap:10px;padding:16px 16px 6px;background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border:0}
   .tabs{position:fixed;left:0;right:0;bottom:0;justify-self:stretch;z-index:30;border-radius:0;padding:4px 8px calc(4px + env(safe-area-inset-bottom));background:rgba(248,248,246,.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--sep)}
-  .tabs button{flex:1;padding:10px 0;font-size:15px}
+  .tabs a{flex:1;padding:10px 0;font-size:15px}
   .tabs [aria-selected=true]{background:none;box-shadow:none;color:var(--dai)}
   .search kbd{display:none}
   .palbtn{top:8px}
@@ -810,11 +811,11 @@ mark.m-l.m-n{box-shadow:inset 0 -2px 0 var(--ink-3)}
 </head>
 <body>
 <header class="bar">
-  <div class="brand"><b>内科积木</b><select id="scope" aria-label="范围：截止到哪一章"></select></div>
+  <div class="brand"><b>内科积木</b><select id="scope" aria-label="范围：期中或期末"></select></div>
   <nav class="tabs" role="tablist" aria-label="视图">
-    <button role="tab" data-v="learn">学习</button><button role="tab" data-v="model">模型</button><button role="tab" data-v="kill">秒杀词</button><button role="tab" data-v="find">查词</button><button role="tab" data-v="tree">积木</button><button role="tab" data-v="grid">表格</button><button role="tab" data-v="bank">题库</button>
+    <a role="tab" href="#/learn" data-v="learn">学习</a><a role="tab" href="#/model" data-v="model">模型</a><a role="tab" href="#/kill" data-v="kill">秒杀词</a><a role="tab" href="#/find" data-v="find">查词</a><a role="tab" href="#/tree" data-v="tree">积木</a><a role="tab" href="#/grid" data-v="grid">表格</a><a role="tab" href="#/bank" data-v="bank">题库</a>
   </nav>
-  <div class="search"><input id="q" type="search" placeholder="查一个词：头晕、拽锯、天麻钩藤饮" autocomplete="off" enterkeyhint="search" aria-label="查词"><button id="palbtn" class="palbtn" aria-label="组合搜索">⌘K 组合搜索</button></div>
+  <div class="search"><input id="q" type="search" placeholder="搜索：词、病、证、方（按 / 或 ⌘K）" autocomplete="off" enterkeyhint="search" aria-label="查词"><button id="palbtn" class="palbtn" aria-label="组合搜索">⌘K 组合搜索</button></div>
 </header>
 <div class="shell"><aside id="side"></aside><main id="main"></main></div>
 <dialog id="pal" aria-label="组合搜索"><div class="pbar"><span id="palchips"></span><input id="palq" autocomplete="off" placeholder="前缀加横线，如 病-头痛、方-归脾汤、症-头晕；或直接打字" aria-label="组合搜索"></div><div id="pallist" role="listbox"></div><div class="pfoot"><span>↑↓ 选择</span><span>回车 加入筛选</span><span>⌫ 删掉上一个</span><span>Esc 关闭</span></div></dialog>
@@ -866,20 +867,21 @@ const PRE_G=[
   {n:"两病对比",d:"例子：咳嗽和哮病并排，红字只有一个病有，灰字两个病都有。在筛选的「病」里换别的病。",p:{f:["病"],sel:{"病":["咳嗽","哮病"]},r:["病"],v:["症","舌","脉","方"],cmp:"mark",tr:true}},
   {n:"两病共有的方",d:"例子：咳嗽和哮病都用的方。在筛选的「病」里换别的病。",p:{f:["病"],sel:{"病":["咳嗽","哮病"]},r:["病"],v:["方","治法"],cmp:"same",tr:true}}];
 
+const grpPv=g=>normG(g.kind==="病"?{grp:g.id}:{r:["证"],v:["秒杀词","症","舌","脉","治法","方"],only:g.zs,cmp:"mark",tr:true,grp:g.id});  // a 常考对比 group as a 表格
 const normT=t=>({c:(t?.c||[]).filter(f=>F.includes(f)),min:t?.min||""});
 const normG=p=>({f:[...(p?.f||[])],r:[...(p?.r||[])],c:[...(p?.c||[])],v:[...(p?.v||[])],sel:JSON.parse(JSON.stringify(p?.sel||{})),mode:p?.mode||"list",min:p?.min||"",
   cmp:p?.cmp||"",tr:!!p?.tr,only:[...(p?.only||[])],grp:p?.grp||""});  // cmp: ""|mark|same|diff across the rows; tr: rows shown as columns; only: kept row keys
 const gOk=p=>[...p.f,...p.r,...p.c,...p.v].every(f=>F.includes(f))&&![...p.f,...p.r,...p.c].some(f=>TEXT.has(f));
-let state={v:store.get("v"),q:"",tree:normT(getJ("tree",PRE_T[0])),pv:normG(getJ("pv",PRE_G[0].p)),mineT:getJ("mineT",[]),mineG:getJ("mineG",[]),warn:"",pick:new Set(),qb:{g:["病"],n:10,min:"",...getJ("qb",{})}};
+let state={v:store.get("v"),q:"",tree:normT(getJ("tree",PRE_T[0])),pv:normG(getJ("pv",PRE_G[0].p)),mineT:getJ("mineT",[]),mineG:getJ("mineG",[]),warn:"",kc:"",qb:{g:["病"],n:10,min:"",...getJ("qb",{})}};
 if(!["learn","model","kill","find","tree","grid","bank"].includes(state.v))state.v={build:"tree",cmp:"grid"}[state.v]||"learn";
 if(!state.tree.c.length)state.tree=normT(PRE_T[0]);
 if(!gOk(state.pv))state.pv=normG(PRE_G[0].p);
 /* 范围: every tab sees only the chapters up to the chosen one (期中 = 总论至噎膈, 期末 = 全部) */
 const FULL={z:D.z,dis:D.dis,bank:D.bank,qs:D.qs,cmp:D.cmp||[]},LAST=FULL.dis.at(-1).code;
 let CMP=FULL.cmp;  // 常考对比 groups in range (set by applyScope)
-state.scope=store.get("scope")||"07-04";if(!FULL.dis.some(d=>d.code===state.scope))state.scope=LAST;
-$("#scope").innerHTML=`<option value="07-04">期中：总论至噎膈</option><option value="${LAST}">期末：全部 ${FULL.dis.length} 个病</option>`+
-  SYS.filter(s=>FULL.dis.some(d=>d.sys===s)).map(s=>`<optgroup label="截止到（${s}）">${FULL.dis.filter(d=>d.sys===s).map(d=>`<option value="${d.code}">截止到 ${esc(d.dis)}</option>`).join("")}</optgroup>`).join("");
+const MID="07-04",toScope=c=>c&&c<=MID?MID:LAST;  // 范围 is 期中 or 期末; an old chapter code falls into the one that holds it
+state.scope=toScope(store.get("scope")||MID);
+$("#scope").innerHTML=`<option value="${MID}">期中：总论至噎膈</option><option value="${LAST}">期末：全部 ${FULL.dis.length} 个病</option>`;
 function applyScope(){const ok=c=>c<=state.scope;
   D.dis=FULL.dis.filter(d=>ok(d.code));D.z=FULL.z.filter(z=>ok(z.id.slice(0,5)));D.bank=FULL.bank.filter(b=>ok(b[0].slice(0,5)));D.qs=FULL.qs.filter(q=>ok(q.c));
   CMP=FULL.cmp.filter(g=>g.kind==="病"?ok(g.code):g.zs.every(i=>ok(i.slice(0,5))));
@@ -915,13 +917,15 @@ function zrow(z,o={}){
   return `<button class="zr" data-z="${z.id}"><span class="zn">${esc(z.name)}${sub?`<small>${esc(sub)}</small>`:""}</span><span class="kw">${kw||"<i>—</i>"}</span><span class="cb">${esc(z.combo||"")}</span><span class="fa">${esc(z.方.join("、"))}</span>${o.q?`<span class="rx">${hl(z.raw,[o.q],kws(z))}</span>`:""}</button>`}
 const ztbl=(zs,o={})=>`<div class="tbl">${o.head===false?"":ZH}${zs.map(z=>zrow(z,o)).join("")}</div>`;
 const disBlock=d=>`<section class="dis" id="d-${d.code}"><div class="dhd"><h3>${esc(d.dis)}</h3><p><span class="lab">定病</span>${esc(d.定病.join("、"))}</p></div>${ztbl(BY[d.dis])}</section>`;
-const chip=t=>`<button class="chip" data-q="${esc(t)}">${esc(t)}</button>`;
+// the page header, one component for every tab: h1 = the tab, a one-line grey subtitle, then anything that belongs under it
+const hd=(tab,sub,after="")=>`<div class="head"><h1>${tab}</h1><p>${sub}</p></div>${after}`;
+const fh=q=>"#/find/"+encodeURIComponent(q),chip=t=>`<a class="chip" href="${fh(t)}" data-q="${esc(t)}">${esc(t)}</a>`;
 const foot=()=>`<p class="foot">范围：${esc($("#scope").selectedOptions[0]?.textContent||"")}。${D.dis.length} 个病，题库 ${D.bank.length} 题（十四五）。生成于 ${D.built}。</p>`;
 function zcard(z){
   return `<p class="zsub">${esc(z.dis)}${z.group?"，"+esc(z.group):""}${z.alias?.length?`。也叫${esc(z.alias.join("、"))}`:""}</p>
   <p class="raw">${hl(z.raw,[],kws(z))}</p>
   ${z.variants.length?`<p class="ev">题库和教材的别的写法：${esc(z.variants.join("、"))}</p>`:""}
-  <dl class="dl"><dt>秒杀词</dt><dd>${z.kill.length?z.kill.map(k=>`<div class="kl"><button class="chip k" data-q="${esc(k.w)}">${esc(k.w)}</button><span class="ev">${[k.ev.length?`题库 ${k.ev.length} 题`:"",k.as.length?`也见于${esc(k.as.join("、"))}，先定病`:""].filter(Boolean).join("；")}</span>${kwhy(k)}</div>`).join(""):`<span class="ev">没有单个词能定这个证，看组合。</span>`}</dd>
+  <dl class="dl"><dt>秒杀词</dt><dd>${z.kill.length?z.kill.map(k=>`<div class="kl"><a class="chip k" href="${fh(k.w)}" data-q="${esc(k.w)}">${esc(k.w)}</a><span class="ev">${[k.ev.length?`题库 ${k.ev.length} 题`:"",k.as.length?`也见于${esc(k.as.join("、"))}，先定病`:""].filter(Boolean).join("；")}</span>${kwhy(k)}</div>`).join(""):`<span class="ev">没有单个词能定这个证，看组合。</span>`}</dd>
   ${z.combo?`<dt>组合</dt><dd>${esc(z.combo)}${z.combo_why?`<div class="why">${esc(z.combo_why)}</div>`:""}</dd>`:""}
   ${z.trap?.length?`<dt>陷阱</dt><dd>${z.trap.map(t=>`<div class="tp"><b>${esc(t.w)}</b>　${esc(t.why)}</div>`).join("")}</dd>`:""}
   ${TOK.map(d=>z[d]?.length?`<dt>${d}</dt><dd>${z[d].map(chip).join("")}</dd>`:"").join("")}
@@ -930,7 +934,7 @@ function zcard(z){
 
 /* drawer */
 const dlg=$("#dlg"),stack=[];
-function sheet(k,a,push){if(!push)stack.length=0;stack.push([k,a]);paint();if(!dlg.open)dlg.showModal()}
+function sheet(k,a,push){if(!push)stack.length=0;stack.push([k,a]);paint();if(!dlg.open)dlg.showModal();sync()}
 function paint(){let[k,a]=stack.at(-1),t="",h="";
   if(k==="zs"&&!a.includes(","))k="z";
   if(k==="z"){t=Z[a].name;h=zcard(Z[a])}
@@ -941,8 +945,8 @@ function paint(){let[k,a]=stack.at(-1),t="",h="";
   $("#dlgt").textContent=t;$("#dlgb").innerHTML=h;$("#dlgback").hidden=stack.length<2;dlg.scrollTop=0}
 
 /* 秒杀词 */
-const sKill=()=>SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h4>${s}</h4><ul class="nav">${D.dis.filter(d=>d.sys===s).map(d=>`<li><a href="#d-${d.code}" data-code="${d.code}">${esc(d.dis)}<span>${BY[d.dis].length}</span></a></li>`).join("")}</ul>`).join("");
-const mKill=()=>`<div class="head"><h1>辨证秒杀词</h1><p>${D.dis.length} 个病，${D.z.length} 个证。红字是秒杀词，题干里看到它就能选。红字右上的小数字是另外还有几个病也有这个词，遇到要先定病。点一行看原文、组合和陷阱词。</p></div>`+
+const sKill=()=>SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h4>${s}</h4><ul class="nav">${D.dis.filter(d=>d.sys===s).map(d=>`<li><a href="#/kill/${d.code}" data-code="${d.code}">${esc(d.dis)}<span>${BY[d.dis].length}</span></a></li>`).join("")}</ul>`).join("");
+const mKill=()=>`${hd("秒杀词",`${D.dis.length} 个病，${D.z.length} 个证。红字是秒杀词，点一行看原文、组合和陷阱词。`,`<p class="m-hint2">红字右上的小数字是另外还有几个病也有这个词，遇到要先定病。</p>`)}`+
   SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h2 class="sys">${s}</h2>`+D.dis.filter(d=>d.sys===s).map(disBlock).join("")).join("")+foot();
 let io;function spy(){io?.disconnect();io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){const c=e.target.id.slice(2);
   $$("#side a").forEach(a=>{a.classList.toggle("on",a.dataset.code===c);if(a.dataset.code===c&&innerWidth<=860)a.scrollIntoView({inline:"center",block:"nearest"})})}},{rootMargin:"-90px 0px -70% 0px"});
@@ -979,22 +983,33 @@ function verdict(q,zs){const dis=[...new Set(zs.map(z=>z.dis))];
   if(zs.length===1)return V("one","只见于一个证",`${esc(zs[0].dis)}　${esc(zs[0].name)}`,`${D.dis.length} 个病里只有这个证的原文有「${esc(q)}」。它不在核对过的秒杀词里，先看下面的题库再信。`);
   if(dis.length===1)return V("dis","定病",esc(dis[0]),`只见于这个病的 ${zs.length} 个证。能定病，还要再找一个词定证。`);
   const top=d=>{const c={};for(const z of zs)for(const t of z[d])c[t]=(c[t]||0)+1;
-    return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([t,n])=>`<button class="chip" data-q="${esc(t)}">${esc(t)} <span class="ev">${n}</span></button>`).join("")};
+    return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([t,n])=>`<a class="chip" href="${fh(t)}" data-q="${esc(t)}">${esc(t)} <span class="ev">${n}</span></a>`).join("")};
   return V("many","通用词",`${dis.length} 个病，${zs.length} 个证`,"单凭它选不出答案，要配上定位和定性的词。这些证落在：",`<dl class="dl"><dt>病位</dt><dd>${top("病位")}</dd><dt>病理</dt><dd>${top("病理")}</dd></dl>`)}
 const bqRow=q=>b=>`<div class="bq"><div class="m">${esc(b[0])} 第 ${b[1]} 题</div>${hl(b[2],[q])}<div class="a">答案：${esc(b[3])}</div></div>`;
+/* 查词 side: the ⌘K chips, recent words, prefixes to start a search with */
+let RECENT=getJ("recent",[]);
+const note=w=>{RECENT=[w,...RECENT.filter(x=>x!==w)].slice(0,8);store.set("recent",key(RECENT))};
+const sFind=()=>`<h4>筛选</h4><div class="side-chips">${PAL.chips.map((c,i)=>`<button class="pc" data-rcx="${i}" aria-label="删掉 ${esc(c.d)} ${esc(c.v)}">${esc(c.d)}-${c.d==="原文"?"含":""}${esc(c.v)} ×</button>`).join("")||`<span class="hint">没有筛选。</span>`}<button class="chip" data-radd>加筛选</button></div>
+  ${RECENT.length?`<h4>最近查过</h4><ul class="nav">${RECENT.map(w=>`<li><a href="${fh(w)}" data-q="${esc(w)}" class="${w===state.q.trim()?"on":""}">${esc(w)}</a></li>`).join("")}</ul>`:""}
+  <h4>前缀 <span>点一下，接着在搜索里打</span></h4><div class="side-chips">${["病","证","方","症","舌","脉","病理","病位","治法","秒杀词"].map(d=>`<button class="chip" data-pfx="${d}">${d}-</button>`).join("")}</div>`;
+function mRes(){const zs=pbase(),nq=qbase(PAL.chips).length,nz=PAL.chips.some(c=>!QONLY.has(c.d));
+  const row=k=>`<button class="chip" data-go="${k}">${GO[k][0]}${k==="bank"||k==="qs"?`　${nq} 题`:k==="grid"||k==="tree"?`　${zs.length} 个证`:""}</button>`;
+  return `${hd("查词",`筛选结果：${esc(chipTxt(PAL.chips))}`)}<div class="head">
+    <p>${nz?`${zs.length} 个证，`:""}${nq} 道题。去：</p><p>${[...nz?["grid","tree"]:[],...nq?["bank","qs"]:[],"save"].map(row).join("")}</p></div>${nz?ztbl(zs,{dis:true}):""}`+foot()}
 function mFind(){const q=state.q.trim();
+  if(!q&&PAL.chips.length)return mRes();
   if(!q){const pos=D.rule.filter(r=>"肝心脾肺肾".includes(r.zheng)),nat=D.rule.filter(r=>!"肝心脾肺肾".includes(r.zheng));
-    const rows=rs=>rs.map(r=>`<dt>${esc(r.zheng)}</dt><dd>${r.words.map(w=>`<button class="chip" data-q="${esc(w.replace(/[（(].*$/,"").split(/[ +]/)[0])}">${esc(w)}</button>`).join("")}</dd>`).join("");
+    const wq=w=>w.replace(/[（(].*$/,"").split(/[ +]/)[0],rows=rs=>rs.map(r=>`<dt>${esc(r.zheng)}</dt><dd>${r.words.map(w=>`<a class="chip" href="${fh(wq(w))}" data-q="${esc(wq(w))}">${esc(w)}</a>`).join("")}</dd>`).join("");
     const cnt={};for(const z of D.z)for(const t of z.症)(cnt[t]||(cnt[t]=new Set())).add(z.dis);
     const top=Object.entries(cnt).sort((a,b)=>b[1].size-a[1].size).slice(0,60);
-    return `<div class="head"><h1>查一个词</h1><p>在上面输入题干里的一个词，看它是秒杀词、陷阱词、定病词，还是很多病都有的通用词。电脑上按 / 键直接开始输入。</p><div class="ex">${["拽锯","身热不扬","胸部膨满","头晕","天麻钩藤饮"].map(chip).join("")}</div></div>
+    return `${hd("查词","点上面的搜索框（电脑上按 / 键），输入题干里的一个词，看它是秒杀词、陷阱词、定病词还是通用词。",`<div class="ex">${["拽锯","身热不扬","胸部膨满","头晕","天麻钩藤饮"].map(chip).join("")}</div>`)}
     ${D.rule.length?`<h2 class="sec">秒杀公式：定位加定性，手写笔记第 1 到 2 页</h2><div class="two"><dl class="dl">${rows(pos)}</dl><dl class="dl wide">${rows(nat)}</dl></div>`:""}
-    <h2 class="sec">通用词：出现在最多病里的症状，数字是病数</h2><div class="box">${top.map(([t,s])=>`<button class="chip" data-q="${esc(t)}">${esc(t)} <span class="ev">${s.size}</span></button>`).join("")}</div>`+foot()}
+    <h2 class="sec">通用词：出现在最多病里的症状，数字是病数</h2><div class="box">${top.map(([t,s])=>`<a class="chip" href="${fh(t)}" data-q="${esc(t)}">${esc(t)} <span class="ev">${s.size}</span></a>`).join("")}</div>`+foot()}
   const zs=D.z.filter(z=>text(z).includes(q)||TOK.some(d=>z[d].some(t=>t.includes(q)))||z.kill.some(k=>k.w.includes(q)));
   const ds=D.dis.filter(d=>[...d.定病,...d.主症].some(t=>t.includes(q)));
   const tr=D.z.flatMap(z=>(z.trap||[]).filter(t=>t.w.includes(q)).map(t=>({z,t})));
   const bq=D.bank.filter(b=>b[2].includes(q));
-  return `<div class="head"><h1>「${esc(q)}」</h1></div>`+verdict(q,zs)+
+  return hd("查词",`「${esc(q)}」`)+verdict(q,zs)+
     (tr.length?`<h2 class="sec">陷阱：看着像秒杀词，其实会误导</h2><div class="box">${tr.map(({z,t})=>`<div class="tp"><b>${esc(z.dis)}　${esc(z.name)}　「${esc(t.w)}」</b>　${esc(t.why)}</div>`).join("")}</div>`:"")+
     (ds.length?`<h2 class="sec">定病词：病的主症里有「${esc(q)}」</h2><div class="box">${ds.map(d=>`<p><b>${esc(d.dis)}</b>　${hl([...new Set([...d.定病,...d.主症])].join("，"),[q])}</p>`).join("")}</div>`:"")+
     (zs.length?`<h2 class="sec">${zs.length} 个证有这个词</h2>${ztbl(zs,{dis:true,q})}`:"")+
@@ -1023,7 +1038,7 @@ function nodes(zs,dep,path){const c=state.tree.c;
   return es.map(e=>{const id=NODES.push({zs:e.l,dep:dep+1,path:[...path,{d,v:e.k}]})-1;
     return `<details class="nd" data-n="${id}"><summary><span class="t">${esc(label(d,e.k))}${d==="证"?"":`<small>${esc(d)}</small>`}</span><span class="c"><b>${e.nd}</b> 病</span><span class="c"><b>${e.l.length}</b> 证</span></summary></details>`}).join("")}
 function mTree(){const t=state.tree,[on,mi]=onT();NODES=[];
-  return `<div class="head"><h1>${esc(on>-1?PRE_T[on].n:mi>-1?state.mineT[mi].n:"自定义积木")}</h1><p>${esc(on>-1?PRE_T[on].d:"按左边的层级一层层分。一个证有几个值，就出现在几组里。")}</p><ol class="chain">${t.c.map(d=>`<li>${esc(d)}</li>`).join("")}</ol></div><div class="tree">${nodes(D.z,0,[])}</div>`+foot()}
+  return `${hd("积木",esc((on>-1?PRE_T[on].n:mi>-1?state.mineT[mi].n:"自定义积木")+"：")+esc(on>-1?PRE_T[on].d:"按左边的层级一层层分，一个证有几个值，就出现在几组里。"),`<ol class="chain">${t.c.map(d=>`<li>${esc(d)}</li>`).join("")}</ol>`)}${PAL.chips.length?`<p class="ev">筛选：${esc(chipTxt(PAL.chips))}　<button class="chip" data-pclear>清除筛选</button></p>`:""}<div class="tree">${nodes(PAL.chips.length?pbase():D.z,0,[])}</div>`+foot()}
 
 /* 表格: pivot with limits per area */
 const gsum=P=>[P.r.length?"行 "+P.r.join("、"):"",P.c.length?"列 "+P.c.join("、"):"","值 "+(P.v.length?P.v.join("、"):"证")].filter(Boolean).join("；");
@@ -1043,7 +1058,7 @@ function sGrid(){const P=state.pv,[on,mi]=onG(),used=new Set([...P.f,...P.r,...P
   <label class="row">行和列至少<select id="gmin">${[["","不限"],["2病","2 个病"],["3病","3 个病"],["2证","2 个证"],["3证","3 个证"]].map(([v,l])=>`<option value="${v}"${P.min===v?" selected":""}>${l}</option>`).join("")}</select></label>
   <div class="save"><input id="gname" placeholder="${esc(gsum(P))}" aria-label="表格名"><button class="pri" data-gsave>存为我的表格</button></div>`}
 function mGrid(){const P=state.pv,[on,mi]=onG(),G=P.grp&&CMP.find(g=>g.id===P.grp);
-  const head=(t,d)=>`<div class="head"><h1>${esc(t)}</h1><p>${esc(d)}</p></div>`;
+  const head=(t,d)=>hd("表格",esc(t+"：")+esc(d));
   const ev=G?.ev?.length?`<button class="evb" data-ev="${esc(G.id)}">题库考过 ${G.ev.length} 题，点开先自己做</button>`:"";
   if(G?.kind==="病")return head(G.title,G.point)+vsTable(G).replace(/<button class="evb"[^]*?<\/button>/,"")+ev+foot();  // a disease outside the 22 cannot be a table row
   return (G?head(G.title,G.point):head(on>-1?PRE_G[on].n:mi>-1?state.mineG[mi].n:"自定义表格",on>-1?PRE_G[on].d:gsum(P)))+grid(P)+ev+foot()}
@@ -1102,7 +1117,7 @@ function grid(P){
       h+="</tr>"}
     if(cmp==="same")b=`<tr><th data-c="0" colspan="${LW}">共有（${rows.length} 行）</th>${cols.map((c,ci)=>V.map(d=>`<td>${list(common(ci,d),d,ci)}</td>`).join("")).join("")}</tr>`;
     else rows.forEach((x,j)=>{b+="<tr>";
-      if(R.length)R.forEach((d,i)=>{const s=span(rows,i,j);if(s)b+=`<th data-c="${i}"${s>1?` rowspan="${s}"`:""}>${i===R.length-1?`<label class="pk"><input type="checkbox" data-pk="${esc(pk(x))}"${state.pick.has(pk(x))?" checked":""} aria-label="选这一行"></label>`:""}${item(d,x.p[i],sd)}</th>`});
+      if(R.length)R.forEach((d,i)=>{const s=span(rows,i,j);if(s)b+=`<th data-c="${i}"${s>1?` rowspan="${s}"`:""}>${item(d,x.p[i],sd)}</th>`});
       else b+=`<th data-c="0">全部</th>`;
       if(cnt)b+=`<th class="ct" data-c="${R.length}">${new Set(x.l.map(z=>z.dis)).size} / ${x.l.length}</th>`;
       x.cz.forEach((cz,ci)=>V.forEach(d=>b+=cell(j,ci,d)));b+="</tr>"});
@@ -1111,12 +1126,10 @@ function grid(P){
   }
   if(nc>MAXC)note.push(`列太多，只显示前 ${MAXC} 列（共 ${nc} 列），加筛选或把「至少」调高。`);
   if(nr>rows.length)note.push(`${nr-rows.length} 行在这些列里没有证，已隐藏。`);
-  return `<div id="pkbar" class="pkbar">${pkbar()}</div><div class="gw"><table class="pt${P.tr&&!C.length?" tr":""}"><thead>${h}</thead><tbody>${b}</tbody></table></div><p class="gnote">${note.join("")}</p>`}
+  return `${pkbar()}<div class="gw"><table class="pt${P.tr&&!C.length?" tr":""}"><thead>${h}</thead><tbody>${b}</tbody></table></div><p class="gnote">${note.join("")}</p>`}
 const pk=x=>x.p.join("\u0001");
-function pkbar(){const P=state.pv,n=state.pick.size;
-  if(n){const nq=pickQs().length;return `已选 ${n} 行<button class="pri" data-only>只看这 ${n} 行，并排对比</button>${nq?`<button data-pickq>做这几行的题（${nq}）</button>`:""}<button data-unpick>清除</button>`}
-  if(P.only.length)return `只看选中的 ${P.only.length} 行<button data-unonly>显示全部行</button>`;
-  return P.tr&&!P.c.length?"":`<span>勾选几行，只看它们并排对比。</span>`}
+function pkbar(){const n=state.pv.only.length,nq=n&&shownQs().length;  // the one line shown while 只看 some rows (from ⌘K, a 常考对比 group, 学习, a link)
+  return n?`<p class="pkbar">只看 ${n} 行 · <button data-unonly>显示全部</button>${nq?` · <button data-shownq>做表里这些证的题（${nq}）</button>`:""}</p>`:""}
 function freeze(){const t=$(".pt");if(!t)return;  // sticky header rows and row-label columns, like frozen panes
   for(const tr of t.tHead.rows)for(const c of tr.cells)c.style.top=tr.offsetTop+"px";
   const w=[];t.querySelectorAll("[data-c]").forEach(c=>{if(c.colSpan===1)w[+c.dataset.c]??=c.offsetWidth});
@@ -1180,37 +1193,41 @@ const pbase=(skip,cs=PAL.chips)=>D.z.filter(z=>cs.every(c=>c.d===skip||QONLY.has
 function pparse(q){const m=q.match(/^\s*([^-－:：\s]{1,3})\s*[-－:：]\s*(.*)$/);return m&&PFX.includes(m[1])?{d:m[1],t:m[2].trim()}:{d:"",t:q.trim()}}
 function pitems(){const base=pbase(),{d,t}=pparse(PAL.q),items=[],chosen=new Set(PAL.chips.map(c=>c.d+"\u0001"+c.v));
   const count=dim=>{const m=new Map();for(const z of QONLY.has(dim)?qbase(PAL.chips):POR.has(dim)?pbase(dim):base)for(const v of new Set(QONLY.has(dim)?qv(z,dim):pvals(z,dim)))if(!chosen.has(dim+"\u0001"+v))m.set(v,(m.get(v)||0)+1);return [...m].sort((a,b)=>b[1]-a[1])};
-  const has=v=>base.filter(z=>text(z).includes(v)).length,nq=PAL.chips.length&&qbase(PAL.chips).length,qs={k:"qs",n:nq,g:"题"},sv={k:"save",g:"题"};
-  if(nq&&!PAL.q.trim())items.push(qs,sv);  // nothing typed: practising the chips is the first row; while typing, Enter still picks the first match
+  const has=v=>base.filter(z=>text(z).includes(v)).length,nq=PAL.chips.length&&qbase(PAL.chips).length,nz=PAL.chips.some(c=>!QONLY.has(c.d))?base.length:0;
+  const go=[...PAL.chips.length?[{k:"res",g:"去"}]:[],...nz?[{k:"grid",n:nz,g:"去"},{k:"tree",n:nz,g:"去"}]:[],...nq?[{k:"bank",n:nq,g:"去"},{k:"qs",n:nq,g:"去"}]:[],...PAL.chips.length?[{k:"save",g:"去"}]:[]];
+  if(!PAL.q.trim())items.push(...go);  // nothing typed: the chips' results come first, then where to take them; while typing, Enter still picks the first match
   if(d==="原文"){if(t)items.push({k:"add",d,v:t,n:has(t),g:"原文"})}
   else if(d)for(const [v,n] of count(d).filter(([v])=>!t||v.includes(t)).slice(0,300))items.push({k:"add",d,v,n,g:d});
   else if(t){items.push({k:"find",v:t,g:"查词"});
     for(const p of PFX)if(p!=="原文")for(const [v,n] of count(p).filter(([v])=>v.includes(t)).slice(0,6))items.push({k:"add",d:p,v,n,g:p});
     const n=has(t);if(n)items.push({k:"add",d:"原文",v:t,n,g:"原文"})}
   else for(const p of PFX)items.push({k:"pfx",d:p,n:p==="原文"?0:count(p).length,g:"前缀：选一个，看它下面的全部"});
-  if(nq&&PAL.q.trim())items.push(qs,sv);
-  if(PAL.chips.some(c=>!QONLY.has(c.d)))for(const z of base.slice(0,80))items.push({k:"z",z,g:`符合的证：${base.length} 个`});
+  if(PAL.q.trim())items.push(...go);
+  if(nz)for(const z of base.slice(0,80))items.push({k:"z",z,g:`符合的证：${base.length} 个`});
   return {items,base}}
 function prender(){const {items,base}=pitems();PAL.items=items;PAL.i=Math.max(0,Math.min(PAL.i,items.length-1));
   $("#palchips").innerHTML=PAL.chips.map((c,i)=>`${i&&POR.has(c.d)&&PAL.chips[i-1].d===c.d?"<i class=\"por\">或</i>":""}<button class="pc" data-pcx="${i}" aria-label="删掉 ${esc(c.d)} ${esc(c.v)}">${esc(c.d)}-${c.d==="原文"?"含":""}${esc(c.v)} ×</button>`).join("");
-  let g="",h="";items.forEach((it,i)=>{if(it.g!==g){g=it.g;h+=`<div class="pg">${esc(g)}${it.k==="z"?`<button data-palgrid>在表格里看这 ${base.length} 个</button>`:""}</div>`}
+  let g="",h="";items.forEach((it,i)=>{if(it.g!==g){g=it.g;h+=`<div class="pg">${esc(g)}</div>`}
     const on=i===PAL.i?" on":"",a=`class="pi${on}" data-pi="${i}" role="option" aria-selected="${!!on}"`;
     h+=it.k==="pfx"?`<button ${a}><b>${esc(it.d)}-</b><span>${it.d==="原文"?"证的原文含某段文字":it.n+" 个值"}</span></button>`
-      :it.k==="qs"?`<button ${a}>做符合的 ${it.n} 道题<span data-palbank>在题库里分组看</span></button>`
-      :it.k==="save"?`<button ${a}>存为路线<span>${esc(chipTxt(PAL.chips))}</span></button>`
+      :it.k in GO?`<button ${a}>${GO[it.k][0]}<span>${it.k==="save"?esc(chipTxt(PAL.chips)):it.n!=null?it.n+(it.k==="bank"||it.k==="qs"?" 题":" 个证"):""}</span></button>`
       :it.k==="find"?`<button ${a}>查「${esc(it.v)}」是不是秒杀词<span>查词</span></button>`
       :it.k==="add"?`<button ${a}><span class="pd">${esc(it.d)}</span>${it.d==="原文"?`含「${esc(it.v)}」`:esc(it.v)}<span>${it.n} ${QONLY.has(it.d)?"题":"个证"}</span></button>`
       :`<button ${a}><span class="pd">${esc(it.z.dis)}</span>${esc(it.z.name)}<span class="kwi">${esc(kws(it.z).join("、"))}</span></button>`});
   $("#pallist").innerHTML=h||`<p class="empty">没有符合的。换个词，或删掉一个筛选。</p>`;
   $("#pallist .on")?.scrollIntoView({block:"nearest"})}
+/* where a ⌘K filter can be taken: [label, action]; the same rows sit in the palette and on the 查词 results page */
+const GO={res:["看结果",()=>go("find","")],
+  grid:["在表格里看",()=>{state.pv=normG({r:["病","证"],v:["秒杀词","症","方"],only:pbase().map(z=>z.dis+"\u0001"+z.id)});go("grid")}],
+  tree:["在积木里看",()=>{state.tree=normT(PRE_T.find(p=>p.n==="按章"));go("tree")}],bank:["在题库里分组看",()=>go("bank")],
+  qs:["做这些题",()=>qdo(qbase(PAL.chips),chipTxt(PAL.chips))],save:["存为路线",()=>window.LEARN?.saveRoute(chipTxt(PAL.chips),PAL.chips)]};
 function ppick(i){const it=PAL.items[i];if(!it)return;
   if(it.k==="pfx")PAL.q=it.d+"-";
   else if(it.k==="add"){const j=PAL.chips.map(c=>c.d).lastIndexOf(it.d);PAL.chips.splice(j<0?PAL.chips.length:j+1,0,{d:it.d,v:it.v});PAL.q=""}
-  else if(it.k==="qs"){pal.close();return qdo(qbase(PAL.chips),chipTxt(PAL.chips))}
-  else if(it.k==="save"){pal.close();return window.LEARN?.saveRoute(chipTxt(PAL.chips),PAL.chips)}
+  else if(it.k in GO){pal.close();return GO[it.k][1]()}
   else{pal.close();return it.k==="find"?go("find",it.v):sheet("z",it.z.id)}
   $("#palq").value=PAL.q;PAL.i=0;prender();$("#palq").focus()}
-function popen(){if(dlg.open)dlg.close();closeMenu();PAL.q="";$("#palq").value="";PAL.i=0;prender();pal.showModal();$("#palq").focus()}
+function popen(){if(dlg.open)dlg.close();closeMenu();PAL.q="";$("#palq").value="";PAL.i=0;prender();pal.showModal();$("#palq").focus();history.pushState({pal:1},"")}  // Back closes it
 $("#palbtn").textContent=/Mac|iPhone|iPad/.test(navigator.platform)?"⌘K 组合搜索":"Ctrl K 组合搜索";
 $("#palbtn").addEventListener("click",popen);
 $("#palq").addEventListener("input",e=>{PAL.q=e.target.value;PAL.i=0;prender()});
@@ -1218,13 +1235,12 @@ $("#palq").addEventListener("keydown",e=>{
   if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();PAL.i=Math.max(0,Math.min(PAL.items.length-1,PAL.i+(e.key==="ArrowDown"?1:-1)));prender()}
   else if(e.key==="Enter"){e.preventDefault();ppick(PAL.i)}
   else if(e.key==="Backspace"&&!e.target.value&&PAL.chips.length){PAL.chips.pop();prender()}});
-pal.addEventListener("close",()=>{if(state.v==="bank")render();else save()});  // chips changed here are kept
+pal.addEventListener("close",()=>{render();if(history.state?.pal){hold=true;history.back()}});  // chips changed here are kept; take its entry back
 pal.addEventListener("click",e=>{const t=e.target;let el;
   if(t===pal)return pal.close();
-  if(t.closest("[data-palbank]")){pal.close();return go("bank")}
   if(el=t.closest("[data-pi]"))return ppick(+el.dataset.pi);
   if(el=t.closest("[data-pcx]")){PAL.chips.splice(+el.dataset.pcx,1);prender();return $("#palq").focus()}
-  if(t.closest("[data-palgrid]")){const zs=pbase();state.pick.clear();state.pv=normG({r:["病","证"],v:["秒杀词","症","方"],only:zs.map(z=>z.dis+"\u0001"+z.id)});pal.close();go("grid")}});
+  });
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();pal.open?pal.close():popen()}});
 
 /* 题库: every bank question carries the 证 dimensions (build.py qtag: the 证 its answer, stem or 解析 names, the 症 舌 脉 in
@@ -1244,10 +1260,11 @@ function qv(q,d){let c=QC.get(q);if(!c)QC.set(q,c={});if(c[d])return c[d];
 const qhit=(q,c)=>c.d==="原文"?q.q.includes(c.v):qv(q,c.d).includes(c.v);
 const qbase=(chips,skip)=>D.qs.filter(q=>chips.every(c=>c.d===skip||(POR.has(c.d)?chips.some(o=>o.d===c.d&&qhit(q,o)):qhit(q,c))));
 const chipTxt=cs=>cs.map(c=>`${c.d}-${c.v}`).join(" + ")||"全部题";
-function pickQs(){const P=state.pv,S=P.sel,zs=D.z.filter(z=>P.f.every(f=>!(S[f]||[]).length||vals(z,f).some(v=>S[f].includes(v))));  // the 表格 rows ticked: their 证, as grid() builds them
-  const rs=leaves(zs,P.r,P.min).filter(x=>state.pick.has(pk(x))),ids=new Set(rs.flatMap(x=>x.l.map(z=>z.id))),dis=P.r.every(d=>d==="病"||d==="系统");  // a 病 row also takes the questions that name no 证
+const shown=()=>{const P=state.pv,S=P.sel,zs=D.z.filter(z=>P.f.every(f=>!(S[f]||[]).length||vals(z,f).some(v=>S[f].includes(v))));  // the 表格 rows on screen, as grid() builds them
+  return leaves(zs,P.r,P.min).filter(x=>!P.only.length||P.only.includes(pk(x)))};
+function shownQs(){const P=state.pv,rs=shown(),ids=new Set(rs.flatMap(x=>x.l.map(z=>z.id))),dis=P.r.every(d=>d==="病"||d==="系统");  // a 病 row also takes the questions that name no 证
   return D.qs.filter(q=>(q.g?.z||[]).some(i=>ids.has(i))||dis&&rs.some(x=>x.p.every((v,i)=>qv(q,P.r[i]).includes(v))))}
-const pickT=()=>"表格："+[...state.pick].map(k=>k.split("\u0001").map((v,i)=>label(state.pv.r[i],v)).join("·")).join("、");
+const shownT=()=>"表格："+shown().map(x=>x.p.map((v,i)=>label(state.pv.r[i],v)).join("·")).join("、");
 function qdo(qs,title){if(!qs.length)return;if(!window.LEARN?.practice)return alert("学习模块还没装上。");LEARN.practice(qs,title,state.qb.n)}
 const PRE_Q=[{n:"按章刷",g:["系统","病"]},{n:"按病因刷",g:["病因"]},{n:"按病理刷",g:["病理"]},{n:"按病位刷",g:["病位"]},
   {n:"气虚全科",g:["病"],f:[{d:"病理",v:"气虚"}]},{n:"痰全科",g:["病"],f:[{d:"病理",v:"痰"}]},{n:"瘀全科",g:["病"],f:[{d:"病理",v:"瘀"}]},
@@ -1263,7 +1280,9 @@ let QG=[];
 const qprog=l=>{const t=window.LEARN?.prog?.(l);return t&&t.seen?`做过 ${t.seen}　对 ${t.ok}`:""};
 function qrow(e,lv,path){const i=QG.push({t:[...path,e.k].join(" · "),l:e.l})-1;
   return `<details class="qg lv${lv}" data-qi="${i}"><summary><span class="ql">${esc(e.k===null?"（没有这个标签）":e.k)}</span><span class="qn">${e.l.length} 题${e.nd>1?`　${e.nd} 病`:""}</span><span class="qp">${qprog(e.l)}</span><button class="qd" data-qdo="${i}">做</button></summary></details>`}
-function sBank(){const B=state.qb,on=PRE_Q.findIndex(p=>key(p.g)===key(B.g)&&(p.min||"")===B.min&&key(p.f||[])===key(PAL.chips));
+const onQ=()=>PRE_Q.findIndex(p=>key(p.g)===key(state.qb.g)&&(p.min||"")===state.qb.min&&key(p.f||[])===key(PAL.chips));
+const preQ=p=>{state.qb={...state.qb,g:[...p.g],min:p.min||""};PAL.chips=(p.f||[]).map(c=>({...c}))};
+function sBank(){const B=state.qb,on=onQ();
   return `<h4>预设 <span>点一下就分好组</span></h4><div class="pgrid">${PRE_Q.map((p,i)=>`<button data-qp="${i}" class="${i===on?"on":""}">${esc(p.n)}</button>`).join("")}</div>
   <h4>分组</h4><div class="qb-sel">${[0,1].map(i=>`<select data-qgd="${i}" aria-label="第 ${i+1} 层分组"><option value="">${i?"不再分":"不分组"}</option>${QDIMS.map(d=>`<option${B.g[i]===d?" selected":""}>${d}</option>`).join("")}</select>`).join("")}</div>
   <label class="qb-min"><input type="checkbox" id="qmin"${B.min?" checked":""}> 只看跨两个病以上的组</label>
@@ -1272,7 +1291,7 @@ function sBank(){const B=state.qb,on=PRE_Q.findIndex(p=>key(p.g)===key(B.g)&&(p.
   <h4>每轮做几题</h4><select id="qn" aria-label="每轮题数">${[5,10,20,30].map(n=>`<option${B.n==n?" selected":""}>${n}</option>`).join("")}</select>`}
 function mBank(){const B=state.qb,qs=qbase(PAL.chips),[d1,d2]=B.g;QG=[];
   const all=QG.push({t:chipTxt(PAL.chips),l:qs})-1;
-  let h=`<div class="head"><h1>题库</h1><p>${PAL.chips.length?`筛选：${esc(chipTxt(PAL.chips))}。`:""}共 ${qs.length} 题${d1?`，按${esc(d1)}${d2?"、"+esc(d2):""}分组`:""}。每道题带着和证一样的标签：病、证、病因、病理、方、症、舌、脉……一组题多，每轮只出 ${B.n} 题，先做错过的，再做没做过的。</p>
+  let h=`${hd("题库",`${PAL.chips.length?`筛选：${esc(chipTxt(PAL.chips))}。`:""}共 ${qs.length} 题${d1?`，按${esc(d1)}${d2?"、"+esc(d2):""}分组`:""}，每轮 ${B.n} 题，先做错过的。`)}<div class="head">
     <p class="qb-top"><button class="pri" data-qdo="${all}">做这 ${qs.length} 题</button>${qprog(qs)?`<span class="hint">${qprog(qs)}</span>`:""}</p></div>`;
   if(!d1)return h;
   const {es,no}=qgroup(qs,d1);
@@ -1281,7 +1300,7 @@ function mBank(){const B=state.qb,qs=qbase(PAL.chips),[d1,d2]=B.g;QG=[];
   return h}
 document.addEventListener("click",e=>{if(state.v!=="bank")return;const t=e.target;let el;
   if(el=t.closest("[data-qdo]")){e.preventDefault();const g=QG[+el.dataset.qdo];return qdo(g.l,g.t)}
-  if(el=t.closest("[data-qp]")){const p=PRE_Q[+el.dataset.qp];state.qb={...state.qb,g:[...p.g],min:p.min||""};PAL.chips=(p.f||[]).map(c=>({...c}));return render()}
+  if(el=t.closest("[data-qp]")){preQ(PRE_Q[+el.dataset.qp]);return render()}
   if(el=t.closest("[data-qcx]")){PAL.chips.splice(+el.dataset.qcx,1);return render()}
   if(t.closest("[data-qadd]"))return popen()});
 document.addEventListener("change",e=>{if(state.v!=="bank")return;const t=e.target;
@@ -1295,53 +1314,34 @@ document.addEventListener("toggle",e=>{const n=e.target;  // a group's question 
 /* 学习: a route (路线) is an ordered list of 站. A 站 has a 看 (an existing view opened with its filter set) and a 练 (real 十四五 questions in rounds).
    build.py inlines this into the page's script, so it shares D, Z, BY, DIS, FULL, store, getJ, esc, hl, ztbl, kws, kwhy, qv, qbase, chipTxt, normG, state, render, go… The method: learn/LEARN.md. */
 (()=>{
-const MASTER=.8,ROUND=10,WHYN=5,DAY=864e5,AB="ABCDE",GN=8;
+const MASTER=.8,ROUND=10,DAY=864e5,AB="ABCDE",GN=8;
 const CN=Object.fromEntries(FULL.dis.map(d=>[d.code,d.dis]));
 const cname=c=>CN[c]||(D.chap[c]||c).replace(/^\S+\s/,"");
 
 /* saved progress: rt = the route; routes = saved custom routes {id,n,chips}; res[id] = [times right, times wrong, last answer right 1/0, when, chapter]; book[id] = [right answers still needed, due] */
-const P=(()=>{const p=getJ("learn",{});return {rt:p.rt||(p.fam?.length||p.cur?"ch":""),fam:p.fam||[],bk:p.bk||"病理",fk:p.fk||"方",routes:p.routes||[],res:p.res||{},book:p.book||{}}})();
+const P=(()=>{const p=getJ("learn",{});return {rt:p.rt||(p.fam?.length||p.cur?"ch":""),bk:p.bk||"病理",fk:p.fk||"方",routes:p.routes||[],res:p.res||{},book:p.book||{}}})();
 const keep=()=>store.set("learn",JSON.stringify(P));
-const U={view:P.rt?"home":"routes",run:null,sel:new Set(),hi:"",cover:false,fam:new Set(P.fam),focus:"",c:"",at:null,og:new Map()};
+const U={view:P.rt?"home":"routes",run:null,sel:new Set(),hi:"",cover:false,focus:"",c:"",at:null,g:""};
 
 const uniq=a=>[...new Set(a)];
 const mix=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-const spread=(a,n)=>a.filter((_,i)=>i%Math.ceil(a.length/n)===0).slice(0,n);
-
-/* a generated question: the right answer plus up to 4 wrong ones; oz: option letter → the 证 it names */
-function gq(id,c,stem,right,wrong,x,o={}){const ws=uniq(wrong).filter(w=>w&&w!==right).slice(0,4);if(!right||!ws.length)return null;
-  const op=mix([right,...ws]);
-  return {id,c,src:"g",stem,o:op.map((t,i)=>[AB[i],t]),a:AB[op.indexOf(right)],x,z:o.z||[],red:o.red||[],mk:o.mk||[],d:o.d||"",oz:{}}}
-// 机理 before the arrow is the mechanism; after it, the sign and the contrast (FORMAT.md § 机理)
-const mech=w=>w&&w.includes("→")?w.split("；")[0].split("→")[0].trim():"";
-const lab=k=>{const g={};for(const t of k.tells||[]){const [a,b]=t.split(":"),n=b?{位:"定位",性:"定性",期:"分期"}[a]:"定病";(g[n]||(g[n]=[])).push(b||"")}
-  return Object.entries(g).map(([n,v])=>v[0]?`${n}：${v.join("、")}`:n).join("；")};
-function gWhy(d){const zs=BY[d.dis],m=[],r=[];  // only 机理 questions; 秒杀词 → 证 is practised on real questions
-  for(const z of zs)for(const k of z.kill.filter(k=>mech(k.why))){const oth=zs.filter(y=>y!==z).flatMap(y=>y.kill.map(j=>mech(j.why))).filter(Boolean);
-    m.push(gq(`g:m:${z.id}:${k.w}`,d.code,`${d.dis}病人出现「${k.w}」，是什么病机造成的？`,mech(k.why),oth,k.why,{z:[z.id],mk:[k.w]}));
-    const lb=lab(k),mine=new Set(k.tells||[]);
-    if(lb)r.push(gq(`g:r:${z.id}:${k.w}`,d.code,`${d.dis}的题干里看到「${k.w}」，它首先告诉你什么？`,lb,mix(zs.flatMap(y=>y.kill)).filter(j=>(j.tells||[]).length&&!j.tells.some(t=>mine.has(t))).map(lab),k.why,{z:[z.id],mk:[k.w]}))}
-  const a=spread(m.filter(Boolean),WHYN);return [...a,...spread(r.filter(Boolean),WHYN-a.length)]}  // at most WHYN, spread over the chapter's 证
-const GC=new Map(),gen=c=>{const k=state.scope+c;if(!GC.has(k))GC.set(k,gWhy(DIS[CN[c]]));return GC.get(k)};
 
 /* real 十四五 questions: which 证 the answer names, the 秒杀词 of that 证 in the stem, and which 站 of its chapter it belongs to:
    real → ① (answer 证 whose 秒杀词 is in the stem), fang / dis → ② (证 without 秒杀词, 治法, 方, 病机, 病因…), cmp / all → ③ */
 const RQ=new Map();
 function wrap(q){const id=`q:${q.c}#${q.n}`;if(RQ.has(id))return RQ.get(id);
   const z=uniq([...q.a].flatMap(a=>q.oz[a]||[])).filter(i=>Z[i]),s=q.q;
-  const w={id,c:q.c,src:"14",n:q.n,t:q.t,stem:s,o:q.o,a:q.a,x:q.x,z,oz:q.oz,red:uniq(z.flatMap(i=>kws(Z[i])).filter(k=>s.includes(k))),mk:z.flatMap(i=>(Z[i].combo||"").split(" + ")).filter(w=>w&&s.includes(w)),d:CN[q.c]||""};
+  const w={id,c:q.c,n:q.n,t:q.t,stem:s,o:q.o,a:q.a,x:q.x,z,oz:q.oz,red:uniq(z.flatMap(i=>kws(Z[i])).filter(k=>s.includes(k))),mk:z.flatMap(i=>(Z[i].combo||"").split(" + ")).filter(w=>w&&s.includes(w)),d:CN[q.c]||""};
   w.k=z.length?(w.red.length?"real":"fang"):/鉴别|区别|不同|相鉴|诊断/.test(s)?"cmp":/加用|加减|宜加|应加|可加|加入|出自|首见|提出|记载|最早|医家|所著|著作|源于|始于|载于/.test(s)?"all"
     :/^患者/.test(s)&&/治|方/.test(s)?"fang":/病机|病理|病位|病因|病性|治疗原则|治则|大法|主症|特征|特点|概念|定义|是指|诱因|因素|基本/.test(s)?"dis":"all";
   RQ.set(id,w);return w}
-let SC="",QM,IDX;  // per 范围: bank questions by "<code>#<n>", generated ones by id
-function rq(c,n){if(SC!==state.scope){SC=state.scope;QM=new Map(D.qs.map(q=>[q.c+"#"+q.n,q]));IDX=null}const q=QM.get(c+"#"+n);return q&&wrap(q)}
-function find(id){if(id.startsWith("q:"))return rq(...id.slice(2).split("#"));
-  if(SC!==state.scope)rq("","");
-  if(!IDX){IDX=new Map();for(const q of D.dis.flatMap(d=>gen(d.code)))IDX.set(q.id,q)}
-  return IDX.get(id)}
+let SC="",QM;  // per 范围: bank questions by "<code>#<n>"
+function rq(c,n){if(SC!==state.scope){SC=state.scope;QM=new Map(D.qs.map(q=>[q.c+"#"+q.n,q]))}const q=QM.get(c+"#"+n);return q&&wrap(q)}
+const find=id=>id.startsWith("q:")?rq(...id.slice(2).split("#")):null;  // old saved g: ids (generated questions, gone) are skipped
 const chq=c=>D.qs.filter(q=>q.c===c).map(wrap);
 function bookQs(){const now=Date.now(),qs=Object.keys(P.book).sort((a,b)=>P.book[a][1]-P.book[b][1]).map(find).filter(Boolean),due=qs.filter(q=>P.book[q.id][1]<=now);
   return due.length?due:qs}
+const bookN=()=>Object.keys(P.book).filter(find).length;
 const dueN=()=>Object.keys(P.book).filter(id=>P.book[id][1]<=Date.now()&&find(id)).length;
 // a round: what you got wrong last time, then what you have not done, then the oldest right ones
 function round(p,n=ROUND){const r=q=>P.res[q.id];
@@ -1355,14 +1355,13 @@ function record(q,ok){const r=P.res[q.id]||[0,0,0,0,q.c],b=P.book[q.id],now=Date
   keep()}
 
 /* 站: {id, g (group in the plan), n, d, p () → its questions, look (zid) → opens the 看 view, or none}. A route lists them in order. */
-const grid=p=>{state.pick.clear();state.pv=normG(p);go("grid")};
-const atom=(c,a)=>{window.MODEL.open(c,"zi");document.getElementById("m-a-性"+a)?.scrollIntoView({block:"start"})};
+const grid=p=>{state.pv=normG(p);go("grid")};
+const atom=(c,a)=>window.MODEL.open(c,"zi","性"+a);
 const chunk=(i,n)=>n<=GN?"全部":`第 ${i-i%GN+1}–${Math.min(n,i-i%GN+GN)} 站`;
-const mine=()=>{const has=new Set([...P.fam,...Object.values(P.res).map(r=>r[4])]);return D.dis.map(d=>d.code).filter(c=>has.has(c))};
-const order=()=>uniq([...D.dis.map(d=>d.code).filter(c=>P.fam.includes(c)),...D.dis.map(d=>d.code)]);
+const mine=()=>{const has=new Set(Object.values(P.res).map(r=>r[4]));return D.dis.map(d=>d.code).filter(c=>has.has(c))};
 function stCh(){const out=[];
-  for(const c of order()){const d=DIS[CN[c]],g=d.dis;
-    out.push({id:`ch:${c}:1`,g,c,n:"① 秒杀表 + 机理",d:"每个红字背后的道理，再做真题：题干里藏着秒杀词。",p:()=>[...gen(c),...mix(chq(c).filter(w=>w.k==="real"))],look:zid=>{U.c=c;U.view="table";U.hi=zid||"";show()}},
+  for(const c of D.dis.map(d=>d.code)){const d=DIS[CN[c]],g=d.dis;
+    out.push({id:`ch:${c}:1`,g,c,n:"① 秒杀表 + 机理",d:"每个红字背后的道理，再做真题：题干里藏着秒杀词。",p:()=>mix(chq(c).filter(w=>w.k==="real")),look:zid=>{U.c=c;U.view="table";U.hi=zid||"";show()}},
       {id:`ch:${c}:2`,g,n:"② 病卡",d:"病因、病机怎么推出证、治法、方；没有秒杀词的题靠它。",p:()=>mix(chq(c).filter(w=>w.k==="fang"||w.k==="dis")),look:window.MODEL&&(()=>MODEL.open(c,"dis"))},
       {id:`ch:${c}:3`,g,n:"③ 易混 + 其余",d:"几个证并排比，再做剩下的题（出处、加减也在这）。",p:()=>mix(chq(c).filter(w=>w.k==="cmp"||w.k==="all")),
         look:()=>grid({f:["病"],sel:{"病":[d.dis]},r:["证"],v:["症","舌","脉","治法","方"],cmp:"mark",tr:true})})}
@@ -1380,30 +1379,31 @@ function stFZ(){const dim=P.fk,by=new Map(),n=dim==="方"?z=>z.方:z=>[z.name];
   const es=[...by].map(([k,zs])=>({k,zs,nd:new Set(zs.map(z=>z.dis)).size,l:D.qs.filter(q=>qv(q,dim==="方"?"方":"证").includes(k))})).filter(e=>e.nd>=2&&e.l.length)
     .sort((a,b)=>b.nd-a.nd||b.l.length-a.l.length);
   return es.map((e,i)=>({id:`fz:${dim}:${e.k}`,g:chunk(i,es.length),n:e.k,d:`${e.nd} 个病都有：${uniq(e.zs.map(z=>z.dis)).join("、")}。`,p:()=>mix(e.l.map(wrap)),
-    look:dim==="方"&&window.MODEL?()=>{MODEL.open("","fang");document.getElementById("m-f-"+e.k)?.scrollIntoView({block:"start"})}
+    look:dim==="方"&&window.MODEL?()=>MODEL.open("","fang",e.k)
       :()=>grid({r:["病","证"],v:["症","舌","脉","治法","方"],only:e.zs.map(z=>z.dis+"\u0001"+z.id),cmp:"mark",tr:true})}))}
 function stU(){const r=P.routes.find(r=>"u:"+r.id===P.rt);if(!r)return [];
   const qs=qbase(r.chips),ds=uniq(qs.map(q=>qv(q,"病")[0])).sort((a,b)=>(DIS[a]?.i??-1)-(DIS[b]?.i??-1)),zs=pbase(undefined,r.chips);
   return ds.map((d,i)=>({id:`u:${r.id}:${d}`,g:chunk(i,ds.length),n:d,d:`${qs.filter(q=>qv(q,"病")[0]===d).length} 题符合「${r.n}」。`,p:()=>mix(qs.filter(q=>qv(q,"病")[0]===d).map(wrap)),
     look:DIS[d]?()=>{const own=zs.filter(z=>z.dis===d);grid({r:["病","证"],v:["秒杀词","症","方"],only:(own.length?own:BY[d]).map(z=>z.dis+"\u0001"+z.id)})}:null}))}
-const ROUTES=[["ch","按章","从熟悉的章开始，每章 3 站：秒杀表、病卡、易混。"],["bl","按病理 / 病因","气虚、痰、风……每个值一站，横跨所有病。"],["fz","同方 / 同证跨病","同一个方、同名的证出现在几个病里，放在一起学。"]];
+const ROUTES=[["ch","按章","每章 3 站：秒杀表、病卡、易混，从第一个没掌握的章开始。"],["bl","按病理 / 病因","气虚、痰、风……每个值一站，横跨所有病。"],["fz","同方 / 同证跨病","同一个方、同名的证出现在几个病里，放在一起学。"]];
 const rname=()=>{const r=ROUTES.find(r=>r[0]===P.rt);return r?r[1]:P.routes.find(r=>"u:"+r.id===P.rt)?.n||""};
 const SM=new Map();
-function stations(){const k=[state.scope,P.rt,P.bk,P.fk,P.fam,P.routes.length,P.rt==="ch"?mine():""].join("|");
+function stations(){const k=[state.scope,P.rt,P.bk,P.fk,P.routes.length,P.rt==="ch"?mine():""].join("|");
   if(!SM.has(k)){SM.clear();SM.set(k,P.rt==="ch"?stCh():P.rt==="bl"?stBL():P.rt==="fz"?stFZ():stU())}return SM.get(k)}
 const sOf=id=>stations().find(s=>s.id===id)||(U.run?.s?.id===id?U.run.s:null);
 const pool=s=>s.q||(s.q=s.p());
 const stat=s=>{const t=pst(pool(s));return {...t,m:t.n>0&&t.ok>=Math.ceil(t.n*MASTER)}};
 const done=s=>{const t=stat(s);return !t.n||t.m};
-function nextAct(){if(dueN()>=10)return {book:1};const s=stations().find(s=>!done(s));return s?{s}:dueN()?{book:1}:{fin:1}}
-function alts(n){const a=[],r=U.run,due=dueN();
+// the group (chapter) in view: the one you picked, else the first with a 站 not mastered, in 范围 order
+const groups=ss=>uniq(ss.map(s=>s.g)),curG=ss=>{const g=groups(ss);return g.includes(U.g)?U.g:g.find(x=>ss.some(s=>s.g===x&&!done(s)))||g[0]};
+function nextAct(){if(dueN()>=10)return {book:1};const ss=stations(),g=curG(ss),s=ss.find(s=>s.g===g&&!done(s))||ss.find(s=>!done(s));return s?{s}:dueN()?{book:1}:{fin:1}}
+function alts(){const a=[],r=U.run;
   if(r&&r.i<r.qs.length&&U.view!=="quiz")a.push({k:"resume",t:`接着做刚才的题（第 ${r.i+1} / ${r.qs.length} 题）`});
-  if(due&&!n.book)a.push({k:"book",t:`错题本有 ${due} 题该复习了`});
   return a.slice(0,2)}
 
 /* moving around */
-function openLook(s,zid){if(s.look){U.at=s;s.look(zid)}}  // learn's bar (below) takes the student back from the other tab
-function begin(k,t,p,n,s){U.run={k,t,p,n,s,qs:round(p,n),i:0,ans:[]};U.sel.clear();U.view="quiz";go("learn")}
+function openLook(s,zid){if(s.look){U.at=s;U.g=s.g;s.look(zid)}}  // learn's bar (below) takes the student back from the other tab
+function begin(k,t,p,n,s){if(s)U.g=s.g;U.run={k,t,p,n,s,qs:round(p,n),i:0,ans:[]};U.sel.clear();U.view="quiz";go("learn")}
 const start=s=>begin("st",s.n,pool(s),ROUND,s);
 const startBook=()=>begin("book","错题本",bookQs(),ROUND);
 const show=()=>{render();scrollTo(0,0)};
@@ -1416,28 +1416,22 @@ const sn=s=>s.g===s.n?s.n:s.g+"　"+s.n;
 const top=extra=>{const r=U.run;return `<div class="l-top">${r.k==="free"?`<button data-l-bank>回题库</button><span>${esc(r.t)}</span>`:`<button data-l-home>回计划</button><span>${r.s?esc(sn(r.s)):"错题本"}</span>`}${extra||""}</div>`};
 function prog(t){if(!t.n)return "没有题";return t.seen?`<span class="l-bar"><i style="width:${(t.ok/t.n*100).toFixed(0)}%"></i></span>${t.m?"<b>掌握了</b>":`对 ${t.ok} / ${t.n}`}`:`${t.n} 题`}
 function vRoutes(){const rc=(id,n,d,x)=>`<button class="l-rc${P.rt===id?" on":""}" data-l-rt="${esc(id)}"><b>${esc(n)}</b><small>${esc(d)}</small>${x?`<span>${x}</span>`:""}</button>`;
-  return `<div class="l-wrap"><div class="head"><h1>${P.rt?"换一条路线":"选一条路线"}</h1><p>一条路线就是一串站。每站两件事：先看（打开已有的页面，筛好了），再做题（十四五真题，每轮 ${ROUND} 题）。做错了回到「看」。进度各路线共用。</p></div>
+  return `<div class="l-wrap">${hd("学习",P.rt?"换一条路线":"选一条路线",`<p class="m-hint2">一条路线就是一串站。每站两件事：先看（打开已有的页面，筛好了），再做题（十四五真题，每轮 ${ROUND} 题）。做错了回到「看」。进度各路线共用。</p>`)}
   <div class="l-rcs">${ROUTES.map(([id,n,d])=>rc(id,n,d)).join("")}<button class="l-rc" data-l-pal><b>自定义</b><small>在 ⌘K 里选好筛选（例如 病-咳嗽 + 病-哮病），点「存为路线」。</small></button></div>
   ${P.routes.length?`<h2 class="sec">存下来的路线</h2><div class="l-rcs">${P.routes.map(r=>`<div class="l-rc l-sv${P.rt==="u:"+r.id?" on":""}"><button data-l-rt="u:${r.id}"><b>${esc(r.n)}</b><small>${qbase(r.chips).length} 题</small></button><button class="l-del" data-l-del="${r.id}" aria-label="删掉路线 ${esc(r.n)}">删掉</button></div>`).join("")}</div>`:""}
   ${P.rt?`<div class="l-acts"><button class="l-sec" data-l-home>回计划</button></div>`:""}</div>`}
-function vHome(){const ss=stations(),n=nextAct(),al=alts(n),gs=uniq(ss.map(s=>s.g)),ng=n.s?.g,t=n.s&&stat(n.s);
-  const opt=P.rt==="ch"?`<button class="l-sec" data-l-pick>改熟悉的章</button>`:P.rt==="bl"?["病理","病因"].map(k=>`<button class="l-chip" data-l-opt2="bk|${k}" aria-pressed="${P.bk===k}">${k}</button>`).join(""):P.rt==="fz"?[["方","同方跨病"],["证","同证跨病"]].map(([k,v])=>`<button class="l-chip" data-l-opt2="fk|${k}" aria-pressed="${P.fk===k}">${v}</button>`).join(""):"";
+const optHtml=()=>P.rt==="bl"?["病理","病因"].map(k=>`<button data-l-opt2="bk|${k}" class="${P.bk===k?"on":""}">${k}</button>`).join(""):P.rt==="fz"?[["方","同方跨病"],["证","同证跨病"]].map(([k,v])=>`<button data-l-opt2="fk|${k}" class="${P.fk===k?"on":""}">${v}</button>`).join(""):"";
+function vHome(){const ss=stations(),n=nextAct(),al=alts(),g=curG(ss),l=ss.filter(s=>s.g===g),t=n.s&&stat(n.s);
   const next=n.book?`<h2>错题本</h2><p>${dueN()} 题该复习了：做错的题过几天再做，连对两次才出本。</p><button class="pri" data-l-book>复习错题</button>`
     :n.fin?`<h2>这条路线走完了</h2><p>${ss.length?"每一站都掌握了。":"这条路线没有站。"}</p><button class="pri" data-l-routes>换一条路线</button>`
     :`<h2>${esc(sn(n.s))}</h2><p>${esc(n.s.d)}</p><button class="pri" data-l-go="${esc(n.s.id)}">${!t.seen&&n.s.look?"先看一下，再做题":`做 ${Math.min(ROUND,t.n)} 题`}</button>`;
   const row=s=>{const t=stat(s);return `<li class="l-sr${t.m?" m":t.seen?" s":""}${n.s===s?" on":""}"><span class="l-tx"><b>${esc(s.n)}${n.s===s?"<i>下一步</i>":""}</b><small>${esc(s.d)}</small></span><span class="l-pr">${prog(t)}</span>
     <span class="l-bt">${s.look?`<button class="l-sec" data-l-look="${esc(s.id)}">看</button>`:""}<button class="l-sec" data-l-start="${esc(s.id)}"${t.n?"":" disabled"}>练</button></span></li>`};
-  return `<div class="l-wrap"><div class="head"><h1>学习</h1><p class="l-rn"><b>${esc(rname())}</b><button data-l-routes>换路线</button></p></div>
-  <section class="l-next"><p class="l-nk">下一步</p>${next}${al.length?`<p class="l-alt">${al.map(a=>a.k==="resume"?`<button data-l-resume>${esc(a.t)}</button>`:`<button data-l-book>${esc(a.t)}</button>`).join("")}</p>`:""}</section>
-  ${opt?`<div class="l-ro">${opt}</div>`:""}
-  ${gs.map(g=>{const l=ss.filter(s=>s.g===g),open=U.og.has(g)?U.og.get(g):g===ng;
-    return `<details class="l-g" data-g="${esc(g)}"${open?" open":""}><summary><b>${esc(g)}</b><span>${l.filter(s=>stat(s).m).length} / ${l.length} 站掌握</span></summary><ol class="l-steps">${l.map(s=>`<li>${row(s)}</li>`).join("")}</ol></details>`}).join("")||`<p class="empty">这条路线没有站。</p>`}</div>`}
-function vPick(){const f=U.fam,first=D.dis.find(d=>f.has(d.code));
-  return `<div class="l-wrap"><div class="head"><h1>先选你熟悉的章</h1><p>从熟悉的章开始最好上手：先背它的秒杀表，再做题。可以选几章，以后还能再加。</p></div>
-  ${SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h2 class="sec">${s}</h2><div class="l-pk">${D.dis.filter(d=>d.sys===s).map(d=>`<button class="l-chip" data-l-fam="${d.code}" aria-pressed="${f.has(d.code)}">${esc(d.dis)}<small>${BY[d.dis].length} 个证</small></button>`).join("")}</div>`).join("")}
-  <div class="l-acts"><button class="pri" data-l-go1>${first?`从${esc(first.dis)}开始`:`都不熟，从${esc(D.dis[0].dis)}开始`}</button>${P.rt?`<button class="l-sec" data-l-home>不改了，回计划</button>`:""}</div></div>`}
+  return `<div class="l-wrap">${hd("学习",`${esc(rname())} · ${groups(ss).length} ${P.rt==="ch"?"章":"组"}`)}
+  <section class="l-next"><p class="l-nk">下一步</p>${next}${al.length?`<p class="l-alt">${al.map(a=>`<button data-l-resume>${esc(a.t)}</button>`).join("")}</p>`:""}</section>
+  ${l.length?`<section class="l-g"><div class="l-gh"><b>${esc(g)}</b><span>${l.filter(s=>stat(s).m).length} / ${l.length} 站掌握</span></div><ol class="l-steps">${l.map(s=>`<li>${row(s)}</li>`).join("")}</ol></section>`:`<p class="empty">这条路线没有站。</p>`}</div>`}
 function vTable(){const c=U.c,d=DIS[CN[c]],zs=BY[d.dis],tr=zs.flatMap(z=>(z.trap||[]).map(t=>({z,t}))),s=U.run?null:sOf(`ch:${c}:1`);
-  return `<div class="l-wrap"><div class="l-top"><button data-l-home>回计划</button><span>${esc(d.dis)}　① 秒杀表 + 机理</span></div><div class="head"><h1>${esc(d.dis)}的秒杀表</h1><p><span class="lab">定病</span>${esc(d.定病.join("、"))}</p><p>一个证一行。红字是秒杀词，下面写着它的道理：为什么出现，帮你定位还是定性。没有红字的证看组合。点一行看原文。</p></div>
+  return `<div class="l-wrap"><div class="l-top"><button data-l-home>回计划</button><span>${esc(d.dis)}　① 秒杀表 + 机理</span></div>${hd("学习",`${esc(d.dis)}的秒杀表`,`<p class="m-hint2"><span class="lab">定病</span>${esc(d.定病.join("、"))}　一个证一行。红字是秒杀词，下面写着它的道理：为什么出现，帮你定位还是定性。没有红字的证看组合。点一行看原文。</p>`)}
   <p class="l-tools"><button class="l-sec" data-l-cover aria-pressed="${U.cover}">${U.cover?"露出红字":"遮住红字，自己默"}</button></p>
   <div class="${U.cover?"l-cov":""}">${ztbl(zs)}</div>
   ${!U.cover&&zs.some(z=>z.kill.some(k=>k.why))?`<h2 class="sec">为什么是这几个词</h2><div class="box l-whys">${zs.map(z=>`<div class="l-wz"><b>${esc(z.name)}</b>${z.kill.map(k=>`<div><em class="kwi">${esc(k.w)}</em>${kwhy(k)}</div>`).join("")}${z.combo_why?`<div><span class="kwi">${esc(z.combo)}</span><div class="why">${esc(z.combo_why)}</div></div>`:""}</div>`).join("")}</div>`:""}
@@ -1446,7 +1440,7 @@ function vTable(){const c=U.c,d=DIS[CN[c]],zs=BY[d.dis],tr=zs.flatMap(z=>(z.trap
 function fb(q,a,last){const r=U.run,zs=q.z.map(i=>Z[i]),pz=uniq(a.sel.flatMap(L=>q.oz[L]||[])).filter(i=>Z[i]&&!q.z.includes(i)).map(i=>Z[i]);
   const tr=zs.length?BY[zs[0].dis].flatMap(z=>(z.trap||[]).filter(t=>!t.w.startsWith("组合")&&q.stem.includes(t.w))):[],z=zs[0];
   let h=`<p class="l-v ${a.ok?"ok":"no"}">${a.ok?"答对了":`答错了，答案是 ${q.a}`}</p>`;
-  if(z&&q.src==="14")h+=`<p>这题考${esc(z.dis)}的${esc(z.name)}。`+(q.red.length?`题干里的秒杀词：<span class="kw">${q.red.map(w=>`<em>${esc(w)}</em>`).join("")}</span></p>${q.red.map(w=>kwhy(z.kill.find(k=>k.w===w))).join("")}`
+  if(z)h+=`<p>这题考${esc(z.dis)}的${esc(z.name)}。`+(q.red.length?`题干里的秒杀词：<span class="kw">${q.red.map(w=>`<em>${esc(w)}</em>`).join("")}</span></p>${q.red.map(w=>kwhy(z.kill.find(k=>k.w===w))).join("")}`
     :z.kill.length?`题干里没有它的秒杀词（${esc(kws(z).join("、"))}），要靠组合认：${esc(z.combo||"主症加舌脉")}。</p>`:"</p>");
   h+=tr.map(t=>`<p class="tp"><b>陷阱词「${esc(t.w)}」</b>　${esc(t.why)}</p>`).join("");
   if(q.x)h+=`<p class="l-x">${esc(q.x)}</p>`;
@@ -1459,20 +1453,25 @@ function vQuiz(){const r=U.run;if(r.i>=r.qs.length)return vEnd();
   const op=([L,t])=>{const c=a?(q.a.includes(L)?"ok":a.sel.includes(L)?"no":""):U.sel.has(L)?"pk":"";
     return `<li><button class="l-op ${c}" data-l-opt="${L}"${a?" disabled":""}${m&&!a?` aria-pressed="${U.sel.has(L)}"`:""}><b>${L}</b><span>${esc(t)}</span>${c==="ok"?"<i>答案</i>":c==="no"?"<i>你选的</i>":""}</button></li>`};
   return `<div class="l-wrap">${top(`<span class="l-cnt">${r.i+1} / ${r.qs.length}</span>`)}
-  <article class="l-q"><div class="m">${q.src==="14"?`十四五真题　${esc(cname(q.c))} 第 ${q.n} 题`:"练习题，从秒杀表出"}${m?"　多选，选完点确定":""}</div>
+  <article class="l-q"><div class="m">十四五真题　${esc(cname(q.c))} 第 ${q.n} 题${m?"　多选，选完点确定":""}</div>
   <p class="l-stem">${a?hl(q.stem,q.mk,q.red):esc(q.stem)}</p><ol class="l-ops">${q.o.map(op).join("")}</ol>
   ${m&&!a?`<div class="l-acts"><button class="pri" data-l-ok${U.sel.size?"":" disabled"}>确定</button></div>`:""}
   ${a?fb(q,a,r.i+1===r.qs.length):`<p class="hint l-key">键盘：A 到 E 选，回车下一题。</p>`}</article></div>`}
 function vEnd(){const r=U.run;if(!r.qs.length)return `<div class="l-wrap">${top()}<p class="empty">${r.k==="book"?"错题本是空的。做错的题会自动放进来。":"这一站现在没有题。"}</p><div class="l-acts"><button class="l-sec" data-l-home>回计划</button></div></div>`;
   const n=r.ans.filter(a=>a.ok).length,t=r.s?stat(r.s):pst(r.p),wr=r.qs.filter((q,i)=>!r.ans[i]?.ok),nx=r.k==="st"?nextAct():{};
-  return `<div class="l-wrap">${top()}<div class="head"><h1>这一轮对了 ${n} / ${r.qs.length}</h1><p>${r.k==="free"?`这一组 ${t.n} 题：做过 ${t.seen}，对 ${t.ok}。`:r.k==="book"?`错题本还有 ${Object.keys(P.book).length} 题。`:t.m?"这一站掌握了。":`这一站对了 ${t.ok} / ${t.n} 题，对到 ${Math.ceil(t.n*MASTER)} 题算掌握。`}</p></div>
+  return `<div class="l-wrap">${top()}${hd("学习",`这一轮对了 ${n} / ${r.qs.length}。`+(r.k==="free"?`这一组 ${t.n} 题：做过 ${t.seen}，对 ${t.ok}。`:r.k==="book"?`错题本还有 ${bookN()} 题。`:t.m?"这一站掌握了。":`这一站对了 ${t.ok} / ${t.n} 题，对到 ${Math.ceil(t.n*MASTER)} 题算掌握。`))}
   ${wr.length?`<h2 class="sec">做错的 ${wr.length} 题，已放进错题本</h2><div class="tbl">${wr.map(q=>`<div class="bq">${esc(q.stem.length>90?q.stem.slice(0,90)+"…":q.stem)}<div class="a">答案 ${q.a}　${esc(q.o.filter(([L])=>q.a.includes(L)).map(o=>o[1]).join("；"))}</div>${r.s?.look?`<button class="l-lk" data-l-look="${esc(r.s.id)}" data-l-lz="${q.z[0]||""}">回到「看」</button>`:q.z.length?`<button class="l-lk" data-l-back="${q.z[0]}">回秒杀表看${esc(Z[q.z[0]].name)}</button>`:""}</div>`).join("")}</div>`:""}
   <div class="l-acts">${r.k==="book"?`<button class="pri" data-l-book>再来一轮</button>`:`<button class="pri" data-l-more>下一轮（${Math.min(r.n,t.n)} 题）</button>`}${nx.s&&nx.s!==r.s?`<button class="l-sec" data-l-go="${esc(nx.s.id)}">下一站：${esc(sn(nx.s))}</button>`:""}${r.k==="free"?`<button class="l-sec" data-l-bank>回题库</button>`:`<button class="l-sec" data-l-home>回计划</button>`}</div></div>`}
 
 window.LEARN={
-  side:()=>"",
-  main(){if(!P.rt&&U.view!=="pick")U.view="routes";if(U.view==="table"&&!D.dis.some(d=>d.code===U.c))U.view="home";  // no route yet; or the 范围 changed under us
-    return U.view==="pick"?vPick():U.view==="routes"?vRoutes():U.view==="quiz"?vQuiz():U.view==="table"?vTable():vHome()},
+  // the frame's side column: the route and its switch, the route's chapters / groups (click one to see its 站), the 错题本
+  side(){const home=P.rt&&U.view==="home",ss=home?stations():[],g=groups(ss),cg=home?curG(ss):"",due=dueN(),nb=bookN(),opt=home?optHtml():"";
+    return `<h4>路线</h4><div class="pgrid"><button class="on" disabled>${P.rt?esc(rname()):"还没选"}</button><button data-l-routes>换路线</button></div>
+    ${opt?`<h4>分法</h4><div class="pgrid">${opt}</div>`:""}
+    ${g.length>1?`<h4>${P.rt==="ch"?"章":"组"}</h4><ul class="nav">${g.map(n=>{const l=ss.filter(s=>s.g===n);return `<li><a href="#/learn/r/${E(P.rt)}/${E(n)}" data-l-g="${esc(n)}" class="${n===cg?"on":""}">${esc(n)}<span>${l.filter(s=>stat(s).m).length}/${l.length}</span></a></li>`}).join("")}</ul>`:""}
+    <h4>错题本</h4><p class="l-sd">${nb?(due?`${due} 题该复习`:`${nb} 题，暂时不用复习`):"还没有错题"}${due?`<button data-l-book>复习</button>`:""}</p>`},
+  main(){if(!P.rt&&U.view!=="quiz")U.view="routes";if(U.view==="table"&&!D.dis.some(d=>d.code===U.c))U.view="home";  // no route yet; or the 范围 changed under us
+    return U.view==="routes"?vRoutes():U.view==="quiz"?vQuiz():U.view==="table"?vTable():vHome()},
   after(){U.at=null;const h=U.hi&&$(`#main .zr[data-z="${U.hi}"]`);if(h){h.classList.add("l-hi");h.scrollIntoView({block:"center"});U.hi=""}
     if(U.focus){$(U.focus)?.focus({preventScroll:true});U.focus=""}},
   // the way back from a 看 view in another tab: render() calls this after every draw
@@ -1485,13 +1484,23 @@ window.LEARN={
   // ⌘K: the chips become a route, one 站 per 病 in the result
   saveRoute(n,chips){let r=P.routes.find(r=>r.n===n);if(!r)P.routes.push(r={id:Date.now().toString(36),n,chips:chips.map(c=>({...c}))});
     P.rt="u:"+r.id;U.view="home";keep();go("learn")},
-  prog:qs=>pst(qs.map(wrap))};
+  prog:qs=>pst(qs.map(wrap)),
+  // the URL (app.html § 路由): /learn/routes, /learn/r/<路线>, /learn/pick, /learn/table/<章>, /learn/quiz (the round itself stays in memory)
+  where(){const v=U.view;return [v==="quiz"||v==="routes"?[v]:v==="table"?["table",U.c]:v==="home"&&P.rt?["r",P.rt,...U.g?[U.g]:[]]:["routes"],v==="home"?{k:E(P.rt==="bl"?P.bk:P.rt==="fz"?P.fk:"")}:{}]},
+  restore([a,b,c],q){U.at=null;const k=qget(q,"k");
+    if(a==="r"&&(ROUTES.some(r=>r[0]===b)||P.routes.some(r=>"u:"+r.id===b))){if(P.rt!==b)U.run=null;P.rt=b;if(b==="bl"&&["病理","病因"].includes(k))P.bk=k;if(b==="fz"&&["方","证"].includes(k))P.fk=k;U.g=c||"";keep();U.view="home"}
+    else if(a==="table"&&D.dis.some(d=>d.code===b)){if(!P.rt){P.rt="ch";keep()}U.c=b;U.view="table"}  // the 秒杀表 is a 按章 站
+    else if(a==="quiz"&&U.run)U.view="quiz";
+    else if(a)U.view=P.rt&&a!=="routes"?"home":"routes"},
+  from:()=>U.at?.id||"",
+  back(id){U.at=id&&sOf(id)||null}};
 
 document.addEventListener("click",e=>{const bt=e.target.closest("[data-l-bar]");
   if(bt){const s=U.at,k=bt.dataset.lBar;U.at=null;if(k==="x")return window.LEARN.bar();if(k==="drill"&&s)return start(s);return go("learn")}
   if(state.v!=="learn")return;
-  const el=e.target.closest("[data-l-go],[data-l-look],[data-l-start],[data-l-opt],[data-l-ok],[data-l-next],[data-l-back],[data-l-resume],[data-l-home],[data-l-book],[data-l-routes],[data-l-rt],[data-l-del],[data-l-pal],[data-l-opt2],[data-l-pick],[data-l-fam],[data-l-go1],[data-l-cover],[data-l-more],[data-l-bank]");
+  const el=e.target.closest("[data-l-go],[data-l-look],[data-l-start],[data-l-opt],[data-l-ok],[data-l-next],[data-l-back],[data-l-resume],[data-l-home],[data-l-book],[data-l-routes],[data-l-rt],[data-l-del],[data-l-pal],[data-l-opt2],[data-l-cover],[data-l-more],[data-l-bank],[data-l-g]");
   if(!el)return;e.preventDefault();const ds=el.dataset,r=U.run;
+  if(ds.lG!=null){U.g=ds.lG;return show()}
   if(ds.lGo!=null){const s=sOf(ds.lGo);if(s)return !stat(s).seen&&s.look?openLook(s):start(s)}
   if(ds.lLook!=null){const s=sOf(ds.lLook);if(s)return openLook(s,ds.lLz)}
   if(ds.lStart!=null){const s=sOf(ds.lStart);if(s)return start(s)}
@@ -1505,16 +1514,11 @@ document.addEventListener("click",e=>{const bt=e.target.closest("[data-l-bar]");
   if(ds.lBack){U.c=ds.lBack.slice(0,5);U.view="table";U.hi=ds.lBack;return render()}
   if(ds.lHome!=null){U.view="home";if(r&&r.i>=r.qs.length)U.run=null;return show()}
   if(ds.lRoutes!=null){U.view="routes";return show()}
-  if(ds.lRt){P.rt=ds.lRt;keep();U.run=null;if(P.rt==="ch"&&!P.fam.length){U.fam=new Set();U.view="pick"}else U.view="home";return show()}
+  if(ds.lRt){P.rt=ds.lRt;keep();U.run=null;U.g="";U.view="home";return show()}
   if(ds.lDel){P.routes=P.routes.filter(x=>x.id!==ds.lDel);if(P.rt==="u:"+ds.lDel)P.rt="";keep();U.view="routes";return show()}
   if(ds.lPal!=null)return popen();
   if(ds.lOpt2){const[k,v]=ds.lOpt2.split("|");P[k]=v;keep();return render()}
-  if(ds.lPick!=null){U.fam=new Set(P.fam);U.view="pick";return show()}
-  if(ds.lFam){U.fam[U.fam.has(ds.lFam)?"delete":"add"](ds.lFam);return render()}
-  if(ds.lGo1!=null){const inR=new Set(D.dis.map(d=>d.code));P.fam=[...P.fam.filter(c=>!inR.has(c)),...D.dis.map(d=>d.code).filter(c=>U.fam.has(c))];
-    P.rt="ch";keep();U.view="home";return show()}
   if(ds.lCover!=null){U.cover=!U.cover;return render()}});
-document.addEventListener("toggle",e=>{const d=e.target;if(d.matches?.("details.l-g"))U.og.set(d.dataset.g,d.open)},true);  // the plan keeps the groups you opened
 document.addEventListener("keydown",e=>{const r=U.run;
   if(state.v!=="learn"||U.view!=="quiz"||!r||r.i>=r.qs.length||dlg.open||e.metaKey||e.ctrlKey||e.altKey||e.target.closest("input,select,textarea"))return;
   const q=r.qs[r.i],L=q.o[Math.max(AB.indexOf(e.key.toUpperCase()),"12345".indexOf(e.key))]?.[0];
@@ -1533,7 +1537,7 @@ const KIND={tui:"推证",fa:"生治法",ji:"病机"};
 const ROLE={性:["x","去性"],位:["w","调位"],性位:["xw","去性 + 调位"],底:["di","底色"],标:["bi","治标"],他:["ta","别的"]};
 const S=(()=>{const s=getJ("model",{});return {v:s.v||"map",c:s.c||"",hide:s.hide!==false,res:s.res||{}}})();  // nkt.model
 const keep=()=>store.set("model",JSON.stringify(S));
-const U={fz:"",fang:"",tg:{},chs:new Set(),kinds:new Set(["tui","fa","ji"]),run:null,st:null,go:"",focus:""};
+const U={a:"",fz:"",fang:"",tg:{},chs:new Set(),kinds:new Set(["tui","fa","ji"]),run:null,st:null,go:"",focus:""};
 const CN=Object.fromEntries(FULL.dis.map(d=>[d.code,d.dis]));
 const cname=c=>CN[c]||(D.chap[c]||c).replace(/^\S+\s/,"");
 const has=c=>!!MD[c],inR=c=>D.dis.some(d=>d.code===c);
@@ -1587,7 +1591,7 @@ const CH=[  // [mark, step, what to do, the worked question at this step, where 
   ["④","方","方推不出来，要背。先记方族（同一个位·性用同一个方），只在一个病出现的是专方。选方题先划掉不是这个病的方。","沙参麦冬汤。",'data-m="v" data-k="fang"',"方族"]];
 function vMap(){const q=qof("04-02#24"),zid=q?.oz?.[q.a]?.[0],c=cur();
   const why=q?q.o.map(([L,t])=>{const id=(q.oz[L]||[])[0],z=id&&Z[id];return `<li class="${L===q.a?"m-ok":""}"><b>${L}</b>${esc(t)}<span>${z?`${esc(z.name)}　${codes(code(z))}`:"不是咳嗽的方"}</span></li>`}).join(""):"";
-  return `<div class="m-wrap"><div class="head"><h1>头脑模型</h1><p>做题四句话：什么病看开头；什么证先看舌苔再看脉；什么治法证型推理；什么方剂只能背。</p><p>题干没有秒杀词，也能沿着这条链一步步推出来。</p></div>
+  return `<div class="m-wrap">${hd("模型","做题四句话：什么病看开头；什么证先看舌苔再看脉；什么治法证型推理；什么方剂只能背。",`<p class="m-hint2">题干没有秒杀词，也能沿着这条链一步步推出来。</p>`)}
   <ol class="m-chain">${CH.map(([n,k,t,ex,at,gt])=>`<li><h3>${n?`<span>${n}</span>`:""}${k}</h3><p>${t}</p><p class="m-ex">${esc(ex)}</p><button class="m-lk" ${at} data-c="${c}">${gt}</button></li>`).join("")}</ol>
   <div class="m-two"><section class="m-note"><h3>秒杀词是捷径</h3><p>题干有秒杀词，直接到证；没有，就走分叉。秒杀词本身就是这个证的定位或定性征象，字的卡片上写着它为什么出现。</p>${btn("v","看字的卡片",` data-k="zi"`,"m-lk")}</section>
   <section class="m-note"><h3>例外本</h3><p>名里没有位和性的证、治法不照名字来的证、两版答案不同的题：推不出来，背下来。</p>${btn("v","打开例外本",` data-k="exc"`,"m-lk")}</section></div>
@@ -1598,8 +1602,7 @@ function vMap(){const q=qof("04-02#24"),zid=q?.oz?.[q.a]?.[0],c=cur();
 const GR=[["四虚","",["气虚","血虚","阴虚","阳虚"]],["四实","",["气滞","瘀","寒","热"]],["水湿","苔白腻、脉滑 = 无热有水；苔黄腻、脉滑数 = 有热有水。",["湿","痰","饮","水"]],["外邪","",["风","暑","燥"]]];
 function vZi(){idx();const used=new Set(GR.flatMap(g=>g[2])),rest=(A.性||[]).map(a=>a.a).filter(a=>!used.has(a));
   const grid=(d,as)=>`<div class="m-zg">${as.filter(a=>AT[d+a]).map(a=>zcard(AT[d+a])).join("")}</div>`;
-  return `<div class="m-wrap"><div class="head"><h1>字：位 ${(A.位||[]).length} 个，性 ${(A.性||[]).length} 个</h1><p>每个字记三样：怎么认（舌脉先），怎么治（反着来：痰 → 化痰，阴虚 → 滋阴；位有自己的动词），常用方。证名就是这些字拼起来的。</p>
-  <p class="m-acts">${btn("tree","积木：定位到定性")}${btn("pg","表格：舌象查证",` data-n="舌象查证"`)}${btn("pg","表格：脉象查证",` data-n="脉象查证"`)}</p></div>
+  return `<div class="m-wrap">${hd("模型",`字：位 ${(A.位||[]).length} 个，性 ${(A.性||[]).length} 个。证名就是这些字拼起来的。`,`<p class="m-hint2">每个字记三样：怎么认（舌脉先），怎么治（反着来：痰 → 化痰，阴虚 → 滋阴；位有自己的动词），常用方。</p><p class="m-acts">${btn("tree","积木：定位到定性")}${btn("pg","表格：舌象查证",` data-n="舌象查证"`)}${btn("pg","表格：脉象查证",` data-n="脉象查证"`)}</p>`)}
   ${[...GR,["其他","",rest]].map(([n,t,as])=>`<h2 class="sec">性 · ${n}</h2>${t?`<p class="m-gt">${esc(t)}</p>`:""}${grid("性",as)}`).join("")}
   <h2 class="sec">位</h2>${grid("位",(A.位||[]).map(a=>a.a))}</div>`}
 function zcard(a){const key=a.d+a.a,cs=a.d==="位"?"w":"x",fa={};
@@ -1656,8 +1659,7 @@ function vFang(){idx();
   const shown=fams.filter(x=>!fz||x.sh.has(fz)).sort((a,b)=>(b.f===U.fang)-(a.f===U.fang));
   const solo=D.dis.map(d=>[d,[...FI].filter(([f,zs])=>nd(f)===1&&zs[0].dis===d.dis)]).filter(x=>x[1].length);
   const row=(z,fam)=>{const c=code(z),ch=(d,a)=>cc(d,a,fam.sh.has(d+a));return `<li><span class="m-fd">${esc(z.dis)}</span><button class="it" data-z="${z.id}">${esc(z.name)}</button><span>${c.位.map(a=>ch("位",a)).join("")}${c.性.map(a=>ch("性",a)).join("")}</span></li>`};
-  return `<div class="m-wrap"><div class="head"><h1>方族</h1><p>同一个位·性常用同一个方，一个方就能管几个病的证。${fams.length} 个方在 2 个以上的病里用，先记它们；深色的字是这一族共有的。只在一个病出现的是专方，只能背。</p>
-  <p class="m-acts">${btn("pg","表格：同方跨病",` data-n="同方跨病"`)}</p></div>
+  return `<div class="m-wrap">${hd("模型",`方族：${fams.length} 个方在 2 个以上的病里用，先记它们。`,`<p class="m-hint2">同一个位·性常用同一个方，一个方就能管几个病的证。深色的字是这一族共有的。只在一个病出现的是专方，只能背。</p><p class="m-acts">${btn("pg","表格：同方跨病",` data-n="同方跨病"`)}</p>`)}
   <div class="m-fz"><span class="m-lab">按字筛</span><button class="m-c${fz?"":" on"}" data-m="fz" data-a="">全部</button>${all.map(k=>`<button class="m-c m-${k[0]==="位"?"w":"x"}${k===fz?" on":""}" data-m="fz" data-a="${esc(k)}">${esc(k.slice(1))}</button>`).join("")}</div>
   <div class="m-fams">${shown.map(x=>{return `<section class="m-fam${x.f===U.fang?" on":""}" id="m-f-${esc(x.f)}"><h3>${esc(x.f)}<small>${nd(x.f)} 病　${x.zs.length} 证</small><button class="m-lk" data-m="famg" data-f="${esc(x.f)}">在表格里看</button></h3><ul>${x.zs.map(z=>row(z,x)).join("")}</ul></section>`}).join("")||`<p class="empty">没有含这个字的方族。</p>`}</div>
   <h2 class="sec">专方：只在一个病里用，背</h2><dl class="m-dl m-solo">${solo.map(([d,fs])=>`<dt>${esc(d.dis)}</dt><dd>${fs.map(([f,zs])=>`<span class="m-so1">${esc(f)}<small>${esc(zs.map(z=>z.name).join("、"))}</small></span>`).join("")}</dd>`).join("")}</dl></div>`}
@@ -1670,7 +1672,7 @@ function vExc(){const cs=D.dis.map(d=>d.code).filter(has),rows=[];
   const by={};for(const c of cs)for(const z of BY[CN[c]]){const k=code(z),key=[...k.位].sort()+"|"+[...k.性].sort();(by[key]||(by[key]=[])).push(z)}
   const pairs=Object.values(by).filter(zs=>zs.length>1&&zs.some((z,i)=>zs.some((y,j)=>j>i&&!z.方.some(f=>y.方.includes(f)))));
   const zc=id=>id&&Z[id]?`<button class="it" data-z="${id}">${esc(Z[id].name)}</button><small>${esc(Z[id].dis+(Z[id].group?"，"+Z[id].group:""))}</small>`:"—";
-  return `<div class="m-wrap"><div class="head"><h1>例外本</h1><p>推不出来的，背下来：名里没有位和性的证，治法不照名字来的证，两版答案不同的题。现在有病卡的病：${cs.map(c=>esc(CN[c])).join("、")||"还没有"}。</p></div>
+  return `<div class="m-wrap">${hd("模型","例外本：推不出来的，背下来。",`<p class="m-hint2">名里没有位和性的证，治法不照名字来的证，两版答案不同的题。现在有病卡的病：${cs.map(c=>esc(CN[c])).join("、")||"还没有"}。</p>`)}
   <div class="m-tw"><table class="m-tb"><thead><tr><th>证</th><th>哪种例外</th><th>为什么</th><th>出处</th></tr></thead><tbody>${rows.map(([id,k,w,s,q])=>`<tr><th>${zc(id)}</th><td><span class="m-exb">${esc(k)}</span></td><td>${esc(w)}${q?`<details class="m-in" data-ml="q:${esc(q)}"><summary>看这道题</summary></details>`:""}</td><td class="m-src">${esc(src(s))}</td></tr>`).join("")||`<tr><td colspan="4" class="empty">没有例外。</td></tr>`}</tbody></table></div>
   <h2 class="sec">位、性一样，方不一样</h2><p class="m-gt">同一个码，不同的病用不同的方：码推不出方，这几对要背。</p>
   ${pairs.length?`<div class="m-tw"><table class="m-tb m-pt"><tbody>${pairs.map(zs=>`<tr><th>${codes(code(zs[0]))}</th><td>${zs.map(z=>`<div class="m-pr">${zc(z.id)}<span>${esc(z.方.join("、"))}</span></div>`).join("")}</td></tr>`).join("")}</tbody></table></div>`:`<p class="empty">现在有病卡的病里没有这样的对。</p>`}</div>`}
@@ -1736,8 +1738,8 @@ function holds(c,t){const m=MD[c],d=DIS[CN[c]],k=m.card,p=P(t),ps=t.split(/[、�
 function vLian(){if(U.run?.sc!==state.scope)U.run=null;const r=U.run;if(r)return r.i>=r.qs.length?vEnd():vQ();
   const cs=mcs();if(!U.chs.size)U.chs.add(has(cur())?cur():cs[0]);
   const all=D.qs.filter(q=>has(q.c)&&inR(q.c)),n=k=>all.filter(q=>U.chs.has(q.c)&&qk(q)[k]).length,p=pool().length;
-  if(!cs.length)return `<div class="m-wrap"><div class="head"><h1>练：推一题</h1><p>范围里还没有写好病卡的病，练不了。</p></div></div>`;
-  return `<div class="m-wrap"><div class="head"><h1>练：推一题</h1><p>只用十四五真题。推证：题干的秒杀词先遮住，你沿着分叉一步步走到证，再选答案。生治法：先用零件拼出治法，再选。病机：先答，再看病卡里是哪一条。每轮 ${ROUND} 题，错过的先出。</p></div>
+  if(!cs.length)return `<div class="m-wrap">${hd("模型","练：范围里还没有写好病卡的病，练不了。")}</div>`;
+  return `<div class="m-wrap">${hd("模型",`练：只用十四五真题，每轮 ${ROUND} 题，错过的先出。`,`<p class="m-hint2">推证：题干的秒杀词先遮住，你沿着分叉一步步走到证，再选答案。生治法：先用零件拼出治法，再选。病机：先答，再看病卡里是哪一条。</p>`)}
   <h2 class="sec">哪几章</h2><div class="m-pk">${cs.map(c=>`<button class="m-chip" data-m="ch" data-c="${c}" aria-pressed="${U.chs.has(c)}">${esc(CN[c])}<small>${score(c)?"对 "+score(c):`${all.filter(q=>q.c===c&&(qk(q).tui||qk(q).fa||qk(q).ji)).length} 题`}</small></button>`).join("")}</div>
   <h2 class="sec">哪几种题</h2><div class="m-pk">${Object.entries(KIND).map(([k,t])=>`<button class="m-chip" data-m="kd" data-k="${k}" aria-pressed="${U.kinds.has(k)}">${t}<small>${n(k)} 题</small></button>`).join("")}</div>
   <label class="m-tgl"><input type="checkbox" data-m-hide${S.hide?" checked":""}> 题干里的秒杀词先遮住（答完再露出）</label>
@@ -1775,7 +1777,7 @@ function fb(q,st,last){const z=st.z,ok=U.run.ok[U.run.i];let h=`<p class="m-v ${
   return `<div class="m-fb" aria-live="polite">${h}<p class="m-acts"><button class="pri" data-m="next">${last?"看这一轮":"下一题"}</button>${btn("dis","打开病卡",` data-c="${q.c}"`)}</p></div>`}
 function vEnd(){const r=U.run,n=r.ok.filter(Boolean).length,wr=r.qs.filter((x,i)=>!r.ok[i]);
   if(!r.qs.length)return `<div class="m-wrap"><p class="empty">选的章和题型里没有题。换几章或几种题。</p><p class="m-acts">${btn("quit","回练")}</p></div>`;
-  return `<div class="m-wrap"><div class="head"><h1>这一轮对了 ${n} / ${r.qs.length}</h1><p>${wr.length?(window.LEARN?.miss?"错的题已放进学习的错题本。":"错的题下一轮先出。"):"这一轮全对。"}</p></div>
+  return `<div class="m-wrap">${hd("模型",`练：这一轮对了 ${n} / ${r.qs.length}。${wr.length?(window.LEARN?.miss?"错的题已放进学习的错题本。":"错的题下一轮先出。"):"全对。"}`)}
   ${wr.length?`<div class="tbl">${wr.map(x=>`<div class="bq">${esc(x.q.q.length>90?x.q.q.slice(0,90)+"…":x.q.q)}<div class="a">答案 ${x.q.a}　${esc(opt(x.q,x.q.a))}</div></div>`).join("")}</div>`:""}
   <p class="m-acts"><button class="pri" data-m="start">再来一轮</button>${btn("quit","回练")}</p></div>`}
 
@@ -1787,20 +1789,21 @@ const LAZY={zk:k=>(KZ[k]||[]).map(({z,k:w})=>`<div class="m-kz"><b class="k">${e
 document.addEventListener("toggle",e=>{const n=e.target;
   if(n.matches?.("details[data-ml]")&&n.open&&!n.dataset.done){n.dataset.done=1;idx();const [k,...a]=n.dataset.ml.split(":");n.insertAdjacentHTML("beforeend",`<div class="m-lz">${LAZY[k]?.(...a)||""}</div>`)}},true);
 
-function open(c,v){if(c)S.c=c;S.v=v||"dis";if(v==="lian"){U.run=null;if(c)U.chs=new Set([c])}keep();go("model")}
+// x: the 字 (its key, "性热") or the 方 to scroll to
+function open(c,v,x=""){if(c)S.c=c;S.v=v||"dis";if(v==="lian"){U.run=null;if(c)U.chs=new Set([c])}U.a=v==="zi"?x:"";U.fang=v==="fang"?x:"";U.fz="";U.go=x&&(v==="zi"?"m-a-":"m-f-")+x;keep();if(x){state.v="model";render()}else go("model")}  // with x, after() scrolls to it
 document.addEventListener("click",e=>{if(state.v!=="model")return;const el=e.target.closest("[data-m]");if(!el)return;
   const m=el.dataset.m,ds=el.dataset;if(el.tagName==="A")e.preventDefault();
-  if(m==="v"){S.v=ds.k;U.run=null;keep();render();return scrollTo(0,0)}
+  if(m==="v")return open("",ds.k);
   if(m==="dis")return open(ds.c,"dis");
   if(m==="lian"){S.v="lian";U.run=null;if(ds.c)U.chs=new Set([ds.c]);if(ds.kind)U.kinds=new Set([ds.kind]);keep();render();return scrollTo(0,0)}
-  if(m==="kill"){go("kill");return document.getElementById("d-"+ds.c)?.scrollIntoView()}
+  if(m==="kill")return go("kill",null,ds.c);
   if(m==="tree"){state.tree=normT(PRE_T.find(p=>p.n==="定位到定性"));return go("tree")}
-  if(m==="pg"){state.pick.clear();state.pv=normG(PRE_G.find(p=>p.n===ds.n).p);return go("grid")}
-  if(m==="grp"){const g=CMP.find(x=>x.id===ds.g);state.pick.clear();state.pv=normG(g.kind==="病"?{grp:g.id}:{r:["证"],v:["秒杀词","症","舌","脉","治法","方"],only:g.zs,cmp:"mark",tr:true,grp:g.id});return go("grid")}
-  if(m==="famg"){const zs=FI.get(ds.f)||[];state.pick.clear();state.pv=normG({r:["病","证"],v:["病理","治法","方"],only:zs.map(z=>z.dis+"\u0001"+z.id),cmp:"mark",tr:true});return go("grid")}
-  if(m==="fam"){S.v="fang";U.fang=ds.f;U.fz="";U.go="m-f-"+ds.f;keep();return render()}
+  if(m==="pg"){state.pv=normG(PRE_G.find(p=>p.n===ds.n).p);return go("grid")}
+  if(m==="grp"){state.pv=grpPv(CMP.find(x=>x.id===ds.g));return go("grid")}
+  if(m==="famg"){const zs=FI.get(ds.f)||[];state.pv=normG({r:["病","证"],v:["病理","治法","方"],only:zs.map(z=>z.dis+"\u0001"+z.id),cmp:"mark",tr:true});return go("grid")}
+  if(m==="fam")return open("","fang",ds.f);
   if(m==="fz"){U.fz=ds.a;U.fang="";return render()}
-  if(m==="atom"){S.v="zi";U.go="m-a-"+ds.a;keep();return render()}
+  if(m==="atom")return open("","zi",ds.a);
   if(m==="tog"){if(innerWidth>860)return;const b=el.closest(".m-br"),o=!b.classList.contains("open");b.classList.toggle("open",o);el.setAttribute("aria-expanded",o);U.tg[ds.p]=o;return}
   if(m==="sq"){const box=el.closest(".m-sq");if(box.dataset.done)return;box.dataset.done=1;
     box.querySelectorAll(".m-so").forEach(b=>{b.disabled=true;if(ds.a.includes(b.dataset.l))b.classList.add("ok");else if(b===el)b.classList.add("no")});return box.querySelector(".m-sa").hidden=false}
@@ -1817,7 +1820,7 @@ document.addEventListener("click",e=>{if(state.v!=="model")return;const el=e.tar
   if(m==="op")return answer(ds.l);
   if(m==="next"){const r=U.run;r.i++;U.st=r.i<r.qs.length?fresh(r.qs[r.i]):null;U.focus=".m-q1 button,.m-op";render();return scrollTo(0,0)}});
 document.addEventListener("change",e=>{if(state.v!=="model")return;const t=e.target;
-  if(t.matches("[data-m-ch]"))return t.value[0]==="v"?(S.v=t.value.slice(2),U.run=null,keep(),render()):open(t.value,"dis");
+  if(t.matches("[data-m-ch]"))return open(t.value[0]==="v"?"":t.value,t.value[0]==="v"?t.value.slice(2):"dis");
   if(t.matches("[data-m-hide]")){S.hide=t.checked;keep()}});
 document.addEventListener("keydown",e=>{const r=U.run,st=U.st;
   if(state.v!=="model"||S.v!=="lian"||!r||!st||dlg.open||e.metaKey||e.ctrlKey||e.altKey||e.target.closest("input,select,textarea"))return;
@@ -1829,9 +1832,9 @@ document.addEventListener("keydown",e=>{const r=U.run,st=U.st;
 
 window.MODEL={
   side(){const c=S.v==="dis"?S.c:"";
-    const nav=`<h4>头脑模型</h4><ul class="nav m-nav">${VIEWS.map(([k,n])=>`<li><a href="#" data-m="v" data-k="${k}" class="${S.v===k?"on":""}"><b>${n}</b></a></li>`).join("")}</ul>
+    const nav=`<h4>头脑模型</h4><ul class="nav m-nav">${VIEWS.map(([k,n])=>`<li><a href="#/model/${k}" data-m="v" data-k="${k}" class="${S.v===k?"on":""}"><b>${n}</b></a></li>`).join("")}</ul>
       <p class="m-key2"><i class="m-dot on"></i>有病卡<i class="m-dot"></i>还在做</p>`+
-      SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h4>${s}</h4><ul class="nav m-nav">${D.dis.filter(d=>d.sys===s).map(d=>`<li><a href="#" data-m="dis" data-c="${d.code}" class="${d.code===c?"on":""}"><i class="m-dot${has(d.code)?" on":""}" title="${has(d.code)?"有病卡":"还在做"}"></i><b>${esc(d.dis)}</b><span>${has(d.code)?score(d.code):""}</span></a></li>`).join("")}</ul>`).join("");
+      SYS.filter(s=>D.dis.some(d=>d.sys===s)).map(s=>`<h4>${s}</h4><ul class="nav m-nav">${D.dis.filter(d=>d.sys===s).map(d=>`<li><a href="#/model/dis/${d.code}" data-m="dis" data-c="${d.code}" class="${d.code===c?"on":""}"><i class="m-dot${has(d.code)?" on":""}" title="${has(d.code)?"有病卡":"还在做"}"></i><b>${esc(d.dis)}</b><span>${has(d.code)?score(d.code):""}</span></a></li>`).join("")}</ul>`).join("");
     const bar=`<div class="m-pbar"><div class="m-pv">${VIEWS.map(([k,n])=>`<button data-m="v" data-k="${k}" aria-pressed="${S.v===k}">${n}</button>`).join("")}</div>
       <select data-m-ch aria-label="病卡"><option value="v:${S.v}"${S.v==="dis"?"":" selected"}>病卡…</option>${D.dis.map(d=>`<option value="${d.code}"${d.code===c?" selected":""}>${has(d.code)?"● ":"○ "}${esc(d.dis)}</option>`).join("")}</select></div>`;
     return `<div class="m-side">${nav}</div>${bar}`},
@@ -1840,6 +1843,14 @@ window.MODEL={
   after(){if(U.go){document.getElementById(U.go)?.scrollIntoView({block:"start"});U.go=""}
     if(U.focus){$(U.focus)?.focus({preventScroll:true});U.focus=""}},
   has,open,
+  // the URL (app.html § 路由): /model/map|exc|lian, /model/dis/<章>, /model/zi/<字 key>, /model/fang/<方>; ?fz= (方族 filtered by a 字), ?c= ?k= (练 chapters, kinds)
+  where(){const v=S.v;return [v==="dis"?["dis",cur()]:[v,...(v==="zi"&&U.a?[U.a]:v==="fang"&&U.fang?[U.fang]:[])],
+    v==="fang"&&U.fz?{fz:E(U.fz)}:v==="lian"?{c:pack([...U.chs]),k:U.kinds.size<3?pack([...U.kinds]):""}:{}]},
+  restore([v,a=""],q){const old=S.v;S.v=v==="dis"||VIEWS.some(x=>x[0]===v)?v:S.v;if(old!==S.v)U.run=null;
+    if(S.v==="dis"&&D.dis.some(d=>d.code===a))S.c=a;
+    U.a=S.v==="zi"&&AT[a]?a:"";U.fang=S.v==="fang"?a:"";U.fz=S.v==="fang"?qget(q,"fz"):"";U.go=U.a?"m-a-"+U.a:U.fang?"m-f-"+U.fang:"";
+    if(S.v==="lian"){U.chs=new Set(list(q.c).filter(inR));const k=list(q.k).filter(k=>KIND[k]);U.kinds=new Set(k.length?k:Object.keys(KIND))}
+    keep()},
   // which 字 a word (a 秒杀词, a sign) points to: its kill[].tells first, else the 字 whose tok / signs / 舌 / 脉 it contains
   atomsOf(t){t=String(t||"");const k=D.z.flatMap(z=>z.kill).find(k=>k.w===t),out=[];
     if(k?.tells)for(const x of k.tells)for(const a of tellAtoms(x))out.push(a);
@@ -1848,25 +1859,75 @@ window.MODEL={
 })();
 
 
+/* 路由: the URL hash is the page, #/<tab>/<part…>?<query>. render() writes it from state (a new entry when the page changes, a rewrite for tweaks);
+   popstate reads it back into state. 学习 / 模型 name their own part (LEARN.where / restore, MODEL.where / restore).
+     /learn …  /model …  /find/<词>  /kill/<章>  /tree  /grid  /bank   — the last three: /p/<预设>, /g/<常考对比> (表格), or /custom?<config>
+   query: s 范围 · z zs dis ev the open drawer · at the 学习 站 whose 看 this page is.  Atoms are encodeURIComponent'd, lists join with "," and "~". */
+const TABS=["learn","model","kill","find","tree","grid","bank"],DRK=["z","zs","dis","ev"],E=encodeURIComponent;
+const pack=a=>a.map(x=>[].concat(x).map(E).join("~")).join(","),unpack=s=>s?s.split(",").map(x=>x.split("~").map(decodeURIComponent)):[],list=s=>unpack(s).map(x=>x[0]);
+const rkeys=a=>pack(a.map(k=>k.split("\u0001"))),keys=s=>unpack(s).map(a=>a.join("\u0001")),qget=(q,k)=>q[k]==null?"":decodeURIComponent(q[k]);
+let live=false,hold=false,last="";  // live: the URL is being read, so only rewrite; hold: the next popstate only drops the ⌘K entry
+function parse(h){const [a,b=""]=h.replace(/^#\/?/,"").split("?"),q={};for(const x of b.split("&")){const [k,v=""]=x.split("=");if(k)q[k]=v}return {p:a.split("/").filter(Boolean).map(decodeURIComponent),q}}
+const PGV=P=>({f:pack(P.f),r:pack(P.r),c:pack(P.c),v:pack(P.v),sel:pack(Object.entries(P.sel).map(([f,vs])=>[f,...vs])),m:P.mode==="list"?"":P.mode,min:E(P.min),cmp:P.cmp,tr:P.tr?"1":"",only:rkeys(P.only)}),
+  gcfg=q=>({f:list(q.f),r:list(q.r),c:list(q.c),v:list(q.v),sel:Object.fromEntries(unpack(q.sel).map(([f,...vs])=>[f,vs])),mode:qget(q,"m"),min:qget(q,"min"),cmp:q.cmp,tr:q.tr==="1",only:keys(q.only)});
+function where(){const v=state.v,L=window.LEARN,M=window.MODEL;let p=[],q={};
+  if(v==="learn"&&L)[p,q]=L.where();else if(v==="model"&&M)[p,q]=M.where();
+  else if(v==="find"&&state.q.trim())p=[state.q.trim()];
+  else if(v==="kill"&&state.kc)p=[state.kc];
+  else if(v==="tree"){const [on]=onT();[p,q]=on>-1?[["p",PRE_T[on].n],{}]:[["custom"],{c:pack(state.tree.c),min:E(state.tree.min)}]}
+  else if(v==="grid"){const P=state.pv,[on]=onG(),g=P.grp&&CMP.find(x=>x.id===P.grp),base=g?grpPv(g):on>-1&&normG(PRE_G[on].p);
+    p=g?["g",g.id]:on>-1?["p",PRE_G[on].n]:["custom"];if(!base||key(base)!==key(P))q=PGV(P)}
+  else if(v==="bank"){const B=state.qb,on=onQ();p=on>-1?["p",PRE_Q[on].n]:["custom"];q={n:B.n==10?"":B.n};if(on<0)Object.assign(q,{g:pack(B.g),min:B.min})}
+  const pf=v==="bank"&&p[0]==="p"?"":pack(PAL.chips.map(c=>[c.d,c.v])),dr=dlg.open&&DRK.includes(stack.at(-1)?.[0])?stack.at(-1):null;
+  return [[v,...p],{...q,pf,s:E(state.scope),...(dr&&{[dr[0]]:E(dr[1])}),at:v!=="learn"&&L?E(L.from()):""},!!dr]}
+// write the hash for what is on screen; rw: always rewrite (the drawer was closed on a page opened from a link)
+function sync(rw){const [p,q,dr]=where(),h="#/"+p.map(E).join("/")+Object.entries(q).filter(([,v])=>v).map(([k,v],i)=>(i?"&":"?")+k+"="+v).join(""),k=p.join("/")+(dr?"|d":""),st=history.state||{};
+  const flip=!rw&&!live&&k!==last;last=k;if(h===location.hash)return;
+  if(flip&&!st.pal)history.pushState(dr?{o:1}:null,"",h);else history.replaceState(flip?(dr?{o:1}:null):st,"",h)}
+// a hash → state; false when it names no page
+function route(h){const {p,q}=parse(h),v=p[0],L=window.LEARN,M=window.MODEL;if(!TABS.includes(v))return false;
+  const sc=qget(q,"s")&&toScope(qget(q,"s"));if(sc&&sc!==state.scope){state.scope=sc;applyScope()}
+  state.v=v;state.kc="";
+  if(v==="learn")L?.restore(p.slice(1),q);else L?.back(qget(q,"at"));
+  if(v==="model")M?.restore(p.slice(1),q);
+  if(v==="find"){state.q=p[1]||"";$("#q").value=state.q}
+  if(v==="kill"&&D.dis.some(d=>d.code===p[1]))state.kc=p[1];
+  if(v==="tree"){const i=PRE_T.findIndex(x=>x.n===p[2]);state.tree=normT(p[1]==="p"&&i>-1?PRE_T[i]:{c:list(q.c),min:qget(q,"min")});if(!state.tree.c.length)state.tree=normT(PRE_T[0])}
+  if(v==="grid"){const i=PRE_G.findIndex(x=>x.n===p[2]),g=p[1]==="g"&&CMP.find(x=>x.id===p[2]);
+    if(p[1]==="p"&&i>-1)state.pv=normG(PRE_G[i].p);else if(g)state.pv=q.r!=null||q.v!=null?normG({...gcfg(q),grp:g.id}):grpPv(g);else if(p[1]==="custom")state.pv=normG(gcfg(q));
+    if(q.pick&&!state.pv.only.length)state.pv.only=keys(q.pick);  // old links: ticked rows read like only
+    if(!gOk(state.pv))state.pv=normG(PRE_G[0].p)}
+  if(v==="bank"){const i=PRE_Q.findIndex(x=>x.n===p[2]);state.qb.n=[5,10,20,30].includes(+q.n)?+q.n:10;
+    if(p[1]==="p"&&i>-1)preQ(PRE_Q[i]);else if(p[1]==="custom"){state.qb={...state.qb,g:list(q.g).filter(d=>QDIMS.includes(d)).slice(0,2),min:qget(q,"min")};
+}}
+  if(!(v==="bank"&&p[1]==="p"))PAL.chips=unpack(q.pf).map(([d,v])=>({d,v})).filter(c=>PFX.includes(c.d)&&typeof c.v==="string")  // the ⌘K chips filter every tab
+  const dk=DRK.find(k=>q[k]!=null),da=dk&&qget(q,dk);
+  if(dk&&{z:()=>Z[da],zs:()=>da.split(",").every(i=>Z[i]),dis:()=>DIS[da],ev:()=>CMP.some(g=>g.id===da)}[dk]())sheet(dk,da);else if(dlg.open)dlg.close();
+  return true}
+addEventListener("popstate",()=>{live=true;if(hold||pal.open){hold=false;pal.close()}else route(location.hash);render();toKc();live=false});
+// the drawer was closed by the user (X, Esc, backdrop): its entry goes, or, when the page was opened on it from a link, is rewritten
+dlg.addEventListener("close",()=>{if(!DRK.some(k=>parse(location.hash).q[k]!=null))return;history.state?.o?history.back():sync(true)});
+
 /* render + events */
-function render(){const v=state.v;
-  $$(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
+function render(){const v=state.v;if(v==="find"&&state.q.trim())note(state.q.trim());
+  $$(".tabs a").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
   document.body.dataset.v=v;
   const L=window.LEARN,M=window.MODEL;  // the 学习 and 头脑模型 modules (learn/, model/; inlined by build.py)
-  $("#side").innerHTML=v==="learn"?(L?L.side():""):v==="model"?(M?M.side():""):v==="kill"?sKill():v==="tree"?sTree():v==="grid"?sGrid():v==="bank"?sBank():"";
+  $("#side").innerHTML=v==="learn"?(L?L.side():""):v==="model"?(M?M.side():""):v==="kill"?sKill():v==="tree"?sTree():v==="grid"?sGrid():v==="bank"?sBank():sFind();
   $("#main").innerHTML=v==="learn"?(L?L.main():`<p class="empty">学习模块还没装上。</p>`):v==="model"?(M?M.main():`<p class="empty">头脑模型还在做。</p>`):v==="kill"?mKill():v==="find"?mFind():v==="tree"?mTree():v==="bank"?mBank():mGrid();
-  document.body.classList.toggle("noside",!$("#side").innerHTML.trim());
   if(v==="learn")L?.after?.();if(v==="model")M?.after?.();L?.bar?.();
   if(v==="grid")freeze();if(v==="kill")spy();
-  save()}
-function go(v,q){state.v=v;if(q!=null){state.q=q;$("#q").value=q}render();scrollTo(0,0)}
+  save();sync()}
+const toKc=()=>state.v==="kill"&&state.kc&&document.getElementById("d-"+state.kc)?.scrollIntoView();
+function go(v,q,kc=""){state.v=v;state.kc=kc;if(q!=null){state.q=q;$("#q").value=q}render();state.kc?toKc():scrollTo(0,0)}
 document.addEventListener("click",e=>{const t=e.target;let el;
   if(!t.closest(".menu"))closeMenu();
   if(el=t.closest("[data-act]"))return act(el.dataset.mf,el.dataset.act);
   if(el=t.closest(".pill[data-f]")){if(!dragged)menu(el);return}
   if(t.closest("#dlgx"))return dlg.close();
-  if(t.closest("#dlgback")){if(stack.length>1){stack.pop();paint()}return}
-  if(el=t.closest(".tabs [data-v]"))return go(el.dataset.v);
+  if(t.closest("#dlgback")){if(stack.length>1){stack.pop();paint();sync()}return}
+  if((el=t.closest(".tabs [data-v],[data-q]"))&&(e.metaKey||e.ctrlKey||e.shiftKey))return;  // a link: let the browser open it in a new tab
+  if(el=t.closest(".tabs [data-v]")){e.preventDefault();return go(el.dataset.v)}
   if(el=t.closest("[data-q]")){e.preventDefault();if(dlg.open)dlg.close();return go("find",el.dataset.q)}
   if(el=t.closest("[data-ev]"))return sheet("ev",el.dataset.ev);
   if(el=t.closest("[data-z]"))return sheet("z",el.dataset.z,dlg.open);
@@ -1877,15 +1938,18 @@ document.addEventListener("click",e=>{const t=e.target;let el;
   if(el=t.closest("[data-tmx]")){state.mineT.splice(+el.dataset.tmx,1);return render()}
   if(el=t.closest("[data-lvx]")){state.tree.c.splice(+el.dataset.lvx,1);return render()}
   if(t.closest("[data-tsave]"))return saveMine(true);
-  if(el=t.closest("[data-gp]")){state.pv=normG(PRE_G[+el.dataset.gp].p);state.warn="";state.pick.clear();return render()}
+  if(el=t.closest("[data-gp]")){state.pv=normG(PRE_G[+el.dataset.gp].p);state.warn="";return render()}
   if(el=t.closest("[data-gm]")){state.pv=normG(state.mineG[+el.dataset.gm].p);state.warn="";return render()}
   if(el=t.closest("[data-gmx]")){state.mineG.splice(+el.dataset.gmx,1);return render()}
   if(t.closest("[data-gsave]"))return saveMine(false);
   if(el=t.closest("[data-mode]")){state.pv.mode=el.dataset.mode;return render()}
   if(el=t.closest("[data-cmp]")){state.pv.cmp=el.dataset.cmp;return render()}
-  if(t.closest("[data-only]")){const P=state.pv;P.only=[...state.pick];state.pick.clear();P.cmp||="mark";if(!P.c.length)P.tr=true;return render()}
-  if(t.closest("[data-pickq]"))return qdo(pickQs(),pickT());
-  if(t.closest("[data-unpick]")){state.pick.clear();$$("[data-pk]").forEach(i=>i.checked=false);return $("#pkbar").innerHTML=pkbar()}
+  if(t.closest("[data-shownq]"))return qdo(shownQs(),shownT());
+  if(el=t.closest("[data-go]"))return GO[el.dataset.go][1]();
+  if(el=t.closest("[data-rcx]")){PAL.chips.splice(+el.dataset.rcx,1);return render()}
+  if(t.closest("[data-radd]"))return popen();
+  if(el=t.closest("[data-pfx]")){popen();PAL.q=el.dataset.pfx+"-";$("#palq").value=PAL.q;return prender()}
+  if(t.closest("[data-pclear]")){PAL.chips=[];return render()}
   if(t.closest("[data-unonly]")){Object.assign(state.pv,{only:[],grp:"",tr:false});return render()}
   if(el=t.closest("[data-chs]")){state.pv.sel[stack.at(-1)[1]]=el.dataset.chs==="ok"?$$(".chl input:checked").map(i=>i.value):[];dlg.close();return render()}
   if(el=t.closest("[data-more]")){const q=state.q.trim();el.insertAdjacentHTML("beforebegin",D.bank.filter(b=>b[2].includes(q)).slice(20).map(bqRow(q)).join(""));return el.remove()}
@@ -1896,19 +1960,17 @@ document.addEventListener("change",e=>{const t=e.target;
   else if(t.id==="tmin"){state.tree.min=t.value;render()}
   else if(t.id==="gmin"){state.pv.min=t.value;render()}
   else if(t.id==="gtr"){state.pv.tr=t.checked;render()}
-  else if(t.matches("[data-pk]")){state.pick[t.checked?"add":"delete"](t.dataset.pk);$("#pkbar").innerHTML=pkbar()}
-  else if(t.matches("[data-grp]")&&t.value){const g=CMP.find(x=>x.id===t.value);state.pick.clear();
-    state.pv=normG(g.kind==="病"?{grp:g.id}:{r:["证"],v:["秒杀词","症","舌","脉","治法","方"],only:g.zs,cmp:"mark",tr:true,grp:g.id});render()}});
+  else if(t.matches("[data-grp]")&&t.value){state.pv=grpPv(CMP.find(x=>x.id===t.value));render()}});
 document.addEventListener("input",e=>{if(e.target.id==="chq"){const q=e.target.value.trim();$$(".chl label").forEach(l=>l.hidden=!!q&&!l.dataset.t.includes(q))}});
 document.addEventListener("toggle",e=>{const n=e.target;  // draw a tree node's children the first time it opens
   if(n.matches?.("details.nd")&&n.open&&!n.dataset.done){n.dataset.done=1;const N=NODES[+n.dataset.n];n.insertAdjacentHTML("beforeend",`<div class="kids">${nodes(N.zs,N.dep,N.path)}</div>`)}},true);
-let tm;$("#q").addEventListener("input",e=>{clearTimeout(tm);tm=setTimeout(()=>{state.q=e.target.value;if(state.v!=="find"){state.v="find";scrollTo(0,0)}render()},180)});
+$("#q").addEventListener("focus",e=>{e.target.blur();popen()});  // the box and ⌘K are one search
 document.addEventListener("keydown",e=>{
   if(e.key==="/"&&!e.target.closest("input,select,textarea")&&!dlg.open){e.preventDefault();$("#q").focus()}
   if(e.key==="Escape")closeMenu()});
 addEventListener("resize",()=>{if(state.v==="grid")freeze()});
-$("#scope").addEventListener("change",e=>{state.scope=e.target.value;state.pick.clear();applyScope();render()});
-render();
+$("#scope").addEventListener("change",e=>{state.scope=e.target.value;applyScope();render()});
+live=true;if(location.hash)route(location.hash);render();toKc();live=false;
 </script>
 </body>
 </html>
