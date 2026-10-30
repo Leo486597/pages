@@ -8,7 +8,7 @@
 
 ## 怎么收集的（2026-10-12）
 
-- **GitHub Pages**：本 repo 根 `README.md` 的 topic 表，保留中医相关的 `neike-midterm/`（含 `staging/`、`v2/`）、`xiaoer-tuina-kechuan/` 和 `zhenjiu-bumei-shimian/`（2026-10-12 加）。
+- **GitHub Pages**：本 repo 根 `README.md` 的 topic 表，保留中医相关的 `neike-midterm/`（含 `staging/`、`v2/`）、`xiaoer-tuina-kechuan/` 和 `zhenjiu-bumei-shimian/`（2026-10-12 加）、`neike-midterm-drill/`（2026-10-30 加）。
 - **Cloudflare Pages**：用 Cloudflare REST API 只读列出账号下全部 Pages 项目、自定义域名，以及每个项目部署记录里的分支别名（如 `sctcm-leo.zhenjiu1.pages.dev`）。
 - **验活**：每个地址 `curl -L` 一次，页面上只放返回 200 的。
 
