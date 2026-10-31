@@ -40,11 +40,12 @@ html[data-lang="zh"] .qa-sec h2 { letter-spacing: 0; line-height: 1.3; }
 .qa[open] > summary { padding-bottom: 6px; }
 
 /* Depth tag */
-.dp { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 4px; padding: 2px 7px; white-space: nowrap; line-height: 1.4; align-self: center; }
+.dp { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 7px; white-space: nowrap; line-height: 1.4; align-self: center; }
 html[data-lang="zh"] .dp { text-transform: none; letter-spacing: 0; }
-.dp-basic { color: var(--free); border-color: color-mix(in srgb, var(--free) 42%, var(--rule)); }
-.dp-detail { color: var(--case); border-color: color-mix(in srgb, var(--case) 42%, var(--rule)); }
-.dp-expert { color: var(--letter); border-color: color-mix(in srgb, var(--letter) 42%, var(--rule)); }
+/* Depth hue lives in the border (a scannable hint); the label text stays AA-contrast ink. */
+.dp-basic { border-color: color-mix(in srgb, var(--free) 60%, var(--rule)); }
+.dp-detail { border-color: color-mix(in srgb, var(--case) 60%, var(--rule)); }
+.dp-expert { border-color: color-mix(in srgb, var(--letter) 60%, var(--rule)); }
 
 /* Body */
 .qa-body { padding: 2px 0 24px; max-width: var(--measure); }
