@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AI Chips &amp; China</title>
+<meta name="title-en" content="AI chips and China: the rules, explained">
+<meta name="title-zh" content="AI 芯片与中国：规则全景">
+<link rel="stylesheet" href="site.css">
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 88px); align-items: start; padding-top: clamp(48px, 7vw, 96px); padding-bottom: clamp(48px, 6vw, 72px); }
+  .hero h1 { font-size: clamp(36px, 5.4vw, 64px); line-height: 1.04; font-weight: 700; letter-spacing: -0.03em; }
+  html[data-lang="zh"] .hero h1 { line-height: 1.18; letter-spacing: 0; }
+  .answer { margin-top: 28px; display: grid; gap: 14px; max-width: 36em; }
+  .answer p { font-size: clamp(18px, 1.5vw, 20px); color: var(--ink-2); }
+  .answer p b { color: var(--ink); font-weight: 650; }
+  .hero .asof { margin-top: 28px; }
+
+  .gates { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 0; margin-top: 8px; }
+  .gate-node { padding: 22px 0; }
+  .gate-node h3 { font-size: 20px; margin-bottom: 8px; }
+  .gate-node p { color: var(--ink-2); font-size: 15px; }
+  .gate-node .src { margin-top: 10px; }
+  .gate-wall { width: var(--line); background: var(--ink); margin: 0 clamp(20px, 3vw, 40px); position: relative; }
+  .gate-wall::after { content: ""; position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; border-radius: 50%; background: var(--ground); border: var(--line) solid var(--ink); transform: translate(-50%, -50%); }
+  .gate-wall.cn { background: var(--cn); }
+  .gate-wall.cn::after { border-color: var(--cn); }
+  .gate-node.end h3 { color: var(--ink); }
+
+  .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 72px); }
+  .fact { padding: 22px 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 2.2em 1fr; gap: 4px 12px; }
+  .fact .n { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-3); font-size: 15px; padding-top: 2px; }
+  .fact p { color: var(--ink-2); font-size: 16px; }
+  .fact p b { color: var(--ink); font-weight: 650; }
+  .fact .src { grid-column: 2; margin-top: 6px; }
+
+  .line-strip { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; margin-top: 12px; }
+  .line-strip::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: var(--line); background: var(--ink); }
+  .line-strip .stop { position: relative; padding-top: 30px; padding-right: 16px; }
+  .line-strip .stop::before { content: ""; position: absolute; top: 0; left: 0; width: 17px; height: 17px; border-radius: 50%; background: var(--ground); border: var(--line) solid var(--ink); box-sizing: border-box; }
+  .line-strip .stop.next::before { border-style: dashed; }
+  .line-strip .stop.next::after { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: var(--line); background: var(--ground); }
+  .stop time { display: block; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-3); font-weight: 600; }
+  .stop b { display: block; font-size: 15px; line-height: 1.35; margin-top: 4px; font-weight: 650; }
+  .stop span.d { display: block; font-size: 14px; color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
+  .line-strip .stop.next { z-index: 1; }
+
+  .routes td:first-child { font-weight: 700; width: 2.4em; }
+  .routes td .st { margin-top: 2px; }
+  .routes tr.closed td { color: var(--ink-3); }
+
+  .market td.num { font-weight: 650; white-space: nowrap; }
+
+  .deeper { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 4vw, 56px); }
+  .deeper a { display: block; padding: 18px 0; border-top: 1px solid var(--rule); text-decoration: none; color: var(--ink); }
+  .deeper a b { display: block; font-weight: 650; }
+  .deeper a span { display: block; color: var(--ink-3); font-size: 14px; margin-top: 2px; }
+  .deeper a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+  .deeper a.soon { pointer-events: none; }
+  .deeper a.soon b { color: var(--ink-3); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .gates { grid-template-columns: 1fr; }
+    .gate-wall { width: auto; height: var(--line); margin: 6px 0; }
+    .facts { grid-template-columns: 1fr; }
+    .line-strip { grid-template-columns: 1fr; }
+    .line-strip::before { left: 7px; right: auto; top: 0; bottom: 0; width: var(--line); height: auto; }
+    .line-strip .stop { padding: 0 0 24px 36px; }
+    .line-strip .stop.next::after { display: none; }
+    .deeper { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html" data-keep-lang>
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="5" y="2" width="3" height="18" fill="currentColor"/><rect x="14" y="2" width="3" height="18" fill="var(--cn)"/><circle cx="11" cy="11" r="3" fill="currentColor"/></svg>
+      <span lang="en">AI Chips &amp; China</span><span lang="zh">AI 芯片与中国</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" aria-current="page" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" data-set="zh" aria-pressed="false">中文</button>
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Main">
+  <a href="index.html" aria-current="page" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+  <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+  <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+</nav>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>
+        <span lang="en">Can high-end AI chips be sold into China?</span>
+        <span lang="zh">高端 AI 芯片还能卖进中国吗？</span>
+      </h1>
+      <div class="answer">
+        <p lang="en"><b>Some can, through two gates.</b> Washington must license the chip, or the chip must sit below its thresholds. Beijing must then let it in, and it steers buyers toward domestic chips.</p>
+        <p lang="zh"><b>部分可以，但要过两道关。</b>华盛顿一关：芯片须获得美国许可证，或性能低于管制门槛。北京一关：还须获准进口，而北京正引导买家转向国产芯片。</p>
+        <p lang="en">Today the <b>H200</b> can be licensed, from the US only, with a 25% tariff. <b>Blackwell</b> (B200, B300) stays shut. The real volume is in cards just under the line, such as the <b>RTX PRO 5500</b>.</p>
+        <p lang="zh">目前 <b>H200</b> 可申请许可证，但只能从美国发货，并须缴纳 25% 关税。<b>Blackwell</b>（B200、B300）仍被禁止。真正的出货量在刚好低于门槛的显卡上，例如 <b>RTX PRO 5500</b>。</p>
+      </div>
+      <p class="asof"><span lang="en">State of the law as of 31 Oct 2026. Every fact links its source.</span><span lang="zh">法规状态截至 2026 年 10 月 31 日。每条事实均附来源链接。</span></p>
+    </div>
+
+    <aside aria-labelledby="board-h">
+      <h2 id="board-h" class="board-cap" style="margin:0"><span lang="en">Chip</span><span lang="zh">芯片</span><span><span lang="en">To China today</span><span lang="zh">当前对华</span></span></h2>
+      <div class="board">
+        <a class="board-row" href="chips.html#b300" data-keep-lang><span class="chip-name">B300 / GB300<span class="chip-sub">Blackwell Ultra</span></span><span class="st deny"><span lang="en">Presumption of denial</span><span lang="zh">推定拒绝</span></span></a>
+        <a class="board-row" href="chips.html#b200" data-keep-lang><span class="chip-name">B200 / GB200<span class="chip-sub">Blackwell</span></span><span class="st deny"><span lang="en">Presumption of denial</span><span lang="zh">推定拒绝</span></span></a>
+        <a class="board-row" href="chips.html#h200" data-keep-lang><span class="chip-name">H200<span class="chip-sub">Hopper</span></span><span class="st case"><span lang="en">Case-by-case</span><span lang="zh">逐案审查</span></span></a>
+        <a class="board-row" href="chips.html#h20" data-keep-lang><span class="chip-name">H20<span class="chip-sub" lang="en">China version</span><span class="chip-sub" lang="zh">中国特供版</span></span><span class="st letter"><span lang="en">License by letter</span><span lang="zh">告知函须许可</span></span></a>
+        <a class="board-row" href="chips.html#rtx-pro-5500" data-keep-lang><span class="chip-name">RTX PRO 5500<span class="chip-sub" lang="en">Workstation, Sep 2026</span><span class="chip-sub" lang="zh">工作站卡，2026 年 9 月</span></span><span class="st free"><span lang="en">No US license</span><span lang="zh">无需美国许可</span></span></a>
+        <a class="board-row" href="chips.html#rtx-4090d" data-keep-lang><span class="chip-name">RTX 4090D<span class="chip-sub" lang="en">Gaming, China version</span><span class="chip-sub" lang="zh">游戏卡，中国特供版</span></span><span class="st free"><span lang="en">No US license</span><span lang="zh">无需美国许可</span></span></a>
+      </div>
+      <a class="more" href="chips.html" data-keep-lang><span lang="en">All 21 chips, and why</span><span lang="zh">全部 21 款芯片及原因</span></a>
+    </aside>
+  </div>
+
+  <section class="block" aria-labelledby="gates-h">
+    <div class="wrap">
+      <h2 id="gates-h"><span lang="en">Two gates, both must open</span><span lang="zh">两道关，缺一不可</span></h2>
+      <p class="intro" lang="en">A chip reaches a Chinese buyer only when both governments say yes. Nvidia says so in its own filing.</p>
+      <p class="intro" lang="zh">芯片要到达中国买家手中，两国政府都必须点头。英伟达在其财报文件中亦如此表述。</p>
+      <div class="gates">
+        <div class="gate-node">
+          <h3><span lang="en">Chip maker</span><span lang="zh">芯片厂商</span></h3>
+          <p lang="en">Nvidia, AMD, Intel. Applies for the license; in practice only the maker can, because it alone holds the US shipment data the rule asks for.</p>
+          <p lang="zh">英伟达、AMD、英特尔。由厂商申请许可证；实际上只有厂商能申请，因为规则要求的美国出货数据只有它掌握。</p>
+          <p class="src"><span lang="en">Our reading of</span><span lang="zh">依据我们对以下文件的解读：</span> <a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026</p>
+        </div>
+        <div class="gate-wall" role="presentation"></div>
+        <div class="gate-node">
+          <h3><span lang="en">US gate</span><span lang="zh">美国关口</span></h3>
+          <p lang="en">A license from BIS, or a chip below the thresholds. Above the H200 line: <span class="term">presumption of denial<small>推定拒绝</small></span>.</p>
+          <p lang="zh">须取得 BIS 许可证，或芯片低于管制门槛。超过 H200 线的芯片：<span class="term">推定拒绝<small>presumption of denial</small></span>。</p>
+          <p class="src"><a href="https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and">88 FR 73458</a> · 25 Oct 2023</p>
+        </div>
+        <div class="gate-wall cn" role="presentation"></div>
+        <div class="gate-node end">
+          <h3><span lang="en">Beijing gate</span><span lang="zh">北京关口</span></h3>
+          <p lang="en">Unpublished, case-by-case approval by CAC, MIIT, NDRC and Customs, steering buyers to Huawei Ascend and other domestic chips.</p>
+          <p lang="zh">网信办、工信部、发改委和海关未公开的逐案审批，引导买家转向华为昇腾等国产芯片。</p>
+          <p class="src"><a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="facts-h">
+    <div class="wrap">
+      <h2 id="facts-h"><span lang="en">What a newcomer needs to know</span><span lang="zh">入门须知</span></h2>
+      <p class="intro" lang="en">Six facts, each one click from its source.</p>
+      <p class="intro" lang="zh">六条要点，每条一键直达来源。</p>
+      <div class="facts">
+        <div class="fact"><span class="n">1</span>
+          <p lang="en"><b>The test is a number.</b> A chip is controlled when its Total Processing Performance (TPP, compute × bit length) reaches 4,800, or 1,600 with high density.</p>
+          <p lang="zh"><b>管不管，看数字。</b>芯片的总处理性能（TPP，即算力 × 位宽）达到 4,800，或在高密度条件下达到 1,600，即受管制。</p>
+          <p class="src"><a href="https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and">88 FR 73458</a> · 25 Oct 2023</p></div>
+        <div class="fact"><span class="n">2</span>
+          <p lang="en"><b>The H200 line.</b> Since 15 Jan 2026, chips under TPP 21,000 and 6,500 GB/s memory bandwidth get case-by-case review, if shipped from the US.</p>
+          <p lang="zh"><b>H200 线。</b>自 2026 年 1 月 15 日起，TPP 低于 21,000 且显存带宽低于 6,500 GB/s 的芯片，从美国出口时可获逐案审查。</p>
+          <p class="src"><a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026</p></div>
+        <div class="fact"><span class="n">3</span>
+          <p lang="en"><b>Where the company is based counts, not only where the chip goes.</b> A China-headquartered firm needs a license in every country.</p>
+          <p lang="zh"><b>看总部所在地，不只看芯片去向。</b>总部位于中国的企业，在任何国家采购都需要许可证。</p>
+          <p class="src"><a href="https://www.bis.gov/media/documents/bis-guidance-may-31-2026.pdf">BIS guidance</a> · 31 May 2026</p></div>
+        <div class="fact"><span class="n">4</span>
+          <p lang="en"><b>Demand far exceeds legal supply.</b> ByteDance, Alibaba and Tencent ordered over 3M RTX PRO 5500 cards; supply covers 5 to 10%.</p>
+          <p lang="zh"><b>需求远超合法供给。</b>字节跳动、阿里巴巴和腾讯订购了逾 300 万张 RTX PRO 5500，供给仅能满足 5% 至 10%。</p>
+          <p class="src"><a href="https://www.trendforce.com/news/2026/10/21/news-nvidia-rtx-pro-5500-reportedly-draws-35b-in-china-orders-with-supply-seen-at-just-5-10/">TrendForce</a> · 21 Oct 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p></div>
+        <div class="fact"><span class="n">5</span>
+          <p lang="en"><b>Renting compute abroad is lawful today</b>, from a data center that is not Chinese-owned. It is the most watched route, and a pending bill would close it.</p>
+          <p lang="zh"><b>在境外租用算力目前合法</b>，前提是数据中心并非中资所有。这是受审查最严的路径，一项待审法案可能将其关闭。</p>
+          <p class="src"><a href="https://www.congress.gov/bill/119th-congress/house-bill/2683">H.R. 2683</a> · <span lang="en">passed House 12 Jan 2026</span><span lang="zh">2026 年 1 月 12 日众议院通过</span></p></div>
+        <div class="fact"><span class="n">6</span>
+          <p lang="en"><b>Breaking the rules is a crime.</b> Up to $1M and 20 years per violation. Smuggling cases since 2025 total billions of dollars in servers.</p>
+          <p lang="zh"><b>违规即犯罪。</b>每项违规最高罚款 100 万美元、监禁 20 年。2025 年以来的走私案件涉及数十亿美元的服务器。</p>
+          <p class="src"><a href="https://www.law.cornell.edu/uscode/text/50/4819">50 U.S.C. 4819</a> · checked 31 Oct 2026</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="line-h">
+    <div class="wrap">
+      <h2 id="line-h"><span lang="en">How we got here</span><span lang="zh">规则如何走到今天</span></h2>
+      <p class="intro" lang="en">Four years, seventeen US actions. Five stops matter most, and one is coming.</p>
+      <p class="intro" lang="zh">四年间，美国出台十七项措施。最关键的是这五站，另有一站即将到来。</p>
+      <div class="line-strip">
+        <div class="stop"><time>Oct 2022</time><b lang="en">First chip rule</b><b lang="zh">首部芯片规则</b><span class="d" lang="en">Catches the A100 and H100.</span><span class="d" lang="zh">A100、H100 被纳入管制。</span></div>
+        <div class="stop"><time>Oct 2023</time><b lang="en">Today's thresholds</b><b lang="zh">现行门槛确立</b><span class="d" lang="en">TPP 4,800; China-HQ firms covered anywhere.</span><span class="d" lang="zh">TPP 4,800；中国总部企业无论身处何地均受管。</span></div>
+        <div class="stop"><time>Apr 2025</time><b lang="en">H20 letters</b><b lang="zh">H20 告知函</b><span class="d" lang="en">Below-threshold H20 and MI308 need a license.</span><span class="d" lang="zh">低于门槛的 H20、MI308 也须许可。</span></div>
+        <div class="stop"><time>Jan 2026</time><b lang="en">H200 opening</b><b lang="zh">H200 放行</b><span class="d" lang="en">Case-by-case, plus a 25% tariff.</span><span class="d" lang="zh">逐案审查，另加 25% 关税。</span></div>
+        <div class="stop"><time>Jul 2026</time><b lang="en">UAE upgraded</b><b lang="zh">阿联酋升级</b><span class="d" lang="en">G42 and US hyperscalers license-free.</span><span class="d" lang="zh">G42 及美国云厂商免许可。</span></div>
+        <div class="stop next"><time>10 Nov 2026</time><b lang="en">Affiliates Rule returns?</b><b lang="zh">关联方规则恢复？</b><span class="d" lang="en">The 50% rule's suspension ends on paper.</span><span class="d" lang="zh">50% 规则的暂停期名义上届满。</span></div>
+      </div>
+      <a class="more" href="timeline.html" data-keep-lang><span lang="en">Full timeline, US and China side by side</span><span lang="zh">完整时间线：中美并列</span></a>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="routes-h">
+    <div class="wrap">
+      <h2 id="routes-h"><span lang="en">Lawful routes today</span><span lang="zh">当前合规路径</span></h2>
+      <p class="intro" lang="en">Seven ways to supply chips or compute to Chinese customers, and where each stands. Every route into the mainland also needs Beijing's informal approval.</p>
+      <p class="intro" lang="zh">向中国客户供应芯片或算力的七条路径及其现状。所有进入中国大陆的路径还须获得北京的非正式批准。</p>
+      <div class="tbl-wrap">
+        <table class="routes stack">
+          <thead><tr><th></th><th><span lang="en">Route</span><span lang="zh">路径</span></th><th><span lang="en">Status</span><span lang="zh">状态</span></th><th><span lang="en">The catch</span><span lang="zh">关键限制</span></th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td><span lang="en">US-licensed H200-class, shipped from the US</span><span lang="zh">经美国许可的 H200 级芯片，自美国发货</span></td><td><span class="st case"><span lang="en">Open, narrow</span><span lang="zh">开放，范围窄</span></span></td><td><span lang="en">Nine conditions, US lab test, 25% tariff; maker applies</span><span lang="zh">九项条件、美国实验室检测、25% 关税；须由厂商申请</span></td></tr>
+            <tr><td>B</td><td><span lang="en">Products below every US threshold</span><span lang="zh">低于所有美国门槛的产品</span></td><td><span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span></td><td><span lang="en">Supply rationed; a new letter can close it overnight</span><span lang="zh">供货配给；一封新告知函即可一夜关闭</span></td></tr>
+            <tr><td>C</td><td><span lang="en">H20 / MI308 under granted licenses</span><span lang="zh">已获许可的 H20 / MI308</span></td><td><span class="st letter"><span lang="en">Open, stalled</span><span lang="zh">开放，停滞</span></span></td><td><span lang="en">Beijing discourages buying</span><span lang="zh">北京不鼓励采购</span></td></tr>
+            <tr><td>D</td><td><span lang="en">Chinese domestic chips (Huawei Ascend)</span><span lang="zh">国产芯片（华为昇腾）</span></td><td><span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span></td><td><span lang="en">Using Ascend anywhere may breach US rules for non-Chinese firms</span><span lang="zh">非中国企业在任何地方使用昇腾都可能违反美国规则</span></td></tr>
+            <tr><td>E</td><td><span lang="en">Cloud compute from a non-Chinese-owned site abroad</span><span lang="zh">境外非中资数据中心提供云算力</span></td><td><span class="st case"><span lang="en">Open, watched</span><span lang="zh">开放，受严查</span></span></td><td><span lang="en">Remote Access Security Act would close it for China-HQ users</span><span lang="zh">《远程访问安全法》若通过，将对中国总部用户关闭</span></td></tr>
+            <tr class="closed"><td>F</td><td><span lang="en">Chinese-owned data centers abroad</span><span lang="zh">境外中资数据中心</span></td><td><span class="st deny"><span lang="en">Existing kit only</span><span lang="zh">仅限存量设备</span></span></td><td><span lang="en">New chips: presumption of denial</span><span lang="zh">新芯片：推定拒绝</span></td></tr>
+            <tr class="closed"><td>G</td><td><span lang="en">UAE / Gulf hubs</span><span lang="zh">阿联酋 / 海湾枢纽</span></td><td><span class="st deny"><span lang="en">Not a route to China</span><span lang="zh">不通往中国</span></span></td><td><span lang="en">China-HQ parties still need a license</span><span lang="zh">中国总部主体仍需许可证</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="src" style="margin-top:14px"><a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · <a href="https://www.bis.gov/media/documents/bis-guidance-may-31-2026.pdf">BIS 31 May 2026</a> · <a href="https://www.bis.gov/press-release/department-commerce-announces-rescission-biden-era-artificial-intelligence-diffusion-rule-strengthens">BIS 13 May 2025</a> · <a href="https://www.federalregister.gov/documents/2026/07/14/2026-14132/enhanced-favorable-treatment-for-the-united-arab-emirates-under-the-export-administration">91 FR 43034</a></p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="market-h">
+    <div class="wrap">
+      <h2 id="market-h"><span lang="en">The market in five numbers</span><span lang="zh">市场五个数字</span></h2>
+      <p class="intro" lang="en">Sources disagree on method, so ranges are shown. Orders include double-ordering; the true shortage is smaller than the headline.</p>
+      <p class="intro" lang="zh">各来源方法不一，故列出区间。订单含重复下单，实际缺口小于标题数字。</p>
+      <div class="tbl-wrap">
+        <table class="market stack">
+          <thead><tr><th><span lang="en">Measure</span><span lang="zh">指标</span></th><th class="num"><span lang="en">Number</span><span lang="zh">数值</span></th><th><span lang="en">Source</span><span lang="zh">来源</span></th></tr></thead>
+          <tbody>
+            <tr><td><span lang="en">China accelerator demand, 2025</span><span lang="zh">2025 年中国加速卡需求</span></td><td class="num"><span lang="en">~4M units</span><span lang="zh">约 400 万片</span></td><td class="src"><a href="https://www.tomshardware.com/pc-components/gpus/china-approves-first-nvidia-h200-deliveries-to-bytedance-and-tencent-under-case-by-case-import-licenses">Tom's Hardware</a> · 21 Aug 2026</td></tr>
+            <tr><td><span lang="en">Domestic chip gap, 2026 (demand 4.2M, supply 2.6M)</span><span lang="zh">2026 年国产芯片缺口（需求 420 万，供给 260 万）</span></td><td class="num"><span lang="en">~1.6M units</span><span lang="zh">约 160 万片</span></td><td class="src"><a href="https://news.cnyes.com/news/id/6528992">cnyes, citing Bloomberg Intelligence</a> · 9 Jul 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></td></tr>
+            <tr><td><span lang="en">H200 ordered vs delivered to the mainland</span><span lang="zh">H200 订购量 vs 大陆交付量</span></td><td class="num"><span lang="en">&gt;2M vs ~20k</span><span lang="zh">逾 200 万 vs 约 2 万</span></td><td class="src"><a href="https://www.tomshardware.com/pc-components/gpus/first-nvidia-h200-shipments-reach-bytedance-and-tencent-as-beijing-loosens-its-import-block">Tom's Hardware</a> · 19 Aug 2026</td></tr>
+            <tr><td><span lang="en">RTX PRO 5500 orders, three buyers</span><span lang="zh">RTX PRO 5500 订单（三家买家）</span></td><td class="num"><span lang="en">&gt;$35B</span><span lang="zh">逾 350 亿美元</span></td><td class="src"><a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/">Reuters via BNN</a> · 20 Oct 2026</td></tr>
+            <tr><td><span lang="en">Grey-market B300 8-GPU server, six months</span><span lang="zh">灰色市场 B300 八卡服务器，六个月内</span></td><td class="num"><span lang="en">RMB 4M → 8M+</span><span lang="zh">400 万 → 800 万元以上</span></td><td class="src"><a href="https://www.cna.com.tw/news/aopl/202606240107.aspx">CNA citing FT</a> · 24 Jun 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="deep-h">
+    <div class="wrap">
+      <h2 id="deep-h"><span lang="en">Go deeper</span><span lang="zh">深入阅读</span></h2>
+      <div class="deeper">
+        <a href="chips.html" data-keep-lang><b lang="en">Chip explorer</b><b lang="zh">芯片查询</b><span lang="en">Every chip, its status and the test that decides it</span><span lang="zh">每款芯片的状态及判定依据</span></a>
+        <a href="timeline.html" data-keep-lang><b lang="en">Rules timeline</b><b lang="zh">规则时间线</b><span lang="en">US and Beijing moves, 2022 to today</span><span lang="zh">2022 年至今中美双方举措</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">Lawful routes</b><b lang="zh">合规路径</b><span lang="en">Conditions for routes A to G · in preparation</span><span lang="zh">路径 A 至 G 的条件 · 编写中</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">Jurisdictions</b><b lang="zh">司法辖区</b><span lang="en">Mainland, Hong Kong, Singapore, UAE · in preparation</span><span lang="zh">中国大陆、香港、新加坡、阿联酋 · 编写中</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">Enforcement cases</b><b lang="zh">执法案例</b><span lang="en">Who was charged, and what happened · in preparation</span><span lang="zh">谁被起诉，结果如何 · 编写中</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">The story so far</b><b lang="zh">来龙去脉</b><span lang="en">2022 to today in seven chapters, for newcomers · in preparation</span><span lang="zh">七章讲清 2022 年至今，面向新读者 · 编写中</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">Market</b><b lang="zh">市场</b><span lang="en">Buyers, legal supply, domestic chips, the gap · in preparation</span><span lang="zh">买家、合法供给、国产芯片、缺口 · 编写中</span></a>
+        <a class="soon" aria-disabled="true"><b lang="en">Glossary</b><b lang="zh">术语表</b><span lang="en">Every legal term in both languages · in preparation</span><span lang="zh">全部法律术语中英对照 · 编写中</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">Check any transaction with export-control counsel. State of the law as of 31 Oct 2026.</span><span lang="zh">任何交易请咨询出口管制律师。法规状态截至 2026 年 10 月 31 日。</span></p>
+  </div>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

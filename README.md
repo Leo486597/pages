@@ -11,6 +11,7 @@ Leo 的个人 artifact 发布站。**一个 folder = 一个 topic**，每个 top
 
 | Topic | 内容 | 发布 | 在线 |
 |---|---|---|---|
+| [`ai-chips-china/`](ai-chips-china/) | AI 芯片与中国 · 出口管制全景 —— 美国对华 AI 芯片出口管制：规则、芯片清单、中美时间线（研究原型，3 页，中英双语） | 2026-10-31 | [打开](https://leo486597.github.io/pages/ai-chips-china/) |
 | [`neike-midterm-drill/`](neike-midterm-drill/) | 内科期中 · A/B 题过关 —— 21 章按顺序过关（≥80%）、老师作业 100 题、模拟 20 题、每轮复盘、按章节的错题本，每题带针对性讲解 | 2026-10-30 | [打开](https://leo486597.github.io/pages/neike-midterm-drill/) |
 | [`zhenjiu-bumei-shimian/`](zhenjiu-bumei-shimian/) | 针灸 · 失眠（不寐）调理图解 —— 教材主方 6 穴＋证型配穴＋艾灸、耳穴、梅花针等，每穴定位、取穴、在家做法、取穴视频 | 2026-10-12 | [打开](https://leo486597.github.io/pages/zhenjiu-bumei-shimian/) |
 | [`sctcm/`](sctcm/) | SCTCM 学习页面索引 —— 我为中医学习做的所有在线页面：内科、针灸、方剂·中药、推拿·儿科、课表，GitHub Pages 与 Cloudflare 一页看全 | 2026-10-12 | [打开](https://leo486597.github.io/pages/sctcm/) |
