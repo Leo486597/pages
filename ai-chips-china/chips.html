@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Chip explorer</title>
+<meta name="title-en" content="Chip explorer: which AI chips can go to China">
+<meta name="title-zh" content="芯片查询：哪些 AI 芯片可以进入中国">
+<link rel="stylesheet" href="site.css">
+<style>
+  .st.req { color: var(--ink); }
+  .st.req::before { transform: scale(.85); }
+
+  .tests { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(20px, 3vw, 40px); counter-reset: t; }
+  .test { border-top: 2px solid var(--rule-strong); padding-top: 14px; }
+  .test b { display: block; font-size: 15px; font-weight: 650; margin-bottom: 6px; }
+  .test p { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .test .q { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-3); font-weight: 600; display: block; margin-bottom: 6px; }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 8px 0 18px; }
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .seg button { appearance: none; font: inherit; font-size: 14px; border: 1px solid var(--rule); background: var(--ground); color: var(--ink-2); padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .seg button:hover { border-color: var(--ink-3); color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .search { margin-left: auto; position: relative; }
+  .search input { font: inherit; font-size: 15px; padding: 7px 12px 7px 34px; border: 1px solid var(--rule); border-radius: 10px; background: var(--ground-2); color: var(--ink); width: 220px; caret-color: var(--link); }
+  .search input:focus { outline: none; border-color: var(--link); background: var(--ground); }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); }
+
+  .list { border-top: 2px solid var(--rule-strong); }
+  .list-head, .chip > summary { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 20px; gap: 16px; align-items: center; }
+  .list-head { font-size: 12px; color: var(--ink-3); padding: 9px 0; border-bottom: 1px solid var(--rule); font-weight: 600; }
+  .chip { border-bottom: 1px solid var(--rule); scroll-margin-top: 80px; }
+  .chip > summary { list-style: none; cursor: pointer; padding: 15px 0; }
+  .chip > summary::-webkit-details-marker { display: none; }
+  .chip > summary:hover .nm { text-decoration: underline; text-underline-offset: 3px; }
+  .nm { font-weight: 650; font-size: 17px; }
+  .mk { display: block; font-size: 13px; color: var(--ink-3); }
+  .cn-st { font-size: 14px; color: var(--ink-2); }
+  .chev { width: 14px; height: 14px; color: var(--ink-3); transition: transform .25s cubic-bezier(.2,.8,.2,1); justify-self: end; }
+  .chip[open] > summary .chev { transform: rotate(180deg); }
+  .chip[open] > summary { padding-bottom: 6px; }
+
+  .detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px clamp(24px, 4vw, 56px); padding: 6px 0 26px; }
+  .detail dl { margin: 0; display: grid; grid-template-columns: 9.5em 1fr; gap: 10px 16px; font-size: 15px; align-content: start; }
+  html[data-lang="zh"] .detail dl { grid-template-columns: 6.5em 1fr; }
+  .detail dt { color: var(--ink-3); font-size: 13px; padding-top: 2px; }
+  .detail dd { margin: 0; }
+  .detail .why { font-size: 16px; line-height: 1.6; max-width: var(--measure); }
+  .detail .why b { font-weight: 650; }
+  .detail .srcs { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+  .flag { display: inline-block; font-size: 12px; color: var(--case); border: 1px solid currentColor; border-radius: 4px; padding: 0 6px; margin-top: 10px; }
+  .expert { grid-column: 1 / -1; border-top: 1px solid var(--rule); margin-top: 8px; }
+  .expert > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 12px 0 4px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+  .expert > summary::-webkit-details-marker { display: none; }
+  .expert > summary:hover { color: var(--ink); }
+  .expert[open] > summary .chev { transform: rotate(180deg); }
+  .expert-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px clamp(24px, 4vw, 56px); padding: 10px 0 4px; }
+  .expert-body .srcs { margin: 0; }
+  @media (max-width: 900px) { .expert-body { grid-template-columns: 1fr; } }
+  .empty { padding: 32px 0; color: var(--ink-3); }
+  .count { font-size: 14px; color: var(--ink-3); }
+
+  .scale { margin-top: 8px; }
+  .scale + .scale { margin-top: 48px; }
+  .scale h3 { margin-bottom: 4px; }
+  .scale .sub { font-size: 14px; color: var(--ink-3); margin-bottom: 8px; }
+  .plot { position: relative; }
+  .prow { display: grid; grid-template-columns: 9.5em 1fr; gap: 14px; align-items: center; height: 30px; }
+  .prow .lb { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track { position: relative; height: 100%; border-bottom: 1px solid var(--rule); }
+  .dot { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--ink); }
+  .dot.deny { background: var(--deny); border-radius: 0; -webkit-mask: var(--m-x) center/contain no-repeat; mask: var(--m-x) center/contain no-repeat; } .dot.case { background: var(--case); border-radius: 0; transform: rotate(45deg) scale(.82); } .dot.letter { background: var(--letter); border-radius: 0; -webkit-mask: var(--m-tri) center/contain no-repeat; mask: var(--m-tri) center/contain no-repeat; } .dot.free { background: var(--free); } .dot.req { background: var(--ink); border-radius: 0; transform: scale(.85); }
+  .dot + .v { position: absolute; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 12px; }
+  .bar-fill { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--rule); }
+  .thr { position: absolute; top: -6px; bottom: 0; width: 0; border-left: 2px solid var(--ink); }
+  .thr span { position: absolute; top: -26px; left: 6px; font-size: 12px; font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .axis { display: grid; grid-template-columns: 9.5em 1fr; gap: 14px; margin-top: 6px; }
+  .axis .ticks { position: relative; height: 18px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .axis .ticks span { position: absolute; transform: translateX(-50%); }
+  .plot-wrap { padding-top: 34px; }
+  .offscale { font-size: 13px; color: var(--ink-3); margin-top: 12px; }
+
+  @media (max-width: 900px) {
+    .tests { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .detail { grid-template-columns: 1fr; gap: 18px; }
+  }
+  @media (max-width: 640px) {
+    .tests { grid-template-columns: 1fr; }
+    .list-head { display: none; }
+    .chip > summary { grid-template-columns: minmax(0, 1fr) 20px; row-gap: 6px; }
+    .chip > summary .us { grid-column: 1; grid-row: 2; }
+    .chip > summary .cn-st { grid-column: 1; grid-row: 3; }
+    .chip > summary .chev { grid-column: 2; grid-row: 1; }
+    .detail dl { grid-template-columns: 1fr; gap: 2px; }
+    .detail dd { margin-bottom: 10px; }
+    .search { margin-left: 0; width: 100%; }
+    .search input { width: 100%; }
+    .prow, .axis { grid-template-columns: 6.5em 1fr; gap: 8px; }
+    .dot + .v { display: none; }
+    .thr span { left: auto; right: 6px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html" data-keep-lang>
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="5" y="2" width="3" height="18" fill="currentColor"/><rect x="14" y="2" width="3" height="18" fill="var(--cn)"/><circle cx="11" cy="11" r="3" fill="currentColor"/></svg>
+      <span lang="en">AI Chips &amp; China</span><span lang="zh">AI 芯片与中国</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" aria-current="page" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" data-set="zh" aria-pressed="false">中文</button>
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Main">
+  <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+  <a href="chips.html" aria-current="page" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+  <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+</nav>
+
+<main>
+  <div class="wrap head">
+    <h1><span lang="en">Which AI chips can go to China, and why</span><span lang="zh">哪些 AI 芯片可以进入中国，为什么</span></h1>
+    <p class="lede" lang="en">Each chip faces two gates: Washington's license rules and Beijing's import approval. Open a chip to see the test that decides it and the sources behind it.</p>
+    <p class="lede" lang="zh">每款芯片都要过两道关：华盛顿的许可规则，以及北京的进口审批。展开任一芯片，查看判定依据及其来源。</p>
+    <p class="asof"><span lang="en">As of 31 Oct 2026 · NVIDIA, AMD, Intel, Huawei</span><span lang="zh">截至 2026 年 10 月 31 日 · 英伟达、AMD、英特尔、华为</span></p>
+  </div>
+
+  <section class="block" aria-labelledby="tests-h" style="padding-top:0;border-top:0">
+    <div class="wrap">
+      <h2 id="tests-h" class="h" style="font-size:22px"><span lang="en">Four tests decide the US gate</span><span lang="zh">美国关口的四项判定</span></h2>
+      <div class="tests">
+        <div class="test"><b lang="en">Test 1: Is it 3A090?</b><b lang="zh">判定一：是否属于 3A090？</b><p lang="en">TPP ≥ 4,800, or ≥ 1,600 with high density. If yes, a license is needed for China, HK, Macau and China-HQ buyers anywhere.</p><p lang="zh">TPP ≥ 4,800，或高密度条件下 ≥ 1,600。若是，则出口至中国内地、香港、澳门及任何地方的中国总部买家均需许可证。</p></div>
+        <div class="test"><b lang="en">Test 2: Under the H200 line?</b><b lang="zh">判定二：是否低于 H200 线？</b><p lang="en">TPP &lt; 21,000 and bandwidth &lt; 6,500 GB/s: <span class="term">case-by-case<small>逐案审查</small></span>. Above: <span class="term">presumption of denial<small>推定拒绝</small></span>.</p><p lang="zh">TPP &lt; 21,000 且带宽 &lt; 6,500 GB/s：<span class="term">逐案审查<small>case-by-case</small></span>。超过：<span class="term">推定拒绝<small>presumption of denial</small></span>。</p></div>
+        <div class="test"><b lang="en">Test 3: Named in a letter?</b><b lang="zh">判定三：是否被告知函点名？</b><p lang="en">The April 2025 is-informed letters caught the H20 and MI308, below the thresholds but licensed anyway.</p><p lang="zh">2025 年 4 月的告知函点名 H20 和 MI308：虽低于门槛，仍须许可证。</p></div>
+        <div class="test"><b lang="en">Test 4: Below all of that?</b><b lang="zh">判定四：以上均不满足？</b><p lang="en">No US license for normal buyers. <span class="term">Entity List<small>实体清单</small></span>, military end use and diversion rules still apply.</p><p lang="zh">普通买家无需美国许可证。但<span class="term">实体清单<small>Entity List</small></span>、军事最终用途及转移规则仍然适用。</p></div>
+      </div>
+      <p class="src" style="margin-top:14px"><a href="https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and">88 FR 73458</a> · 25 Oct 2023 · <a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026 · <a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026</p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="list-h">
+    <div class="wrap">
+      <h2 id="list-h"><span lang="en">Every chip</span><span lang="zh">全部芯片</span></h2>
+      <div class="tools">
+        <div class="seg" role="group" aria-label="US status" id="f-status"></div>
+        <label class="search"><span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search</span>
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5" stroke-linecap="round"/></svg>
+          <input id="q" type="search" autocomplete="off">
+        </label>
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="list" id="list">
+        <div class="list-head"><span lang="en">Chip</span><span lang="zh">芯片</span><span lang="en">US gate</span><span lang="zh">美国关口</span><span lang="en">Beijing gate</span><span lang="zh">北京关口</span><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="scale-h">
+    <div class="wrap">
+      <h2 id="scale-h"><span lang="en">Where each chip sits against the lines</span><span lang="zh">各芯片与门槛线的距离</span></h2>
+      <p class="intro" lang="en">Same scale for every chip, so the distance to each line is the real distance. Only chips with a published figure are plotted.</p>
+      <p class="intro" lang="zh">所有芯片使用同一刻度，与门槛线的距离即真实差距。仅绘制有公开数据的芯片。</p>
+      <div class="scale" id="scale-bw"></div>
+      <div class="scale" id="scale-tpp"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">"Inferred" means we applied the published thresholds to published specs; no official classification was found. Get the maker's ECCN in writing before relying on "uncontrolled".</span><span lang="zh">“推断”指我们将公开门槛套用于公开规格得出，未找到官方分类。依赖“不受管制”结论前，请取得厂商书面出具的 ECCN。</span></p>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+const S = {
+  FR23: { l: "88 FR 73458", u: "https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and", d: "25 Oct 2023" },
+  FR26: { l: "91 FR 1684", u: "https://public-inspection.federalregister.gov/2026-00789.pdf", d: "15 Jan 2026" },
+  NVDA: { l: "NVDA 10-Q", u: "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm", d: "26 Aug 2026" },
+  AMD: { l: "AMD 10-Q", u: "https://www.sec.gov/Archives/edgar/data/2488/000000248826000123/amd-20260627.htm", d: "5 Aug 2026" },
+  TF: { l: "TrendForce", u: "https://www.trendforce.com/news/2026/10/21/news-nvidia-rtx-pro-5500-reportedly-draws-35b-in-china-orders-with-supply-seen-at-just-5-10/", d: "21 Oct 2026", press: 1 },
+  AT: { l: "Asia Times", u: "https://asiatimes.com/2026/09/after-trump-xi-summit-nvidia-rtx-pro-5500-gains-export-prospects/", d: "29 Sep 2026", press: 1 },
+  KT: { l: "Korea Times", u: "https://www.koreatimes.co.kr/world/20260927/why-us-chip-controls-took-a-back-seat-at-xi-trump-summit", d: "27 Sep 2026", press: 1 },
+  INF: { l: "The Information via X", u: "https://x.com/jukan05/status/1986614527623110744", d: "Nov 2025", press: 1 },
+  CC: { l: "computecomparison.com", u: "https://computecomparison.com/gpu-specs-database", d: "checked 31 Oct 2026" },
+  AP: { l: "AP via news4jax", u: "https://www.news4jax.com/news/politics/2025/07/31/china-summons-nvidia-over-backdoor-safety-risks-in-h20-chips/", d: "31 Jul 2025", press: 1 },
+  REG: { l: "The Register", u: "https://www.theregister.com/2024/04/12/intel_paudi_3_china/", d: "12 Apr 2024", press: 1 },
+  BIS25: { l: "BIS press release", u: "https://www.bis.gov/press-release/department-commerce-announces-rescission-biden-era-artificial-intelligence-diffusion-rule-strengthens", d: "13 May 2025" },
+  TH_DC: { l: "Tom's Hardware", u: "https://www.tomshardware.com/tech-industry/semiconductors/china-bans-foreign-ai-chips-from-state-funded-data-centers", d: "Nov 2025", press: 1 },
+  BNN: { l: "Reuters via BNN Bloomberg", u: "https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/", d: "20 Oct 2026", press: 1 },
+  TH_6000: { l: "Tom's Hardware", u: "https://www.tomshardware.com/tech-industry/artificial-intelligence/china-bans-its-biggest-tech-companies-from-acquiring-nvidia-chips-says-report-beijing-claims-its-homegrown-ai-processors-now-match-h20-and-rtx-pro-6000d", d: "Sep 2025", press: 1 },
+  SG: { l: "SlashGear", u: "https://www.slashgear.com/1923269/why-rtx-5090-banned-in-china-what-gpu-nvidia-may-offer-country-instead", d: "checked 31 Oct 2026", press: 1 },
+  TH_5090D: { l: "Tom's Hardware", u: "https://www.tomshardware.com/pc-components/gpus/nvidia-cuts-down-the-china-specific-rtx-5090d-ai-tops-performance-by-almost-23-percent-to-meet-us-export-guidelines", d: "checked 31 Oct 2026", press: 1 },
+  TH_4090: { l: "Tom's Hardware", u: "https://www.tomshardware.com/pc-components/gpus/us-wields-the-banhammer-against-sanctions-compliant-nvidia-rtx-4090d-dragon-updated-law-prohibits-70-teraflops-or-greater-gpus-from-export-to-china", d: "checked 31 Oct 2026", press: 1 },
+};
+
+// st: deny | case | letter | free | req | none
+const CHIPS = [
+  { id: "b300", n: "B300 / GB300", mk: "NVIDIA · Blackwell Ultra", cat: "dc", st: "deny", eccn: "3A090.a / 4A090.a", bw: 8000,
+    pol: ["Presumption of denial", "推定拒绝"], thr: ["Bandwidth 8 TB/s, over 6,500; TPP far above 21,000", "带宽 8 TB/s，超过 6,500；TPP 远超 21,000"],
+    cn: ["Not offered", "未获供应"], why: ["Fails <b>test 2</b> on bandwidth alone. Reported still off-limits in Oct 2026.", "仅带宽一项即未通过<b>判定二</b>。2026 年 10 月报道仍禁止出口。"], src: ["TF", "FR26"] },
+  { id: "b200", n: "B200 / GB200 NVL72", mk: "NVIDIA · Blackwell", cat: "dc", st: "deny", eccn: "3A090.a / 4A090.a", bw: 8000,
+    pol: ["Presumption of denial", "推定拒绝"], thr: ["Bandwidth 8 TB/s, over 6,500", "带宽 8 TB/s，超过 6,500"],
+    cn: ["Not offered", "未获供应"], why: ["Fails <b>test 2</b>. Nvidia names it as controlled since Oct 2023.", "未通过<b>判定二</b>。英伟达称其自 2023 年 10 月起受管制。"], src: ["NVDA", "FR26"] },
+  { id: "b30a", n: "B30A", mk: "NVIDIA · Blackwell, China version", cat: "dc", st: "deny", eccn: "3A090.a", inferred: 1,
+    pol: ["Export blocked", "禁止出口"], thr: ["Above the H200 line", "高于 H200 线"],
+    cn: ["Reportedly weighing it", "据报正在评估"], why: ["White House blocked it in Nov 2025 (reported). No approval through Oct 2026; Blackwell controls survived the Sep 2026 Trump–Xi summit.", "据报白宫于 2025 年 11 月叫停。截至 2026 年 10 月未获批准；Blackwell 管制在 2026 年 9 月特朗普与习近平会晤后依然保留。"], src: ["INF", "KT"] },
+  { id: "h200", n: "H200", mk: "NVIDIA · Hopper", cat: "dc", st: "case", eccn: "3A090.a / 4A090.a", bw: 4800, tpp: 15832,
+    pol: ["Case-by-case, from the US only", "逐案审查，仅限自美国出口"], thr: ["TPP ≈ 15,800–16,000, under 21,000; 4.8 TB/s, under 6,500", "TPP 约 15,800–16,000，低于 21,000；4.8 TB/s，低于 6,500"],
+    cn: ["Limited approvals", "有限批准"], why: ["Passes <b>test 2</b>. Nine conditions, a US lab test and a 25% tariff. Licenses granted Feb 2026 for small amounts. Beijing let in about 10k each to ByteDance and Tencent by Aug 2026, against 75k licensed.", "通过<b>判定二</b>。须满足九项条件、经美国实验室检测并缴纳 25% 关税。2026 年 2 月获发少量许可。截至 2026 年 8 月，北京仅放行字节跳动、腾讯各约 1 万片，而获许可量为 7.5 万片。"], src: ["FR26", "NVDA", "AT"] },
+  { id: "h100", n: "H100 / H800", mk: "NVIDIA · Hopper", cat: "dc", st: "case", eccn: "3A090.a", bw: 3350, tpp: 15832,
+    pol: ["Case-by-case in principle", "原则上逐案审查"], thr: ["TPP ≈ 16,000; 3.35 TB/s", "TPP 约 16,000；3.35 TB/s"],
+    cn: ["No licenses reported", "未见许可报道"], why: ["Below both H200-line limits, and the rule covers less advanced chips sold in the US. No H100 license has been reported.", "低于 H200 线两项上限，且规则涵盖在美销售的较低端芯片。尚无 H100 获许可的报道。"], src: ["FR26", "NVDA"] },
+  { id: "a100", n: "A100 / A800", mk: "NVIDIA · Ampere", cat: "dc", st: "case", eccn: "3A090.a", bw: 2000,
+    pol: ["Case-by-case in principle", "原则上逐案审查"], thr: ["2.0 TB/s", "2.0 TB/s"],
+    cn: ["No licenses reported", "未见许可报道"], why: ["Same reasoning as the H100.", "理由同 H100。"], src: ["FR26", "CC"] },
+  { id: "l40s", n: "L40S / L40 / L4", mk: "NVIDIA · Ada", cat: "dc", st: "case", eccn: "3A090",
+    pol: ["Case-by-case in principle", "原则上逐案审查"], thr: ["Under the H200 line", "低于 H200 线"],
+    cn: ["No licenses reported", "未见许可报道"], why: ["Named as 3A090 by Nvidia.", "英伟达将其列为 3A090。"], src: ["NVDA"] },
+  { id: "h20", n: "H20", mk: "NVIDIA · Hopper, China version", cat: "dc", st: "letter", eccn: ["Not 3A090 on specs; license by letter", "按规格不属 3A090；依告知函须许可"], tpp: 2368,
+    pol: ["License required; granted from Aug 2025", "须许可证；2025 年 8 月起获发"], thr: ["H20-level memory or interconnect bandwidth", "达到 H20 级显存或互连带宽"],
+    cn: ["Discouraged", "不鼓励采购"], why: ["Passes the specs tests but was named in an April 2025 <b>is-informed letter</b>. China's CAC summoned Nvidia over \"backdoor\" risks on 31 Jul 2025; Nvidia says it was unable to sell its H20 inventory.", "规格上可通过，但被 2025 年 4 月的<b>告知函</b>点名。国家网信办于 2025 年 7 月 31 日就“后门”风险约谈英伟达；英伟达称其 H20 库存无法售出。"], src: ["NVDA", "AP"] },
+  { id: "mi355x", n: "MI355X / MI350X", mk: "AMD · Instinct", cat: "dc", st: "deny", eccn: "3A090.a", inferred: 1, bw: 8000,
+    pol: ["Presumption of denial", "推定拒绝"], thr: ["8 TB/s, over 6,500", "8 TB/s，超过 6,500"],
+    cn: ["Not offered", "未获供应"], why: ["Fails <b>test 2</b> on bandwidth.", "因带宽未通过<b>判定二</b>。"], src: ["CC", "FR26"] },
+  { id: "mi325x", n: "MI325X", mk: "AMD · Instinct", cat: "dc", st: "case", eccn: "3A090.a", bw: 6000,
+    pol: ["Case-by-case; granted Feb 2026", "逐案审查；2026 年 2 月获批"], thr: ["Named in the rule; 6.0 TB/s, under 6,500", "规则中点名；6.0 TB/s，低于 6,500"],
+    cn: ["Unknown", "未知"], why: ["Must be inspected in the US first, so the 25% tariff applies. AMD: \"we do not yet know whether any imports of MI325 products will be allowed into China.\"", "须先在美国检测，因此适用 25% 关税。AMD 称：“尚不清楚 MI325 产品能否获准进口到中国。”"], src: ["AMD"] },
+  { id: "mi300x", n: "MI300X", mk: "AMD · Instinct", cat: "dc", st: "case", eccn: "3A090.a", inferred: 1, bw: 5300,
+    pol: ["Case-by-case in principle", "原则上逐案审查"], thr: ["5.3 TB/s", "5.3 TB/s"],
+    cn: ["No licenses reported", "未见许可报道"], why: ["Less advanced than the MI325X. No licenses reported.", "性能低于 MI325X。未见获许可报道。"], src: ["FR26"] },
+  { id: "mi308", n: "MI308", mk: "AMD · Instinct, China version", cat: "dc", st: "letter", eccn: ["License by letter", "依告知函须许可"],
+    pol: ["License required; some granted", "须许可证；部分获批"], thr: ["H20-style bandwidth test", "H20 式带宽判定"],
+    cn: ["Depends on China's import rules", "取决于中国进口规定"], why: ["Named in an April 2025 letter. Shipping since the end of AMD's fiscal 2025.", "被 2025 年 4 月告知函点名。自 AMD 2025 财年末起出货。"], src: ["AMD"] },
+  { id: "gaudi3", n: "Gaudi 3", mk: "Intel", cat: "dc", st: "case", eccn: "3A090.a", inferred: 1, bw: 3700,
+    pol: ["Case-by-case in principle", "原则上逐案审查"], thr: ["TPP well above 4,800; 3.7 TB/s", "TPP 远超 4,800；3.7 TB/s"],
+    cn: ["No licenses reported", "未见许可报道"], why: ["Below the H200 line on bandwidth. No licenses reported.", "带宽低于 H200 线。未见获许可报道。"], src: ["REG", "FR26"] },
+  { id: "gaudi3-cn", n: "Gaudi 3 HL-328 / HL-388", mk: ["Intel · China versions, 2024", "英特尔 · 中国特供版，2024"], cat: "dc", st: "none", eccn: ["Not 3A090 as designed", "按设计不属 3A090"],
+    pol: ["Unclear; sales status not found", "不明；未找到销售情况"], thr: ["FP16 148 TFLOPS, just under 4,800 TPP", "FP16 148 TFLOPS，略低于 4,800 TPP"],
+    cn: ["Unknown", "未知"], why: ["Designed to be uncontrolled, but its 3.7 TB/s bandwidth equals the standard part, so the H20-style letter test could catch it.", "按设计不受管制，但其 3.7 TB/s 带宽与标准版相同，H20 式告知函判定可能将其纳入。"], src: ["REG"] },
+  { id: "ascend", n: "Ascend 910B / 910C", mk: ["Huawei · domestic", "华为 · 国产"], cat: "dc", st: "none", eccn: "n/a",
+    pol: ["Not a US export", "不属美国出口"], thr: ["n/a", "不适用"],
+    cn: ["Favored; required in state-funded data centers", "受扶持；国资数据中心须使用"], why: ["No US export issue for Chinese buyers. But BIS says using Ascend chips <b>anywhere</b> may break US rules, because they are made with US technology.", "对中国买家不涉及美国出口问题。但 BIS 表示，在<b>任何地方</b>使用昇腾芯片都可能违反美国规则，因其使用了美国技术。"], src: ["BIS25", "TH_DC"] },
+  { id: "rtx-pro-5500", n: "RTX PRO 5500", mk: ["NVIDIA · workstation, Sep 2026", "英伟达 · 工作站卡，2026 年 9 月"], cat: "ws", st: "free", eccn: ["Unknown", "未知"], reported: 1, bw: 1398,
+    pol: ["Reported as sold without a license", "据报无需许可即可销售"], thr: ["Must be under TPP 4,800 (non-data-center chips skip 3A090.b)", "须低于 TPP 4,800（非数据中心芯片不适用 3A090.b）"],
+    cn: ["MIIT intends to approve", "工信部拟批准"], why: ["Reported \"just below the red line\"; no official US classification found. ByteDance, Alibaba and Tencent ordered over 3M cards (>$35B); supply covers 5–10%.", "据报“刚好低于红线”；未找到美国官方分类。字节跳动、阿里巴巴、腾讯订购逾 300 万张（超过 350 亿美元）；供给仅满足 5%–10%。"], src: ["AT", "BNN", "TF"] },
+  { id: "rtx-pro-6000d", n: "RTX PRO 6000D", mk: ["NVIDIA · workstation, China version", "英伟达 · 工作站卡，中国特供版"], cat: "ws", st: "free", eccn: ["Not 3A090 (reported)", "不属 3A090（据报）"], reported: 1,
+    pol: ["No license reported", "未见许可要求报道"], thr: ["Under 4,800", "低于 4,800"],
+    cn: ["Told to stop buying", "被要求停止采购"], why: ["The US gate is open; Beijing's is shut. CAC told ByteDance, Alibaba and others to stop buying and testing it (FT, mid-Sep 2025).", "美国关口开放，北京关口关闭。国家网信办要求字节跳动、阿里巴巴等停止采购和测试（FT，2025 年 9 月中旬）。"], src: ["TH_6000"] },
+  { id: "rtx-5090", n: "RTX 5090", mk: ["NVIDIA · gaming", "英伟达 · 游戏卡"], cat: "ws", st: "req", eccn: "3A090.a",
+    pol: ["License required; none reported", "须许可证；未见获批"], thr: ["TPP above 4,800", "TPP 高于 4,800"],
+    cn: ["n/a", "不适用"], why: ["Fails <b>test 1</b>. A denial in practice.", "未通过<b>判定一</b>。实际上等同拒绝。"], src: ["SG"] },
+  { id: "rtx-5090d", n: "RTX 5090D / D V2", mk: ["NVIDIA · gaming, China version", "英伟达 · 游戏卡，中国特供版"], cat: "ws", st: "free", eccn: ["Not 3A090", "不属 3A090"], tpp: 4750,
+    pol: ["No license", "无需许可"], thr: ["TPP ≈ 4,750; AI TOPS cut ~23%; V2 has 24 GB", "TPP 约 4,750；AI 算力削减约 23%；V2 为 24 GB"],
+    cn: ["V2 imports reportedly blocked", "据报 V2 进口受阻"], why: ["Built to fit just under <b>test 1</b>. China reportedly blocked V2 imports (unconfirmed).", "专为刚好低于<b>判定一</b>而设计。据报中国阻止 V2 进口（未证实）。"], src: ["TH_5090D"] },
+  { id: "rtx-4090", n: "RTX 4090", mk: ["NVIDIA · gaming", "英伟达 · 游戏卡"], cat: "ws", st: "req", eccn: "3A090.a", tpp: 5286,
+    pol: ["License required", "须许可证"], thr: ["TPP ≈ 5,286, over 4,800", "TPP 约 5,286，超过 4,800"],
+    cn: ["n/a", "不适用"], why: ["Fails <b>test 1</b> by about 10%.", "以约 10% 之差未通过<b>判定一</b>。"], src: ["NVDA", "TH_4090"] },
+  { id: "rtx-4090d", n: "RTX 4090D", mk: ["NVIDIA · gaming, China version", "英伟达 · 游戏卡，中国特供版"], cat: "ws", st: "free", eccn: ["Not 3A090", "不属 3A090"], tpp: 4707,
+    pol: ["No license", "无需许可"], thr: ["TPP ≈ 4,707, under 4,800", "TPP 约 4,707，低于 4,800"],
+    cn: ["Sold in China", "在华销售"], why: ["Passes <b>test 1</b> by 93 TPP. Both gates open.", "以 93 TPP 之差通过<b>判定一</b>。两道关均开放。"], src: ["TH_4090"] },
+];
+
+const SPEC = {"b300": [["Data center, 2025", "数据中心，2025"], "~270–288 GB HBM3e", "8 TB/s", "~$57k", "1.0", null], "b200": [["Data center, 2024–25", "数据中心，2024–25"], "180 GB HBM3e", "8 TB/s", "$30–40k", "1.0", null], "b30a": [["Data center, China; never shipped", "数据中心，中国版；未出货"], "144 GB HBM3e", "4 TB/s", ["none reported", "未见报价"], "~2", null], "h200": [["Data center, 2024", "数据中心，2024"], "141 GB HBM3e", "4.8 TB/s", "~$32k", "2.3", null], "h100": [["Data center, 2022", "数据中心，2022"], "80 GB HBM3", "3.35 TB/s", ["~$25k new", "新卡约 $25k"], "2.3", null], "a100": [["Data center, 2020", "数据中心，2020"], "80 GB HBM2e", "2.0 TB/s", ["$4.7–5.4k used", "二手 $4.7–5.4k"], "7.2", 4992], "l40s": [["Data center PCIe, 2023", "数据中心 PCIe，2023"], "48 GB GDDR6", "864 GB/s", "$6.6–8.6k", "6.1", 5864], "h20": [["Data center, China, 2024", "数据中心，中国版，2024"], "96 GB HBM3", "4.0 TB/s", "$10–12k", "15.2", null], "rtx-pro-5500": [["Workstation, 2026", "工作站，2026"], "84 GB GDDR7", "1,398 GB/s", "~$11,400", ["~7.5+ (inferred)", "约 7.5 以上（推断）"], null], "rtx-pro-6000d": [["Workstation, China, 2025", "工作站，中国版，2025"], "84 GB GDDR7", "1,398 GB/s", "~RMB 50k", ["~12 (unverified)", "约 12（未核实）"], null], "rtx-5090": [["Gaming, 2025", "游戏卡，2025"], "32 GB GDDR7", "1,792 GB/s", ["$1,999 list", "标价 $1,999"], "5.4", 6704], "rtx-5090d": [["Gaming, China, 2025", "游戏卡，中国版，2025"], ["32 GB (V2: 24 GB) GDDR7", "32 GB（V2：24 GB）GDDR7"], "1,792 GB/s", "RMB 16,499", "7.6", null], "rtx-4090": [["Gaming, 2022", "游戏卡，2022"], "24 GB GDDR6X", "1,008 GB/s", ["$1,599 list", "标价 $1,599"], "6.8", null], "rtx-4090d": [["Gaming, China, 2023", "游戏卡，中国版，2023"], "24 GB GDDR6X", "1,008 GB/s", "RMB 12,999", "7.6", null], "ascend": [["Data center, China; 910C 2025", "数据中心，中国；910C 2025"], "128 GB HBM2e", "3.2 TB/s", ">RMB 110k", ["2.9 (910C, FP16)", "2.9（910C，FP16）"], null]};
+const EST = ["estimated", "估算"], REP = ["reported", "据报"];
+// which spec cells rest on estimates or reports (chips/README.md, "Specs we could not source")
+const SPECFLAG = {
+  "rtx-pro-5500": { b200: EST },
+  "rtx-pro-6000d": { mem: REP, b200: REP },
+  h20: { mem: REP, b200: REP },
+  b30a: { mem: EST, b200: EST },
+  ascend: { mem: REP, b200: REP },
+};
+const PLOTFLAG = { h20: REP };
+const BWX = { h20: 4000, l40s: 864, "rtx-5090": 1792, "rtx-4090": 1008 };
+CHIPS.forEach((c) => { const x = SPEC[c.id]; if (x && x[5]) c.tpp = x[5]; if (BWX[c.id]) c.bw = BWX[c.id]; });
+const ST = {
+  deny: ["Presumption of denial", "推定拒绝"], case: ["Case-by-case", "逐案审查"], letter: ["License by letter", "告知函须许可"],
+  req: ["License required", "须许可证"], free: ["No US license", "无需美国许可"], none: ["Other", "其他"],
+};
+const FILTERS = ["all", "deny", "req", "case", "letter", "free", "none"];
+const L = () => (window.siteLang() === "zh" ? 1 : 0);
+const t = (v) => (Array.isArray(v) ? v[L()] : v);
+const both = (v) => v == null ? "" : Array.isArray(v) ? `<span lang="en">${v[0]}</span><span lang="zh">${v[1]}</span>` : v;
+const chev = `<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>`;
+const srcLi = (k) => { const s = S[k]; return `<li class="src"><a href="${s.u}">${s.l}</a>${s.d ? " · " + s.d : ""}${s.press ? ` <span class="tag">${both(["press", "媒体"])}</span>` : ""}</li>`; };
+
+let filter = "all";
+const list = document.getElementById("list");
+CHIPS.forEach((c) => {
+  const el = document.createElement("details");
+  el.className = "chip"; el.id = c.id; el.dataset.st = c.st;
+  el.dataset.text = [c.n, t(c.mk), Array.isArray(c.mk) ? c.mk.join(" ") : c.mk].join(" ").toLowerCase();
+  el.innerHTML = `<summary>
+      <span><span class="nm">${c.n}</span><span class="mk">${both(c.mk)}</span></span>
+      <span class="us"><span class="st ${c.st}">${both(ST[c.st])}</span></span>
+      <span class="cn-st">${both(c.cn)}</span>${chev}
+    </summary>
+    <div class="detail">
+      <div>
+        <p class="why">${both(c.why)}</p>
+        ${c.inferred ? `<span class="flag">${both(["Inferred: no official classification found", "推断：未找到官方分类"])}</span>` : ""}
+        ${c.reported ? `<span class="flag">${both(["Status rests on press reports", "状态依据媒体报道"])}</span>` : ""}
+      </div>
+      <dl>
+        ${SPEC[c.id] ? (() => { const f = SPECFLAG[c.id] || {}, g = (k) => f[k] ? `<span class="tag">${both(f[k])}</span>` : ""; return `<dt>${both(["What it is", "产品定位"])}</dt><dd>${both(SPEC[c.id][0])}</dd>
+        <dt>${both(["Memory", "显存"])}</dt><dd class="tnum">${both(SPEC[c.id][1])} · ${SPEC[c.id][2]}${g("mem")}</dd>
+        <dt>${both(["Rough price", "参考价格"])}</dt><dd class="tnum">${both(SPEC[c.id][3])}<span class="tag">${both(["market quote", "市场报价"])}</span></dd>
+        <dt>${both(["Equal to 1 B200", "折合 1 张 B200"])}</dt><dd class="tnum">${both(SPEC[c.id][4])} ${both(["chips, at AI math", "张（按 AI 算力）"])}${g("b200")}</dd>`; })() : ""}
+        <dt>${both(["US license policy", "美国许可政策"])}</dt><dd>${both(c.pol)}</dd>
+        <dt>${both(["Beijing gate", "北京关口"])}</dt><dd>${both(c.cn)}</dd>
+      </dl>
+      <details class="expert">
+        <summary>${both(["Legal basis and sources", "法律依据与来源"])}${chev}</summary>
+        <div class="expert-body">
+          <dl>
+            <dt>${both(["ECCN", "ECCN 编码"])}</dt><dd class="tnum">${both(c.eccn)}</dd>
+            <dt>${both(["Deciding threshold", "判定门槛"])}</dt><dd>${both(c.thr)}</dd>
+          </dl>
+          <ul class="srcs">${c.src.map(srcLi).join("")}${SPEC[c.id] ? `<li class="src">${both(["Specs and prices", "规格与价格"])}: <a href="../../research/case-1/chips/README.md">${both(["our chip notes, sourced per card", "本站芯片笔记（逐卡注明来源）"])}</a> · 31 Oct 2026</li>` : ""}</ul>
+        </div>
+      </details>
+    </div>`;
+  list.appendChild(el);
+});
+const empty = document.createElement("p");
+empty.className = "empty"; empty.hidden = true;
+empty.innerHTML = both(["No chip matches. Clear the search or pick another status.", "没有匹配的芯片。请清除搜索或选择其他状态。"]);
+list.appendChild(empty);
+
+const seg = document.getElementById("f-status");
+seg.innerHTML = FILTERS.map((f) => `<button type="button" data-f="${f}" aria-pressed="${f === "all"}">${f === "all" ? both(["All", "全部"]) : both(ST[f])}</button>`).join("");
+seg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; filter = b.dataset.f; seg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); apply(); });
+const q = document.getElementById("q");
+q.addEventListener("input", apply);
+
+function apply() {
+  const term = q.value.trim().toLowerCase();
+  let n = 0;
+  list.querySelectorAll(".chip").forEach((el) => {
+    const show = (filter === "all" || el.dataset.st === filter) && (!term || el.dataset.text.includes(term));
+    el.hidden = !show; if (show) n++;
+  });
+  empty.hidden = n > 0;
+  document.getElementById("count").innerHTML = both([`${n} of ${CHIPS.length} chips`, `共 ${CHIPS.length} 款，显示 ${n} 款`]);
+}
+function placeholders() { q.placeholder = L() ? "搜索芯片或厂商" : "Search chip or maker"; }
+document.addEventListener("click", (e) => { if (e.target.closest(".lang button")) placeholders(); });
+placeholders(); apply(); window.localizeDates();
+
+function plot(id, key, max, line, unit, title, sub, ticks, extra) {
+  const rows = CHIPS.filter((c) => c[key]).sort((a, b) => b[key] - a[key]);
+  const pct = (v) => (v / max) * 100;
+  const el = document.getElementById(id);
+  el.innerHTML = `<h3>${both(title)}</h3><p class="sub">${both(sub)}</p>
+    <div class="plot-wrap"><div class="plot">
+      ${rows.map((c) => `<div class="prow"><a class="lb" href="#${c.id}">${c.n}</a><div class="track">
+        <span class="bar-fill" style="width:${pct(c[key])}%"></span>
+        <span class="dot ${c.st}" style="left:${pct(c[key])}%" title="${c.n}"></span><span class="v" style="left:${pct(c[key])}%">${c[key].toLocaleString("en-US")}${PLOTFLAG[c.id] ? " · " + both(PLOTFLAG[c.id]) : ""}</span>
+      </div></div>`).join("")}
+      <div class="prow" style="height:0;position:absolute;inset:0;pointer-events:none"><span></span><div style="position:relative;height:100%">
+        ${line.map((l) => `<span class="thr" style="left:${pct(l.v)}%;height:${rows.length * 30}px"><span>${both(l.label)}</span></span>`).join("")}
+      </div></div>
+    </div>
+    <div class="axis"><span></span><div class="ticks">${ticks.map((v) => `<span style="left:${pct(v)}%">${v.toLocaleString("en-US")}</span>`).join("")}</div></div></div>
+    ${extra ? `<p class="offscale src">${both(extra)}</p>` : ""}`;
+}
+plot("scale-bw", "bw", 8500, [{ v: 6500, label: ["H200 line · 6,500 GB/s", "H200 线 · 6,500 GB/s"] }], "GB/s",
+  ["Memory bandwidth, GB/s (test 2)", "显存带宽，GB/s（判定二）"],
+  ["Bandwidth alone settles test 2 for most current chips.", "对多数现役芯片而言，仅凭带宽即可决定判定二。"],
+  [0, 2000, 4000, 6000, 8000], null);
+plot("scale-tpp", "tpp", 17000, [{ v: 4800, label: ["3A090 · TPP 4,800", "3A090 · TPP 4,800"] }], "TPP",
+  ["Total Processing Performance (test 1)", "总处理性能 TPP（判定一）"],
+  ["China versions are cut to land just under 4,800.", "中国特供版被削减至刚好低于 4,800。"],
+  [0, 4000, 8000, 12000, 16000],
+  ["Off this scale: B200 at 36,000 and B300 at ~54,000, both past the 21,000 H200 line. TPP figures: <a href=\"https://www.tomshardware.com/pc-components/gpus/us-wields-the-banhammer-against-sanctions-compliant-nvidia-rtx-4090d-dragon-updated-law-prohibits-70-teraflops-or-greater-gpus-from-export-to-china\">Tom's Hardware</a>, <a href=\"https://newsletter.semianalysis.com/p/2025-ai-diffusion-export-controls-microsoft-regulatory-capture-oracle-tears\">SemiAnalysis</a>, <a href=\"../../research/case-1/chips/README.md\">our chip notes</a> · checked 31 Oct 2026.", "超出本刻度：B200 为 36,000，B300 约 54,000，均超过 21,000 的 H200 线。TPP 数据：<a href=\"https://www.tomshardware.com/pc-components/gpus/us-wields-the-banhammer-against-sanctions-compliant-nvidia-rtx-4090d-dragon-updated-law-prohibits-70-teraflops-or-greater-gpus-from-export-to-china\">Tom's Hardware</a>、<a href=\"https://newsletter.semianalysis.com/p/2025-ai-diffusion-export-controls-microsoft-regulatory-capture-oracle-tears\">SemiAnalysis</a>、<a href=\"../../research/case-1/chips/README.md\">本站芯片笔记</a> · 2026 年 10 月 31 日查阅。"]);
+
+window.localizeDates();
+function openHash() { const el = location.hash && document.getElementById(location.hash.slice(1)); if (el && el.tagName === "DETAILS") { el.open = true; el.querySelector(".expert").open = true; el.scrollIntoView({ block: "start" }); } }
+window.addEventListener("hashchange", openHash); openHash();
+</script>
+</body>
+</html>

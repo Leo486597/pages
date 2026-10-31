@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rules timeline</title>
+<meta name="title-en" content="Rules timeline: US and China, 2022 to today">
+<meta name="title-zh" content="规则时间线：中美双方，2022 年至今">
+<link rel="stylesheet" href="site.css">
+<style>
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 14px; color: var(--ink-2); margin-top: 26px; align-items: center; }
+  .legend i { display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .legend .lus { width: 22px; height: var(--line); background: var(--ink); }
+  .legend .lcn { width: 22px; height: var(--line); background: var(--cn); }
+  .legend .lold { width: 22px; height: 0; border-top: 1px solid var(--ink-3); position: relative; top: -3px; }
+  .legend .lold + span { text-decoration: line-through; text-decoration-color: var(--ink-3); }
+  .legend .lnext { width: 12px; height: 12px; border-radius: 50%; border: 2px dashed var(--ink); }
+
+  .tools { display: flex; gap: 6px; margin: 0 0 8px; flex-wrap: wrap; }
+  .seg button { appearance: none; font: inherit; font-size: 14px; border: 1px solid var(--rule); background: var(--ground); color: var(--ink-2); padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .seg button:hover { border-color: var(--ink-3); color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+
+  /* Two-track line: US left of spine, Beijing right */
+  .tl { --spine: 40px; position: relative; margin-top: 24px; }
+  .tl-heads { display: grid; grid-template-columns: 1fr var(--spine) 1fr; position: sticky; top: 56px; z-index: 2; background: var(--ground); border-bottom: 1px solid var(--rule); padding: 10px 0; font-size: 13px; font-weight: 650; }
+  .tl-heads .us { text-align: right; padding-right: 22px; }
+  .tl-heads .cn { padding-left: 22px; color: var(--cn); }
+  .tl-body { position: relative; }
+  .tl-body::before, .tl-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: var(--line); }
+  .tl-body::before { left: calc(50% - 7px); background: var(--ink); }
+  .tl-body::after { left: calc(50% + 4px); background: var(--cn); }
+  .tl-body .future-mask { position: absolute; left: calc(50% - 8px); width: 16px; bottom: 0; background: repeating-linear-gradient(to bottom, var(--ground) 0 6px, transparent 6px 12px); z-index: 0; }
+  .ev .card { position: relative; z-index: 1; }
+
+  .yr { display: grid; grid-template-columns: 1fr var(--spine) 1fr; align-items: center; padding: 36px 0 8px; position: relative; z-index: 1; }
+  .yr span { grid-column: 2; justify-self: center; background: var(--ground); position: relative; z-index: 2; font-weight: 700; font-size: 15px; padding: 6px 0; font-variant-numeric: tabular-nums; }
+
+  .ev { display: grid; grid-template-columns: 1fr var(--spine) 1fr; position: relative; padding: 10px 0; }
+  .ev .card { padding: 4px 0; max-width: 34em; }
+  .ev.us .card { grid-column: 1; justify-self: end; text-align: right; padding-right: 22px; }
+  .ev.cn .card { grid-column: 3; padding-left: 22px; }
+  .ev::before { content: ""; position: absolute; top: 18px; width: 15px; height: 15px; border-radius: 50%; background: var(--ground); border: var(--line) solid var(--ink); box-sizing: border-box; z-index: 2; }
+  .ev.us::before { left: calc(50% - 13px); }
+  .ev.cn::before { left: calc(50% - 2px); border-color: var(--cn); }
+  .ev.big::before { width: 19px; height: 19px; top: 16px; background: var(--ink); }
+  .ev.us.big::before { left: calc(50% - 15px); }
+  .ev.cn.big::before { left: calc(50% - 4px); background: var(--cn); }
+  .ev.next::before { border-style: dashed; border-width: 2px; }
+  .ev time { display: block; font-size: 13px; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .ev h3 { font-size: 17px; margin-top: 2px; }
+  .ev.big h3 { font-size: 20px; }
+  .ev p { font-size: 15px; color: var(--ink-2); margin-top: 4px; line-height: 1.5; }
+  .ev .src { margin-top: 6px; }
+  .ev.old h3 { text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: var(--ink-3); color: var(--ink-2); }
+  .ev.old::before { border-color: var(--ink-3); }
+  .ev .fate { display: inline-block; font-size: 13px; color: var(--ink); margin-top: 6px; font-weight: 600; }
+  .ev .info { font-size: 12px; color: var(--ink-3); margin-left: 6px; font-weight: 400; }
+
+  .today { display: grid; grid-template-columns: 1fr var(--spine) 1fr; align-items: center; margin: 22px 0; position: relative; z-index: 1; }
+  .today::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--ink); }
+  .today span { grid-column: 3; justify-self: start; margin-left: 22px; background: var(--ink); color: var(--ground); font-size: 12px; font-weight: 650; line-height: 1; padding: 6px 12px; border-radius: 999px; position: relative; display: inline-flex; align-items: center; }
+
+  .bills td:first-child { font-weight: 650; }
+
+  @media (max-width: 760px) {
+    .tl { --spine: 28px; }
+    .tl-heads { display: none; }
+    .tl-body::before { left: 6px; }
+    .tl-body::after { left: 15px; }
+    .tl-body .future-mask { left: 4px; width: 16px; }
+    .yr, .ev, .today { grid-template-columns: var(--spine) 1fr; }
+    .yr span { grid-column: 2; justify-self: start; padding-left: 14px; }
+    .ev .card, .ev.us .card, .ev.cn .card { grid-column: 2; justify-self: start; text-align: left; padding: 4px 0 4px 14px; }
+    .ev.us::before { left: 1px; } .ev.cn::before { left: 10px; }
+    .ev.us.big::before { left: -1px; } .ev.cn.big::before { left: 8px; }
+    .today span { grid-column: 2; margin-left: 14px; }
+    .tl .ev .side { display: inline; }
+  }
+  .ev .side { display: none; font-size: 12px; font-weight: 650; margin-right: 6px; }
+  .ev.cn .side { color: var(--cn); }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html" data-keep-lang>
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="5" y="2" width="3" height="18" fill="currentColor"/><rect x="14" y="2" width="3" height="18" fill="var(--cn)"/><circle cx="11" cy="11" r="3" fill="currentColor"/></svg>
+      <span lang="en">AI Chips &amp; China</span><span lang="zh">AI 芯片与中国</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" aria-current="page" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" data-set="zh" aria-pressed="false">中文</button>
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Main">
+  <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+  <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+  <a href="timeline.html" aria-current="page" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+</nav>
+
+<main>
+  <div class="wrap head">
+    <h1><span lang="en">How the rules arrived, on both sides</span><span lang="zh">规则如何一步步形成：中美双方</span></h1>
+    <p class="lede" lang="en">Washington's rules run on the left line, Beijing's answers on the right. Rules that were withdrawn or suspended stay on the line, struck through, so you can see what replaced them.</p>
+    <p class="lede" lang="zh">左线为华盛顿的规则，右线为北京的回应。被撤回或暂停的规则仍保留在线上并划去，便于看清由什么取代。</p>
+    <div class="legend">
+      <span><i class="lus"></i><span lang="en">US rule or decision</span><span lang="zh">美国规则或决定</span></span>
+      <span><i class="lcn"></i><span lang="en">China measure (mostly unpublished)</span><span lang="zh">中国措施（多数未公开）</span></span>
+      <span><i class="lold"></i><span lang="en">Withdrawn or suspended</span><span lang="zh">已撤回或暂停</span></span>
+      <span><i class="lnext"></i><span lang="en">Date ahead</span><span lang="zh">未来日期</span></span>
+    </div>
+  </div>
+
+  <section class="block" aria-labelledby="tl-h" style="padding-top:28px">
+    <div class="wrap">
+      <h2 id="tl-h" class="h" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"><span lang="en">Timeline</span><span lang="zh">时间线</span></h2>
+      <div class="tools seg" role="group" aria-label="Show" id="f-side"></div>
+      <div class="tl">
+        <div class="tl-heads"><span class="us"><span lang="en">Washington</span><span lang="zh">华盛顿</span></span><span></span><span class="cn"><span lang="en">Beijing</span><span lang="zh">北京</span></span></div>
+        <div class="tl-body" id="tl"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="bills-h">
+    <div class="wrap">
+      <h2 id="bills-h"><span lang="en">Bills that could change this</span><span lang="zh">可能改变现状的法案</span></h2>
+      <p class="intro" lang="en">None is law as of 31 Oct 2026.</p>
+      <p class="intro" lang="zh">截至 2026 年 10 月 31 日，均未成为法律。</p>
+      <div class="tbl-wrap">
+        <table class="bills stack">
+          <thead><tr><th><span lang="en">Bill</span><span lang="zh">法案</span></th><th><span lang="en">Where it stands</span><span lang="zh">进展</span></th><th><span lang="en">What it would do</span><span lang="zh">主要内容</span></th><th><span lang="en">Source</span><span lang="zh">来源</span></th></tr></thead>
+          <tbody>
+            <tr><td><span lang="en">Remote Access Security Act</span><span lang="zh">《远程访问安全法》</span></td><td><span lang="en">Passed House 369–22, 12 Jan 2026; in Senate Banking</span><span lang="zh">2026 年 1 月 12 日众议院以 369 比 22 通过；待参议院银行委员会审议</span></td><td><span lang="en">Bring cloud access to controlled chips under export control</span><span lang="zh">将受管制芯片的云端访问纳入出口管制</span></td><td class="src"><a href="https://www.congress.gov/bill/119th-congress/house-bill/2683">congress.gov</a> · checked 31 Oct 2026</td></tr>
+            <tr><td>AI OVERWATCH Act</td><td><span lang="en">House committee 42–2, 21 Jan 2026; Senate version 4 May 2026</span><span lang="zh">2026 年 1 月 21 日众议院委员会 42 比 2 通过；参议院版本 2026 年 5 月 4 日提出</span></td><td><span lang="en">Congressional review of chip licenses to adversaries</span><span lang="zh">国会审查向对手国家发放的芯片许可</span></td><td class="src"><a href="https://introl.com/blog/bis-h200-china-export-policy-ai-overwatch-act-2026">introl.com</a> · checked 31 Oct 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></td></tr>
+            <tr><td><span lang="en">Chip Security Act</span><span lang="zh">《芯片安全法》</span></td><td><span lang="en">House committee 42–0, 26 Mar 2026</span><span lang="zh">2026 年 3 月 26 日众议院委员会 42 比 0 通过</span></td><td><span lang="en">Location verification built into chips within a year</span><span lang="zh">一年内在芯片中加入位置验证功能</span></td><td class="src"><a href="https://gpuinsights.net/sovereign-ai-export-controls-chip-security-act-2026/">gpuinsights.net</a> · checked 31 Oct 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></td></tr>
+            <tr><td><span lang="en">GAIN AI Act</span><span lang="zh">《GAIN AI 法案》</span></td><td><span lang="en">Passed Senate in its NDAA, Oct 2025; dropped from the final law</span><span lang="zh">2025 年 10 月随参议院版国防授权法通过；未进入最终法律</span></td><td><span lang="en">US customers served before exports</span><span lang="zh">优先供应美国客户，再行出口</span></td><td class="src"><a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+    </nav>
+    <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">FR = Federal Register. China's measures are informal and reported by the press; no official text exists for most of them.</span><span lang="zh">FR 即美国《联邦公报》。中方措施多为非正式指导，经媒体报道，多数无官方文本。</span></p>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+const FR = (n, u, d) => ({ l: n, u, d });
+// side: us | cn ; k: big | old | next
+const EV = [
+  { y: 2022, side: "us", k: "big", d: "7 Oct 2022", h: ["First chip rule", "首部芯片规则"], p: ["Creates ECCNs 3A090 / 4A090 and supercomputer end-use controls on China. Catches the A100 and H100.", "设立 ECCN 3A090 / 4A090 及针对中国的超级计算机最终用途管制。A100、H100 被纳入。"], fate: ["Thresholds replaced Oct 2023", "门槛于 2023 年 10 月被取代"], s: [FR("87 FR 62186", "https://www.federalregister.gov/documents/2022/10/13/2022-21658/implementation-of-additional-export-controls-certain-advanced-computing-and-semiconductor", "13 Oct 2022")] },
+  { y: 2023, side: "us", k: "big", d: "17 Oct 2023", h: ["Today's thresholds", "现行门槛确立"], p: ["TPP 4,800 (or 1,600 with high density). Covers companies headquartered in China anywhere in the world.", "TPP 4,800（或高密度下 1,600）。覆盖总部位于中国的企业，无论其身处何地。"], s: [FR("88 FR 73458", "https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and", "25 Oct 2023")] },
+  { y: 2024, side: "us", d: "4 Apr 2024", h: ["Corrections", "技术更正"], p: ["Technical fixes to the Oct 2023 rule.", "对 2023 年 10 月规则的技术性修正。"], s: [FR("89 FR 23876", "https://www.federalregister.gov/documents/2024/04/04/2024-07004/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and", "4 Apr 2024")] },
+  { y: 2024, side: "us", d: "2 Dec 2024", h: ["HBM memory controlled", "HBM 内存纳入管制"], p: ["Adds 3A090.c for high-bandwidth memory, 24 tool types and 140 Entity List additions.", "新增 3A090.c 管制高带宽内存，另增 24 类设备及 140 个实体清单条目。"], s: [FR("89 FR 96790", "https://www.federalregister.gov/documents/2024/12/05/2024-28270/foreign-produced-direct-product-rule-additions-and-refinements-to-controls-for-advanced-computing", "5 Dec 2024")] },
+  { y: 2025, side: "us", k: "old", d: "13 Jan 2025", h: ["AI Diffusion Rule", "《AI 扩散规则》"], p: ["Worldwide license requirement with three country tiers, plus a control on model weights.", "按三级国家分层的全球许可要求，并管制模型权重。"], fate: ["Not enforced; rescission announced 13 May 2025", "未执行；2025 年 5 月 13 日宣布撤销"], s: [FR("90 FR 4544", "https://www.federalregister.gov/documents/2025/01/15/2025-00636/framework-for-artificial-intelligence-diffusion", "15 Jan 2025")] },
+  { y: 2025, side: "us", d: "16 Jan 2025", h: ["Foundry rule", "代工规则"], p: ["Due-diligence duties for foundries and packagers that make advanced chips.", "对制造先进芯片的代工厂和封装厂设定尽职调查义务。"], s: [FR("90 FR 5298", "https://www.federalregister.gov/documents/2025/01/16/2025-00711/implementation-of-additional-due-diligence-measures-for-advanced-computing-integrated-circuits", "16 Jan 2025")] },
+  { y: 2025, side: "us", k: "big", d: "Apr 2025", h: ["H20 and MI308 letters", "H20、MI308 告知函"], p: ["Unpublished is-informed letters: chips below the thresholds still need a license if they match the H20's bandwidth.", "未公开的告知函：低于门槛的芯片，若带宽达到 H20 水平，仍须许可证。"], s: [FR("NVDA 10-Q", "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm", "26 Aug 2026")], info: ["via filing", "据财报"] },
+  { y: 2025, side: "us", d: "13 May 2025", h: ["Ascend warning", "昇腾警告"], p: ["Using Huawei Ascend chips anywhere may break US rules. Red flags for diversion.", "在任何地方使用华为昇腾芯片都可能违反美国规则。并列出转移风险信号。"], s: [FR("BIS", "https://www.bis.gov/press-release/department-commerce-announces-rescission-biden-era-artificial-intelligence-diffusion-rule-strengthens", "13 May 2025")] },
+  { y: 2025, side: "cn", d: "31 Jul 2025", h: ["CAC summons Nvidia over H20", "网信办就 H20 约谈英伟达"], p: ["Cites \"backdoor\" risks; buyers discouraged.", "以“后门”风险为由；不鼓励买家采购。"], s: [FR("AP", "https://www.news4jax.com/news/politics/2025/07/31/china-summons-nvidia-over-backdoor-safety-risks-in-h20-chips/", "31 Jul 2025")] },
+  { y: 2025, side: "us", d: "Aug 2025", h: ["15% revenue share", "15% 收入分成"], p: ["Informal deal on H20 / MI308 China sales. Never published; legality contested.", "就 H20 / MI308 对华销售达成的非正式安排。从未公布，合法性存疑。"], s: [FR("builtin.com", "https://builtin.com/articles/trump-lifts-ai-chip-ban-china-nvidia", "checked 31 Oct 2026")], info: ["press", "媒体"] },
+  { y: 2025, side: "cn", d: "Sep 2025", h: ["Stop buying RTX PRO 6000D", "停购 RTX PRO 6000D"], p: ["CAC tells ByteDance, Alibaba and others to stop buying and testing it.", "网信办要求字节跳动、阿里巴巴等停止采购和测试。"], s: [FR("Tom's Hardware", "https://www.tomshardware.com/tech-industry/artificial-intelligence/china-bans-its-biggest-tech-companies-from-acquiring-nvidia-chips-says-report-beijing-claims-its-homegrown-ai-processors-now-match-h20-and-rtx-pro-6000d", "Sep 2025")], info: ["press", "媒体"] },
+  { y: 2025, side: "us", k: "old", d: "29 Sep 2025", h: ["Affiliates (50%) Rule", "关联方（50%）规则"], p: ["Entity List limits extend to any company 50% or more owned by listed parties.", "实体清单限制扩展至被列名方持股 50% 及以上的任何企业。"], fate: ["Suspended 10 Nov 2025 for one year", "2025 年 11 月 10 日起暂停一年"], s: [FR("90 FR 47201", "https://www.federalregister.gov/documents/2025/09/30/2025-19001/expansion-of-end-user-controls-to-cover-affiliates-of-certain-listed-entities", "30 Sep 2025")] },
+  { y: 2025, side: "cn", d: "Oct 2025", h: ["Customs crackdown", "海关严查"], p: ["Ports inspect all Nvidia imports.", "各口岸对英伟达进口产品全面查验。"], s: [FR("Tom's Hardware", "https://www.tomshardware.com/tech-industry/semiconductors/china-bans-foreign-ai-chips-from-state-funded-data-centers", "Nov 2025")], info: ["press", "媒体"] },
+  { y: 2025, side: "cn", k: "big", d: "Nov 2025", h: ["Domestic chips only in state-funded data centers", "国资数据中心只用国产芯片"], p: ["Projects under 30% built must remove foreign chips.", "建设进度不足 30% 的项目须拆除外国芯片。"], s: [FR("Tom's Hardware / Reuters", "https://www.tomshardware.com/tech-industry/semiconductors/china-bans-foreign-ai-chips-from-state-funded-data-centers", "Nov 2025")], info: ["press", "媒体"] },
+  { y: 2025, side: "us", d: "10 Nov 2025", h: ["Affiliates Rule suspended", "关联方规则暂停"], p: ["Suspended until 9 Nov 2026.", "暂停至 2026 年 11 月 9 日。"], s: [FR("90 FR 50857", "https://www.federalregister.gov/documents/2025/11/12/2025-19846/one-year-suspension-of-expansion-of-end-user-controls-for-affiliates-of-certain-listed-entities", "12 Nov 2025")] },
+  { y: 2025, side: "us", d: "8 Dec 2025", h: ["H200 sales announced", "宣布允许销售 H200"], p: ["President allows H200 sales to approved Chinese customers, with 25% to the US government.", "总统允许向获批中国客户销售 H200，其中 25% 归美国政府。"], s: [FR("TechRadar", "https://www.techradar.com/pro/trump-set-to-allow-nvidia-h200-chips-to-be-exported-to-china", "checked 31 Oct 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "cn", d: "14 Jan 2026", h: ["Customs: H200 not permitted", "海关：H200 不准入境"], p: ["Except special cases such as university research.", "高校研发等特殊情况除外。"], s: [FR("Taipei Times", "https://www.taipeitimes.com/News/biz/archives/2026/01/15/2003850605", "15 Jan 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "us", k: "big", d: "15 Jan 2026", h: ["H200 line: case-by-case", "H200 线：逐案审查"], p: ["Chips under TPP 21,000 and 6,500 GB/s, shipped from the US to end users in China, get case-by-case review with nine conditions.", "TPP 低于 21,000 且带宽低于 6,500 GB/s、自美国运往中国最终用户的芯片，可在满足九项条件下获逐案审查。"], s: [FR("91 FR 1684", "https://public-inspection.federalregister.gov/2026-00789.pdf", "15 Jan 2026")] },
+  { y: 2026, side: "us", d: "15 Jan 2026", h: ["25% chip tariff", "25% 芯片关税"], p: ["Section 232 tariff; chips entering the US for the mandatory test pay it.", "第 232 条关税；为强制检测而进入美国的芯片须缴纳。"], s: [FR("Proclamation 11002", "https://www.federalregister.gov/documents/2026/01/20/2026-01052/adjusting-imports-of-semiconductors-semiconductor-manufacturing-equipment-and-their-derivative", "20 Jan 2026")] },
+  { y: 2026, side: "cn", d: "late Jan 2026", h: ["Prepare H200 orders", "准备 H200 订单"], p: ["Alibaba and others told to prepare orders, reportedly tied to buying domestic chips.", "阿里巴巴等被告知准备订单，据报与采购一定量国产芯片挂钩。"], s: [FR("Bloomberg", "https://www.bloomberg.com/news/articles/2026-01-23/china-tells-alibaba-top-tech-firms-to-prep-nvidia-h200-orders", "23 Jan 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "us", k: "old", d: "13 Mar 2026", h: ["Replacement for AI Diffusion Rule", "《AI 扩散规则》替代方案"], p: ["Would have required worldwide licenses scaled to compute.", "原拟按算力规模实行全球许可。"], fate: ["Withdrawn from review", "已撤回审查"], s: [FR("Export Compliance Daily", "https://exportcompliancedaily.com/article/2026/03/17/bis-withdraws-draft-ai-chip-export-control-rule-2603160006", "17 Mar 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "us", k: "big", d: "31 May 2026", h: ["China-HQ rule applies everywhere", "中国总部规则全球适用"], p: ["Chinese-owned data centers abroad keep existing chips; new chips need a license.", "境外中资数据中心可保留现有芯片；新芯片须许可证。"], s: [FR("BIS guidance", "https://www.bis.gov/media/documents/bis-guidance-may-31-2026.pdf", "31 May 2026")] },
+  { y: 2026, side: "cn", d: "Jul 2026", h: ["H200 approvals capped", "H200 审批设上限"], p: ["Reportedly under 200k in total, less than half of requests.", "据报总量低于 20 万片，不足申请量的一半。"], s: [FR("TrendForce", "https://www.trendforce.com/news/2026/07/09/news-china-reportedly-to-allow-nvidia-h200-imports-but-approvals-may-be-capped-below-200k-chips-less-than-half-requested/", "9 Jul 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "us", d: "10 Jul 2026", h: ["UAE upgraded", "阿联酋升级"], p: ["G42, Core42 and 8 US hyperscalers receive chips license-free. China-HQ parties still need a license.", "G42、Core42 及 8 家美国云厂商可免许可获得芯片。中国总部主体仍需许可。"], s: [FR("91 FR 43034", "https://www.federalregister.gov/documents/2026/07/14/2026-14132/enhanced-favorable-treatment-for-the-united-arab-emirates-under-the-export-administration", "14 Jul 2026")] },
+  { y: 2026, side: "cn", d: "Aug 2026", h: ["About 10k H200 each", "H200 各约 1 万片"], p: ["ByteDance and Tencent, against 75k licensed. Nvidia: sales \"restricted by the PRC government\".", "字节跳动和腾讯，对比获许可的 7.5 万片。英伟达称销售“受到中国政府限制”。"], s: [FR("Asia Times", "https://asiatimes.com/2026/09/after-trump-xi-summit-nvidia-rtx-pro-5500-gains-export-prospects/", "29 Sep 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "cn", d: "late Sep 2026", h: ["RTX PRO 5500 purchase plans", "RTX PRO 5500 采购计划"], p: ["MIIT asks big buyers for plans and signals approval.", "工信部要求大买家提交计划，并释放批准信号。"], s: [FR("Asia Times", "https://asiatimes.com/2026/09/after-trump-xi-summit-nvidia-rtx-pro-5500-gains-export-prospects/", "29 Sep 2026")], info: ["press", "媒体"] },
+  { y: 2026, side: "cn", d: "16 Oct 2026", h: ["Draft AI-technology export controls", "AI 技术出口管制草案"], p: ["23 AI technologies proposed for China's own export list, including chip design.", "拟将 23 项 AI 技术列入中国出口管制目录，含芯片设计。"], s: [FR("Baker McKenzie", "https://sanctionsnews.bakermckenzie.com/china-proposes-expanded-export-controls-on-ai-biopharma-and-solar-energy-technologies/", "checked 31 Oct 2026")] },
+  { today: 1 },
+  { y: 2026, side: "us", k: "next", d: "10 Nov 2026", h: ["Affiliates Rule returns?", "关联方规则恢复？"], p: ["The suspension ends on paper; no extension published as of 27 Oct 2026.", "暂停期名义上届满；截至 2026 年 10 月 27 日未见延期公告。"], s: [FR("90 FR 50857", "https://www.federalregister.gov/documents/2025/11/12/2025-19846/one-year-suspension-of-expansion-of-end-user-controls-for-affiliates-of-certain-listed-entities", "12 Nov 2025")] },
+  { y: 2026, side: "cn", k: "next", d: "15 Nov 2026", h: ["Comments close on China's draft", "中方草案征求意见截止"], p: ["MOFCOM / MOST Announcement 48.", "商务部 / 科技部 2026 年第 48 号公告。"], s: [FR("Baker McKenzie", "https://sanctionsnews.bakermckenzie.com/china-proposes-expanded-export-controls-on-ai-biopharma-and-solar-energy-technologies/", "checked 31 Oct 2026")] },
+  { y: 2026, side: "us", k: "next", d: "31 Dec 2026", h: ["Foundry rule deadline", "代工规则截止"], p: ["Approved-IC-designer scheme.", "获批芯片设计商机制。"], s: [FR("90 FR 5298", "https://www.federalregister.gov/documents/2025/01/16/2025-00711/implementation-of-additional-due-diligence-measures-for-advanced-computing-integrated-circuits", "16 Jan 2025")] },
+  { y: 2027, side: "us", k: "next", d: "10 Jan 2027", h: ["US–China truce ends", "中美休战期届满"], p: ["Announced, not yet formalized as of 28 Sep 2026.", "已宣布，截至 2026 年 9 月 28 日尚未正式落实。"], s: [FR("AsiaAI tracker", "https://asiaai.fyi/guides/chip-export-controls-tracker/", "checked 31 Oct 2026")] },
+  { y: 2027, side: "us", k: "next", d: "6 Apr 2027", h: ["G42 license-free status lapses", "G42 免许可资格到期"], p: ["UAE authorization ends unless renewed.", "除非续期，阿联酋授权到期。"], s: [FR("91 FR 43034", "https://www.federalregister.gov/documents/2026/07/14/2026-14132/enhanced-favorable-treatment-for-the-united-arab-emirates-under-the-export-administration", "14 Jul 2026")] },
+];
+
+const both = (v) => `<span lang="en">${v[0]}</span><span lang="zh">${v[1]}</span>`;
+const tl = document.getElementById("tl");
+function render(side) {
+  let html = "", yr = null, futureFrom = null;
+  EV.forEach((e) => {
+    if (e.today) { html += `<div class="today" id="today"><span>${both(["Today · 31 Oct 2026", "今天 · 2026 年 10 月 31 日"])}</span></div>`; return; }
+    if (side !== "all" && e.side !== side) return;
+    if (e.y !== yr) { yr = e.y; html += `<div class="yr"><span>${yr}</span></div>`; }
+    const src = e.s.map((s) => `<a href="${s.u}">${s.l}</a>${s.d ? " · " + s.d : ""}`).join(" · ");
+    html += `<article class="ev ${e.side} ${e.k || ""}"><div class="card">
+      <time><span class="side">${e.side === "us" ? both(["US", "美"]) : both(["CN", "中"])}</span>${e.d}</time>
+      <h3>${both(e.h)}</h3><p>${both(e.p)}</p>
+      ${e.fate ? `<span class="fate">${both(e.fate)}</span>` : ""}
+      ${src ? `<p class="src">${src}${e.info ? `<span class="info">${both(e.info)}</span>` : ""}</p>` : ""}
+    </div></article>`;
+  });
+  tl.innerHTML = html + `<div class="future-mask"></div>`;
+  const today = document.getElementById("today");
+  const mask = tl.querySelector(".future-mask");
+  mask.style.top = today.offsetTop + today.offsetHeight / 2 + "px";
+  window.localizeDates();
+}
+const seg = document.getElementById("f-side");
+const opts = [["all", ["Both sides", "双方"]], ["us", ["Washington only", "仅华盛顿"]], ["cn", ["Beijing only", "仅北京"]]];
+seg.innerHTML = opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${v === "all"}">${both(l)}</button>`).join("");
+seg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; seg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); render(b.dataset.v); });
+render("all");
+document.addEventListener("click", (e) => { if (e.target.closest(".lang button")) requestAnimationFrame(() => render(seg.querySelector("[aria-pressed=true]").dataset.v)); });
+window.addEventListener("resize", () => render(seg.querySelector("[aria-pressed=true]").dataset.v));
+</script>
+</body>
+</html>
