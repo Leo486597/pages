@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Market</title>
+    <meta name="title-en" content="Market: buyers, legal supply, domestic chips, the gap" />
+    <meta name="title-zh" content="市场：买家、合法供给、国产芯片、缺口" />
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 72px); }
+      .fact { padding: 22px 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 2.2em 1fr; gap: 4px 12px; }
+      .fact .n { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-3); font-size: 15px; padding-top: 2px; }
+      .fact p { color: var(--ink-2); font-size: 16px; }
+      .fact p b { color: var(--ink); font-weight: 650; }
+      .fact .src { grid-column: 2; margin-top: 6px; }
+      .data td.num { font-weight: 650; }
+      .nowrap { white-space: nowrap; }
+      .caveat { color: var(--ink-3); font-size: 14px; line-height: 1.5; max-width: var(--measure); margin-top: 16px; }
+      .caveat .tag { margin-left: 0; margin-right: 6px; }
+      .sizing { border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 20px; color: var(--ink-2); max-width: var(--measure); }
+      .sizing b { color: var(--ink); font-weight: 650; }
+      .sizing .tag { margin-left: 0; margin-right: 6px; }
+      @media (max-width: 680px) { .facts { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html" data-keep-lang>
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="5" y="2" width="3" height="18" fill="currentColor" />
+        <rect x="14" y="2" width="3" height="18" fill="var(--cn)" />
+        <circle cx="11" cy="11" r="3" fill="currentColor" />
+      </svg>
+      <span lang="en">AI Chips &amp; China</span
+      ><span lang="zh">AI 芯片与中国</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" data-keep-lang
+        ><span lang="en">Overview</span><span lang="zh">全景</span></a
+      >
+      <a href="chips.html" data-keep-lang
+        ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+      >
+      <a href="timeline.html" data-keep-lang
+        ><span lang="en">Rules timeline</span
+        ><span lang="zh">规则时间线</span></a
+      >
+      <a href="read.html" data-keep-lang
+        ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+      >
+      <a href="qa.html" data-keep-lang
+        ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+      >
+    </nav>
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" data-set="zh" aria-pressed="false">中文</button>
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Main">
+  <a href="index.html" data-keep-lang
+    ><span lang="en">Overview</span><span lang="zh">全景</span></a
+  >
+  <a href="chips.html" data-keep-lang
+    ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+  >
+  <a href="timeline.html" data-keep-lang
+    ><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a
+  >
+  <a href="read.html" data-keep-lang
+    ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+  >
+  <a href="qa.html" data-keep-lang
+    ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+  >
+</nav>
+<main>
+  <div class="wrap head">
+    <h1><span lang="en">Market</span><span lang="zh">市场</span></h1>
+    <p class="lede"><span lang="en">Demand is real and large, legal supply is rationed, and the sources disagree on method — so numbers are shown as ranges. Headline order totals include double-ordering, so the true shortage is smaller than the headline.</span><span lang="zh">需求真实且庞大，合法供给受到配给，各来源的统计方法不一——故数字以区间呈现。标题订单量含重复下单，实际缺口小于标题数字。</span></p>
+    <p class="asof">
+      <span lang="en">As of 31 Oct 2026 · every fact links its source</span
+      ><span lang="zh">截至 2026 年 10 月 31 日 · 每条事实均附来源</span>
+    </p>
+  </div>
+
+  <section class="block" aria-labelledby="buyers-h" style="border-top:0;padding-top:0">
+    <div class="wrap">
+      <h2 id="buyers-h"><span lang="en">Buyers</span><span lang="zh">买家</span></h2>
+      <p class="intro"><span lang="en">Four internet and cloud giants — Alibaba, Tencent, Baidu and ByteDance — drive demand. Their chip spending is surging, and the orders they place dwarf anything they can actually get.</span><span lang="zh">阿里巴巴、腾讯、百度、字节跳动——四家互联网与云计算巨头主导需求。它们的芯片支出激增，下单量远超实际能拿到的数量。</span></p>
+
+      <div class="tbl-wrap">
+        <table class="data stack">
+          <thead>
+            <tr>
+              <th><span lang="en">Buyer</span><span lang="zh">买家</span></th>
+              <th class="num"><span lang="en">Capex, June-2026 quarter</span><span lang="zh">资本开支（2026 年 6 月季度）</span></th>
+              <th><span lang="en">Source</span><span lang="zh">来源</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span lang="en">Alibaba</span><span lang="zh">阿里巴巴</span></td>
+              <td class="num"><span lang="en">RMB 67.7bn (+75% YoY); RMB 380bn 3-yr cloud/AI pledge</span><span lang="zh">677 亿元（同比 +75%）；三年云与 AI 投入承诺 3800 亿元</span></td>
+              <td class="src"><a href="https://axis-intelligence.com/china-ai-capex-statistics/">Axis Intelligence</a> · 1 Sep 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Tencent</span><span lang="zh">腾讯</span></td>
+              <td class="num"><span lang="en">RMB 52.8bn (+176%); ~RMB 51.4bn of Q2 prepaid for compute</span><span lang="zh">528 亿元（同比 +176%）；二季度约 514 亿元为算力预付款</span></td>
+              <td class="src"><a href="https://www.tmtpost.com/8119172.html">TMTPost</a> · 27 Aug 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Baidu</span><span lang="zh">百度</span></td>
+              <td class="num"><span lang="en">RMB 11.4bn (+200%)</span><span lang="zh">114 亿元（同比 +200%）</span></td>
+              <td class="src"><a href="https://axis-intelligence.com/china-ai-capex-statistics/">Axis Intelligence</a> · 1 Sep 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">ByteDance</span><span lang="zh">字节跳动</span></td>
+              <td class="num"><span lang="en">2026 capex plan raised to RMB 200bn (~RMB 85bn for AI chips); private, no filing</span><span lang="zh">2026 年资本开支计划上调至 2000 亿元（其中约 850 亿元用于 AI 芯片）；非上市，无财报披露</span></td>
+              <td class="src"><a href="https://www.tmtpost.com/8119172.html">TMTPost</a> · 27 Aug 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></td>
+            </tr>
+            <tr>
+              <td><span lang="en">Three filers combined (Alibaba, Tencent, Baidu)</span><span lang="zh">三家上市公司合计（阿里、腾讯、百度）</span></td>
+              <td class="num"><span lang="en">RMB 131.9bn (US$19.4bn), +114% YoY</span><span lang="zh">1319 亿元（194 亿美元），同比 +114%</span></td>
+              <td class="src"><a href="https://axis-intelligence.com/china-ai-capex-statistics/">Axis Intelligence</a> · 1 Sep 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="intro" style="margin-top:34px"><span lang="en">The orders tell the same story at a larger scale:</span><span lang="zh">订单在更大规模上讲述同一个故事：</span></p>
+      <div class="facts">
+        <div class="fact">
+          <span class="n">1</span>
+          <p><span lang="en">ByteDance, Alibaba and Tencent placed orders for <b>over 3 million RTX PRO 5500</b> (~$11,400 each) — more than <b>$35 billion</b>. Nvidia says buyers may receive only 5–10% of what they asked for.</span><span lang="zh">字节跳动、阿里巴巴、腾讯合计订购 <b>逾 300 万片 RTX PRO 5500</b>（每片约 1.14 万美元）——总额逾 <b>350 亿美元</b>。英伟达表示买家最终可能只拿到所订数量的 5–10%。</span></p>
+          <p class="src"><a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/">Reuters via BNN</a> · 20 Oct 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">2</span>
+          <p><span lang="en">Chinese firms ordered <b>more than 2 million H200</b> (~$27,000 each), against Nvidia inventory of roughly 700,000.</span><span lang="zh">中国企业订购 <b>逾 200 万片 H200</b>（每片约 2.7 万美元），而英伟达库存仅约 70 万片。</span></p>
+          <p class="src"><a href="https://finance.yahoo.com/news/chinas-customs-agents-told-nvidias-065002620.html">Reuters via Yahoo</a> · 14 Jan 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">3</span>
+          <p><span lang="en">ByteDance pre-ordered <b>~200,000 Cambricon chips</b>, its largest domestic order.</span><span lang="zh">字节跳动预订 <b>约 20 万片寒武纪芯片</b>，为其最大的国产芯片订单。</span></p>
+          <p class="src"><a href="https://www.caixinglobal.com/2026-08-10/chinese-ai-chipmakers-cambricons-breakneck-growth-starts-to-slow-102472846.html">Caixin</a> · 10 Aug 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">4</span>
+          <p><span lang="en">Morgan Stanley puts hyperscaler and key-internet capex at <b>RMB 995bn in 2026</b> (+121% YoY).</span><span lang="zh">摩根士丹利预计超大规模云厂商与主要互联网公司 <b>2026 年资本开支达 9950 亿元</b>（同比 +121%）。</span></p>
+          <p class="src"><a href="https://www.xxquant.com/en/institution/institutional-research/92808f9f2abbd313f097344d68972a4e">Morgan Stanley via Hilo</a> · 13 Sep 2026 <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></p>
+        </div>
+      </div>
+
+      <p class="caveat"><span class="tag"><span lang="en">caveat</span><span lang="zh">提示</span></span><span lang="en">Order totals include double-ordering — the same demand counted more than once — so they overstate real need. Capex is not all chips: Alibaba attributes part of its rise to higher component prices, not more units. ByteDance files nothing; its figures come from unnamed sources.</span><span lang="zh">订单总量包含重复下单——同一需求被多次计入——因此高估了真实需求。资本开支也并非全是芯片：阿里巴巴称其增幅部分来自零部件涨价，而非采购量增加。字节跳动不披露财报，其数字来自匿名消息源。</span></p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="supply-h">
+    <div class="wrap">
+      <h2 id="supply-h"><span lang="en">Legal supply</span><span lang="zh">合法供给</span></h2>
+      <p class="intro"><span lang="en">What is approved and what actually arrives are very different. Even the licensed chips reach buyers in a trickle, through two gates: Washington's export license and Beijing's import approval.</span><span lang="zh">获批的数量与真正到货的数量相差悬殊。即便是已获许可的芯片，也只能涓滴到货，须同时通过两道关：华盛顿的出口许可，以及北京的进口审批。</span></p>
+
+      <div class="facts">
+        <div class="fact">
+          <span class="n">1</span>
+          <p><span lang="en">Beijing approved <b>over 400,000 H200</b> for ByteDance, Alibaba and Tencent in January 2026, but by August only <b>~10,000 each</b> had reached ByteDance and Tencent — about 2.5% of what was cleared.</span><span lang="zh">2026 年 1 月北京批准字节跳动、阿里巴巴、腾讯合计采购 <b>逾 40 万片 H200</b>，但截至 8 月，字节和腾讯各自仅到货 <b>约 1 万片</b>——约为获批量的 2.5%。</span></p>
+          <p class="src"><a href="https://www.reuters.com/world/china/china-gives-green-light-importing-first-batch-nvidias-h200-ai-chips-sources-say-2026-01-28/">Reuters</a> · 28 Jan 2026 · <a href="https://www.tomshardware.com/pc-components/gpus/first-nvidia-h200-shipments-reach-bytedance-and-tencent-as-beijing-loosens-its-import-block">Tom's Hardware</a> · 19 Aug 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">2</span>
+          <p><span lang="en">For the <b>RTX PRO 5500</b>, Nvidia says buyers get only <b>5–10% of their orders</b>; samples arrive December 2026, deliveries from Q1 2027, with a global cap near 3 million cards in 2027.</span><span lang="zh"><b>RTX PRO 5500</b> 方面，英伟达称买家只能拿到 <b>所订数量的 5–10%</b>；样品 2026 年 12 月送出，2027 年一季度起交付，2027 年全球产能上限约 300 万片。</span></p>
+          <p class="src"><a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/">Reuters via BNN</a> · 20 Oct 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">3</span>
+          <p><span lang="en">Nvidia is holding <b>~500,000 H200</b> built for China that it cannot fully ship.</span><span lang="zh">英伟达为中国市场生产的 <b>约 50 万片 H200</b> 积压在手，无法全部发货。</span></p>
+          <p class="src"><a href="https://www.tomshardware.com/pc-components/gpus/first-nvidia-h200-shipments-reach-bytedance-and-tencent-as-beijing-loosens-its-import-block">Tom's Hardware</a> · 19 Aug 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">4</span>
+          <p><span lang="en">H200 terms: case-by-case since 15 Jan 2026; ~10 firms licensed by May (up to 75,000 each); a <b>25% cut to the US Treasury</b>; chips inspected in the US; most of the allowance steered to Hong Kong, not the mainland.</span><span lang="zh">H200 的条件：2026 年 1 月 15 日起逐案审批；至 5 月约 10 家企业获许可（每家上限 7.5 万片）；<b>向美国财政部上缴 25%</b>；芯片须在美国接受检测；多数额度被引导至香港而非大陆。</span></p>
+          <p class="src"><a href="https://www.reuters.com/business/retail-consumer/us-clears-h200-chip-sales-10-china-firms-nvidia-ceo-looks-breakthrough-2026-05-14/">Reuters</a> · 14 May 2026 · <a href="https://www.tomshardware.com/pc-components/gpus/first-nvidia-h200-shipments-reach-bytedance-and-tencent-as-beijing-loosens-its-import-block">Tom's Hardware</a> · 19 Aug 2026</p>
+        </div>
+      </div>
+
+      <div class="tbl-wrap" style="margin-top:34px">
+        <table class="data stack">
+          <thead>
+            <tr>
+              <th><span lang="en">Chip</span><span lang="zh">芯片</span></th>
+              <th><span lang="en">Status</span><span lang="zh">状态</span></th>
+              <th><span lang="en">What reaches buyers</span><span lang="zh">实际到货</span></th>
+              <th class="num"><span lang="en">Price</span><span lang="zh">价格</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>H200</td>
+              <td><span class="st case"><span lang="en">Case-by-case</span><span lang="zh">逐案审批</span></span></td>
+              <td><span lang="en">~10k each of &gt;400k approved (~2.5%)</span><span lang="zh">获批逾 40 万片，各家仅到约 1 万片（约 2.5%）</span></td>
+              <td class="num nowrap"><span lang="en">~$27,000</span><span lang="zh">约 2.7 万美元</span></td>
+            </tr>
+            <tr>
+              <td>RTX PRO 5500</td>
+              <td><span class="st free"><span lang="en">Export-compliant</span><span lang="zh">符合出口规则</span></span></td>
+              <td><span lang="en">5–10% of orders; deliveries from Q1 2027</span><span lang="zh">所订量的 5–10%；2027 年一季度起交付</span></td>
+              <td class="num nowrap"><span lang="en">~$11,400</span><span lang="zh">约 1.14 万美元</span></td>
+            </tr>
+            <tr>
+              <td><span lang="en">Blackwell (B300, GB200)</span><span lang="zh">Blackwell（B300、GB200）</span></td>
+              <td><span class="st deny"><span lang="en">Banned</span><span lang="zh">禁运</span></span></td>
+              <td><span lang="en">Grey market only</span><span lang="zh">仅灰色市场</span></td>
+              <td class="num nowrap"><span lang="en">Server RMB 4M→8M+</span><span lang="zh">整机 400 万→800 万元以上</span></td>
+            </tr>
+            <tr>
+              <td>H20</td>
+              <td><span class="st letter"><span lang="en">Licensed, stalled</span><span lang="zh">获许可，停滞</span></span></td>
+              <td><span lang="en">De facto blocked by Beijing</span><span lang="zh">北京事实上封锁</span></td>
+              <td class="num nowrap"><span lang="en">$10,000–12,000</span><span lang="zh">1–1.2 万美元</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="caveat"><span class="tag"><span lang="en">revenue context</span><span lang="zh">营收背景</span></span><span lang="en">Nvidia's China AI-chip share fell from 66% (2024) to 40% (2025) to about 8% projected for 2026 (Bernstein). IDC's 34%-by-units figure for H1 2026 counts lower-end parts and is not like-for-like. A 15% revenue share to the US applies to H20 sales (relicensed July 2025).</span><span lang="zh">英伟达在中国 AI 芯片的份额已从 2024 年的 66% 降至 2025 年的 40%，2026 年预计约 8%（伯恩斯坦）。IDC 给出的 2026 上半年 34% 按出货量计、含中低端产品，二者口径不同。H20 的销售须向美国上缴 15% 营收（2025 年 7 月重新许可）。</span></p>
+      <p class="src"><a href="https://www.tomshardware.com/pc-components/gpus/china-approves-first-nvidia-h200-deliveries-to-bytedance-and-tencent-under-case-by-case-import-licenses">Tom's Hardware</a> · 21 Aug 2026 <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span> · <a href="https://gpusmith.com/articles/en/nvidia-gpu-export-restrictions">GPUSmith</a> · 22 Jul 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="domestic-h">
+    <div class="wrap">
+      <h2 id="domestic-h"><span lang="en">Domestic chips</span><span lang="zh">国产芯片</span></h2>
+      <p class="intro"><span lang="en">Home-grown accelerators already carry much of China's demand — about 41% of 2025 shipments. Huawei leads. The ceiling is memory (HBM), not logic.</span><span lang="zh">国产加速卡已承担中国相当一部分需求——约占 2025 年出货量的 41%。华为领先。真正的瓶颈是存储（HBM），而非逻辑芯片。</span></p>
+
+      <div class="tbl-wrap">
+        <table class="data stack">
+          <thead>
+            <tr>
+              <th><span lang="en">Vendor</span><span lang="zh">厂商</span></th>
+              <th class="num"><span lang="en">2025 shipped</span><span lang="zh">2025 年出货</span></th>
+              <th class="num"><span lang="en">H1 2026 (unit share)</span><span lang="zh">2026 上半年（出货份额）</span></th>
+              <th><span lang="en">Source</span><span lang="zh">来源</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span lang="en">Huawei</span><span lang="zh">华为</span></td>
+              <td class="num nowrap"><span lang="en">~812,000</span><span lang="zh">约 81.2 万片</span></td>
+              <td class="num nowrap"><span lang="en">572,000 (28%)</span><span lang="zh">57.2 万片（28%）</span></td>
+              <td class="src"><a href="https://www.tomshardware.com/tech-industry/chinas-homegrown-silicon-suppliers-gain-traction-as-nvidia-struggles-to-get-its-chips-into-the-market-huawei-cambricon-and-more-step-up-to-fill-crucial-market-gap">Tom's Hardware</a> · 2 Apr 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Alibaba T-Head</span><span lang="zh">阿里平头哥</span></td>
+              <td class="num nowrap"><span lang="en">~265,000</span><span lang="zh">约 26.5 万片</span></td>
+              <td class="num nowrap"><span lang="en">~141,000 (7%)</span><span lang="zh">约 14.1 万片（7%）</span></td>
+              <td class="src"><a href="https://uobkh.com.hk/en/research/sector-gc-china-internet-21092026">UOB KH</a> · 21 Sep 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Cambricon</span><span lang="zh">寒武纪</span></td>
+              <td class="num nowrap"><span lang="en">~116,000</span><span lang="zh">约 11.6 万片</span></td>
+              <td class="num nowrap"><span lang="en">~100,000 (5%)</span><span lang="zh">约 10 万片（5%）</span></td>
+              <td class="src"><a href="https://www.caixinglobal.com/2026-08-10/chinese-ai-chipmakers-cambricons-breakneck-growth-starts-to-slow-102472846.html">Caixin</a> · 10 Aug 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Baidu Kunlunxin</span><span lang="zh">百度昆仑芯</span></td>
+              <td class="num nowrap"><span lang="en">~116,000</span><span lang="zh">约 11.6 万片</span></td>
+              <td class="num nowrap"><span lang="en">~80,000 (4%)</span><span lang="zh">约 8 万片（4%）</span></td>
+              <td class="src"><a href="https://newmarketpitch.com/blogs/news/ai-chip-huawei-catching-nvidia">New Market Pitch</a> · 22 Oct 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></td>
+            </tr>
+            <tr>
+              <td><span lang="en">Hygon</span><span lang="zh">海光</span></td>
+              <td class="num nowrap"><span lang="en">n/a</span><span lang="zh">无</span></td>
+              <td class="num nowrap"><span lang="en">~60,000 (3%)</span><span lang="zh">约 6 万片（3%）</span></td>
+              <td class="src"><a href="https://newmarketpitch.com/blogs/news/ai-chip-huawei-catching-nvidia">New Market Pitch</a> · 22 Oct 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></td>
+            </tr>
+            <tr>
+              <td><span lang="en">Total domestic</span><span lang="zh">国产合计</span></td>
+              <td class="num nowrap"><span lang="en">~1.65M (41%)</span><span lang="zh">约 165 万片（41%）</span></td>
+              <td class="num nowrap"><span lang="en">—</span><span lang="zh">—</span></td>
+              <td class="src"><a href="https://www.tomshardware.com/pc-components/gpus/china-approves-first-nvidia-h200-deliveries-to-bytedance-and-tencent-under-case-by-case-import-licenses">Tom's Hardware</a> · 21 Aug 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caveat"><span lang="en">In H1 2026 Nvidia still led by units at 34% (678,000) against Huawei's 28%. H1-2026 shares are IDC via Reuters, read through an aggregator. Huawei's 2026 output plans (~600k 910C, ~750k 950PR) are unconfirmed.</span><span lang="zh">2026 上半年英伟达按出货量仍以 34%（67.8 万片）领先，华为为 28%。上半年份额为 IDC 经路透、再经聚合站转引。华为 2026 年产量计划（约 60 万片 910C、约 75 万片 950PR）尚未确认。</span> <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></p>
+
+      <div class="facts" style="margin-top:28px">
+        <div class="fact">
+          <span class="n">1</span>
+          <p><span lang="en">Huawei's Ascend 910C runs at <b>roughly 60% of an H100</b> on inference — but this comes from DeepSeek testing reported second-hand, with <b>no published benchmark</b>. Treat it as a rough indication, not a measured result.</span><span lang="zh">华为昇腾 910C 在推理上 <b>约为 H100 的 60%</b>——但该说法源自对 DeepSeek 测试的二手转述，<b>无公开基准测试</b>。应视为粗略参考，而非实测结果。</span></p>
+          <p class="src"><a href="https://www.aquanode.io/blog/huawei-ascend-vs-nvidia">Aquanode</a> · 8 Oct 2026 · <a href="https://www.tomshardware.com/tech-industry/chinas-homegrown-silicon-suppliers-gain-traction-as-nvidia-struggles-to-get-its-chips-into-the-market-huawei-cambricon-and-more-step-up-to-fill-crucial-market-gap">Tom's Hardware</a> · 2 Apr 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span> <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">2</span>
+          <p><span lang="en">The Ascend 950 reaches <b>about half</b> an H100's FP8 throughput; Nvidia's B300 is <b>roughly 7×</b> the Ascend 950 in low-precision compute.</span><span lang="zh">昇腾 950 的 FP8 吞吐约为 H100 的 <b>一半</b>；英伟达 B300 在低精度算力上约为昇腾 950 的 <b>7 倍</b>。</span></p>
+          <p class="src"><a href="https://newmarketpitch.com/blogs/news/ai-chip-huawei-catching-nvidia">Epoch AI via New Market Pitch</a> · 22 Oct 2026 <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">3</span>
+          <p><span lang="en">China's best chips sit closer to Nvidia hardware from about five years ago than to its current frontier; software (CANN vs CUDA) is a second gap.</span><span lang="zh">中国最好的芯片更接近英伟达约五年前的硬件，而非其当前前沿；软件（CANN vs CUDA）是第二道差距。</span></p>
+          <p class="src"><a href="https://www.the-substrate.net/p/where-chinas-ai-chip-supply-chain">The Substrate</a> · 2 Jun 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">4</span>
+          <p><span lang="en">Only <b>Huawei and Cambricon</b> are on Beijing's approved AI-hardware procurement list; Nvidia is not.</span><span lang="zh">政府批准的 AI 硬件采购名单上仅有 <b>华为和寒武纪</b>；英伟达不在其中。</span></p>
+          <p class="src"><a href="https://www.tomshardware.com/tech-industry/cambricons-q1-revenue-hits-423-million-as-chinas-domestic-ai-chip-market-accelerates">Tom's Hardware</a> · 30 Apr 2026</p>
+        </div>
+        <div class="fact">
+          <span class="n">5</span>
+          <p><span lang="en">Memory is the binding limit. An HBM stockpile built before the December 2024 controls (~13 million stacks, enough for ~1.6 million Ascend 910C) was likely used up by late 2025; CXMT's 2026 HBM output is <b>modeled at ~2 million stacks</b>, enough for only 250,000–300,000 910C-equivalents.</span><span lang="zh">存储是硬约束。2024 年 12 月管制前囤积的 HBM（约 1300 万颗，够约 160 万片昇腾 910C）很可能已在 2025 年底耗尽；长鑫 2026 年 HBM 产量 <b>模型估算约 200 万颗</b>，仅够 25 万–30 万片 910C 当量。</span></p>
+          <p class="src"><a href="https://www.the-substrate.net/p/where-chinas-ai-chip-supply-chain">SemiAnalysis via The Substrate</a> · 2 Jun 2026 <span class="tag"><span lang="en">modeled</span><span lang="zh">模型估算</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">6</span>
+          <p><span lang="en">The HBM squeeze is pushing domestic prices up: the Ascend 950PR rose ~33% (RMB 60,000 to over 80,000) during 2026; the 910C board went from ~RMB 90,000 to over 110,000.</span><span lang="zh">HBM 紧缺正推高国产价格：昇腾 950PR 在 2026 年涨约 33%（6 万元涨至 8 万元以上）；910C 板卡从约 9 万元涨至 11 万元以上。</span></p>
+          <p class="src"><a href="https://www.investing.com/news/stock-market-news/china-ai-chipmakers-hike-prices-as-hbm-shortage-hits-domestic-push--reuters-4894976">Reuters via Investing.com</a> · 10 Sep 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="gap-h">
+    <div class="wrap">
+      <h2 id="gap-h"><span lang="en">The gap</span><span lang="zh">缺口</span></h2>
+      <p class="intro"><span lang="en">Put demand next to supply and a shortage remains — but how big depends on whose method you trust, and the orders double-count. The most cited gap is second-hand.</span><span lang="zh">把需求和供给放在一起，缺口确实存在——但到底多大，取决于采信谁的算法，而且订单存在重复计算。被引用最多的那个缺口数字是二手来源。</span></p>
+
+      <div class="tbl-wrap">
+        <table class="data stack">
+          <thead>
+            <tr>
+              <th><span lang="en">Measure</span><span lang="zh">指标</span></th>
+              <th class="num"><span lang="en">Number</span><span lang="zh">数值</span></th>
+              <th><span lang="en">Source</span><span lang="zh">来源</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span lang="en">Domestic demand vs supply, 2026 (demand 4.2M, supply 2.6M)</span><span lang="zh">2026 年国产需求 vs 供给（需求 420 万，供给 260 万）</span></td>
+              <td class="num nowrap"><span lang="en">gap ~1.6M units</span><span lang="zh">缺口约 160 万片</span></td>
+              <td class="src"><a href="https://news.cnyes.com/news/id/6528992">cnyes, citing Bloomberg Intelligence</a> · 9 Jul 2026 <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span> <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></td>
+            </tr>
+            <tr>
+              <td><span lang="en">H200 ordered vs delivered to the mainland</span><span lang="zh">H200 订购 vs 大陆交付</span></td>
+              <td class="num nowrap"><span lang="en">&gt;2M vs ~20k</span><span lang="zh">逾 200 万 vs 约 2 万</span></td>
+              <td class="src"><a href="https://www.tomshardware.com/pc-components/gpus/first-nvidia-h200-shipments-reach-bytedance-and-tencent-as-beijing-loosens-its-import-block">Tom's Hardware</a> · 19 Aug 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">RTX PRO 5500 requested (China) vs fill rate</span><span lang="zh">RTX PRO 5500 申购量（全中国）vs 满足率</span></td>
+              <td class="num nowrap"><span lang="en">&gt;6M vs 5–10%</span><span lang="zh">逾 600 万 vs 5–10%</span></td>
+              <td class="src"><a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/">Reuters via BNN</a> · 20 Oct 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Grey-market B300 8-GPU server, six months</span><span lang="zh">灰色市场 B300 八卡服务器，六个月内</span></td>
+              <td class="num nowrap"><span lang="en">RMB 4M → 8M+</span><span lang="zh">400 万 → 800 万元以上</span></td>
+              <td class="src"><a href="https://www.cna.com.tw/news/aopl/202606240107.aspx">CNA citing FT</a> · 24 Jun 2026</td>
+            </tr>
+            <tr>
+              <td><span lang="en">Grey-market RTX 6000 Pro</span><span lang="zh">灰色市场 RTX 6000 Pro</span></td>
+              <td class="num nowrap"><span lang="en">RMB 50k → up to 130k</span><span lang="zh">5 万 → 最高 13 万元</span></td>
+              <td class="src"><a href="https://www.cna.com.tw/news/aopl/202606240107.aspx">CNA citing FT</a> · 24 Jun 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="facts" style="margin-top:28px">
+        <div class="fact">
+          <span class="n">1</span>
+          <p><span lang="en">Morgan Stanley's read: expansion is held back <b>more by the availability of high-end compute than by demand</b>.</span><span lang="zh">摩根士丹利的判断：扩张的制约 <b>更多来自高端算力的可得性，而非需求</b>。</span></p>
+          <p class="src"><a href="https://www.xxquant.com/en/institution/institutional-research/92808f9f2abbd313f097344d68972a4e">Morgan Stanley via Hilo</a> · 13 Sep 2026 <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></p>
+        </div>
+        <div class="fact">
+          <span class="n">2</span>
+          <p><span lang="en">Why it persists: the bottleneck is HBM memory, not logic dies. JPMorgan expects foundry yield, leading-edge capacity and HBM qualification to constrain supply <b>through about 2028</b> — a seller's market for domestic GPUs.</span><span lang="zh">为何持续：瓶颈在 HBM 存储，而非逻辑芯片。摩根大通预计代工良率、先进产能与 HBM 认证将制约供给 <b>至 2028 年前后</b>——国产 GPU 将是卖方市场。</span></p>
+          <p class="src"><a href="https://www.xxquant.com/en/institution/institutional-research/d2afe5bd41024df0873088cd5edf18ee">JPMorgan via Hilo</a> · 2 Sep 2026 <span class="tag"><span lang="en">estimated</span><span lang="zh">估算</span></span></p>
+        </div>
+      </div>
+
+      <p class="sizing"><span class="tag"><span lang="en">rough sizing · our arithmetic</span><span lang="zh">粗略估算 · 本站计算</span></span><span lang="en">The ~1.6M-unit gap at domestic board prices of RMB 80,000–110,000 works out to roughly <b>RMB 130–175 billion (~$18–25 billion)</b> of unmet, domestically-priced demand in 2026. This is our own order-of-magnitude arithmetic, not a published figure — units mix chip classes and prices are indicative quotes. The order book at Nvidia-class prices is far larger: 3 million cards × $11,400 is already over $35 billion for three buyers.</span><span lang="zh">按国产板卡 8 万–11 万元的价格计，约 160 万片的缺口大致相当于 2026 年 <b>约 1300–1750 亿元（约 180–250 亿美元）</b> 未被满足、以国产价计价的需求。这是本站量级级别的估算，并非公开数据——其中各类芯片混计，价格为参考报价。若按英伟达级别价格，订单金额远大于此：300 万片 × 1.14 万美元，仅三家买家就已逾 350 亿美元。</span></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+      <a href="read.html" data-keep-lang><span lang="en">Read</span><span lang="zh">深度阅读</span></a>
+      <a href="qa.html" data-keep-lang><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a>
+      <a href="routes.html" data-keep-lang><span lang="en">Lawful routes</span><span lang="zh">合规路径</span></a>
+      <a href="jurisdictions.html" data-keep-lang><span lang="en">Jurisdictions</span><span lang="zh">司法辖区</span></a>
+      <a href="cases.html" data-keep-lang><span lang="en">Enforcement cases</span><span lang="zh">执法案例</span></a>
+      <a href="market.html" data-keep-lang><span lang="en">Market</span><span lang="zh">市场</span></a>
+      <a href="glossary.html" data-keep-lang><span lang="en">Glossary</span><span lang="zh">术语表</span></a>
+    </nav>
+    <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">Check any transaction with export-control counsel. State of the law as of 31 Oct 2026.</span><span lang="zh">任何交易请咨询出口管制律师。法规状态截至 2026 年 10 月 31 日。</span></p>
+  </div>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Enforcement cases</title>
+    <meta name="title-en" content="Enforcement cases: who has been charged over AI chips to China" />
+    <meta name="title-zh" content="执法案例：谁因向中国出口 AI 芯片被起诉" />
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .banner { border: 1px solid var(--rule); border-left: 2px solid var(--case); border-radius: 10px; padding: 14px 16px; margin-top: 10px; }
+      .banner p { font-size: 15px; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: var(--measure); }
+      .banner strong { color: var(--ink); font-weight: 650; }
+
+      .cases { border-top: 2px solid var(--rule-strong); margin-top: 8px; }
+      .case-head, .case > summary { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 0.9fr) minmax(0, 1.3fr) 18px; gap: 16px; align-items: center; }
+      .case-head { font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+      .case { border-bottom: 1px solid var(--rule); scroll-margin-top: 80px; }
+      .case > summary { list-style: none; cursor: pointer; padding: 15px 0; }
+      .case > summary::-webkit-details-marker { display: none; }
+      .case > summary:hover .who-nm { text-decoration: underline; text-underline-offset: 3px; }
+      .who-nm { display: block; font-weight: 650; font-size: 16px; }
+      .who-sub { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+      .juris { font-size: 14px; color: var(--ink-2); }
+      .chev { width: 14px; height: 14px; color: var(--ink-3); transition: transform .25s cubic-bezier(.2,.8,.2,1); justify-self: end; }
+      .case[open] > summary .chev { transform: rotate(180deg); }
+      .case[open] > summary { padding-bottom: 6px; }
+
+      .case-body { padding: 4px 0 24px; max-width: var(--measure); }
+      .case-detail { margin: 0 0 14px; display: grid; grid-template-columns: 8.5em 1fr; gap: 10px 16px; font-size: 15px; align-content: start; }
+      html[data-lang="zh"] .case-detail { grid-template-columns: 6em 1fr; }
+      .case-detail dt { color: var(--ink-3); font-size: 13px; padding-top: 2px; }
+      .case-detail dd { margin: 0; line-height: 1.6; }
+      .case-detail dd strong { font-weight: 650; color: var(--ink); }
+      .srcs { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+
+      @media (max-width: 640px) {
+        .case-head { display: none; }
+        .case > summary { grid-template-columns: minmax(0, 1fr) 18px; row-gap: 6px; }
+        .case > summary .who { grid-column: 1; grid-row: 1; }
+        .case > summary .juris { grid-column: 1; grid-row: 2; }
+        .case > summary .status { grid-column: 1; grid-row: 3; }
+        .case > summary .chev { grid-column: 2; grid-row: 1; }
+        .case-detail { grid-template-columns: 1fr; gap: 2px; }
+        .case-detail dd { margin-bottom: 10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <a class="mark" href="index.html" data-keep-lang>
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+            <rect x="5" y="2" width="3" height="18" fill="currentColor" />
+            <rect x="14" y="2" width="3" height="18" fill="var(--cn)" />
+            <circle cx="11" cy="11" r="3" fill="currentColor" />
+          </svg>
+          <span lang="en">AI Chips &amp; China</span
+          ><span lang="zh">AI 芯片与中国</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a href="index.html" data-keep-lang
+            ><span lang="en">Overview</span><span lang="zh">全景</span></a
+          >
+          <a href="chips.html" data-keep-lang
+            ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+          >
+          <a href="timeline.html" data-keep-lang
+            ><span lang="en">Rules timeline</span
+            ><span lang="zh">规则时间线</span></a
+          >
+          <a href="read.html" data-keep-lang
+            ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+          >
+          <a href="qa.html" data-keep-lang
+            ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+          >
+        </nav>
+        <div class="lang" role="group" aria-label="Language / 语言">
+          <button type="button" data-set="zh" aria-pressed="false">中文</button>
+          <button type="button" data-set="en" aria-pressed="true">EN</button>
+        </div>
+      </div>
+    </header>
+    <nav class="mobile-nav" aria-label="Main">
+      <a href="index.html" data-keep-lang
+        ><span lang="en">Overview</span><span lang="zh">全景</span></a
+      >
+      <a href="chips.html" data-keep-lang
+        ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+      >
+      <a href="timeline.html" data-keep-lang
+        ><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a
+      >
+      <a href="read.html" data-keep-lang
+        ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+      >
+      <a href="qa.html" data-keep-lang
+        ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+      >
+    </nav>
+
+    <main>
+      <div class="wrap head">
+        <h1><span lang="en">Enforcement cases</span><span lang="zh">执法案例</span></h1>
+        <p class="lede">
+          <span lang="en">Breaking the US chip-export rules is a crime: up to about $1M in fines and 20 years in prison per violation, under the Export Control Reform Act (50 U.S.C. &sect; 4819). Since 2025 there have been arrests, indictments and large seizures &mdash; but <strong>no prison sentence has landed in any AI-chip export case yet.</strong></span
+          ><span lang="zh">违反美国芯片出口规则是犯罪：依据《出口管制改革法》（50 U.S.C. &sect; 4819），每项违规最高可处约 100 万美元罚款和 20 年监禁。自 2025 年以来已有逮捕、起诉和大额查扣&mdash;&mdash;但<strong>尚无任何 AI 芯片出口案件判处监禁。</strong></span>
+        </p>
+        <p class="asof">
+          <span lang="en">As of 31 Oct 2026 &middot; every fact links its source</span
+          ><span lang="zh">截至 2026 年 10 月 31 日 &middot; 每条事实均附来源</span>
+        </p>
+      </div>
+
+      <section class="block" aria-labelledby="landed-h" style="padding-top: 0; border-top: 0">
+        <div class="wrap">
+          <div class="banner">
+            <p>
+              <span lang="en">Read the table below as a scoreboard of <strong>charges, not convictions</strong>. Every US matter is an allegation unless a guilty plea is noted; court dockets were not checked; and no prison sentence has landed in any AI-chip export case yet.</span
+              ><span lang="zh">请把下表看作<strong>指控而非定罪</strong>的记分牌。除非注明已认罪，每宗美国案件均属指控；本站未核查法院案卷；且尚无任何 AI 芯片出口案件判处监禁。</span>
+            </p>
+          </div>
+
+          <h2 id="landed-h" style="margin-top: 36px"><span lang="en">What has actually landed</span><span lang="zh">实际已发生的</span></h2>
+          <div class="facts">
+            <div class="fact">
+              <span class="n">1</span>
+              <p>
+                <span lang="en">Each unlicensed export is a crime under ECRA (50 U.S.C. &sect; 4819): up to 20 years in prison and a fine up to $1M, or up to twice the gain for a company. Smuggling counts add up to 10 years; money laundering up to 20.</span
+                ><span lang="zh">依据 ECRA（50 U.S.C. &sect; 4819），每宗无证出口均属犯罪：最高 20 年监禁和 100 万美元罚款，公司则最高按所得利润两倍计罚。走私罪名另加最高 10 年，洗钱最高 20 年。</span>
+              </p>
+              <p class="src"><a href="https://www.justice.gov/opa/pr/us-authorities-shut-down-major-china-linked-ai-tech-smuggling-network">DOJ</a> &middot; 8 Dec 2025</p>
+            </div>
+            <div class="fact">
+              <span class="n">2</span>
+              <p>
+                <span lang="en">Seven US criminal matters have reached arrest or indictment since August 2025, alongside a fraud case in Singapore and a forgery case in Taiwan.</span
+                ><span lang="zh">自 2025 年 8 月以来，已有七宗美国刑事案件进入逮捕或起诉阶段，另有新加坡的一宗欺诈案和台湾的一宗伪造文书案。</span>
+              </p>
+              <p class="src"><a href="https://www.justice.gov/opa/pr/us-citizens-and-chinese-nationals-arrested-exporting-artificial-intelligence-technology">DOJ</a> &middot; 19 Nov 2025</p>
+            </div>
+            <div class="fact">
+              <span class="n">3</span>
+              <p>
+                <span lang="en">The money hits before any ruling. Operation Gatekeeper seized over $50M in GPUs and cash; another case seeks forfeiture of 50 H200 GPUs; Singapore seized a S$38M house and froze accounts.</span
+                ><span lang="zh">在任何判决之前，钱已先被动。&ldquo;守门人行动&rdquo;查扣逾 5000 万美元的 GPU 及现金；另一宗案件寻求没收 50 块 H200 GPU；新加坡查扣一栋价值 3800 万新元的洋房并冻结账户。</span>
+              </p>
+              <p class="src"><a href="https://www.justice.gov/opa/pr/us-authorities-shut-down-major-china-linked-ai-tech-smuggling-network">DOJ</a> &middot; 8 Dec 2025 &middot; <a href="https://www.tomshardware.com/tech-industry/singapore-cops-seize-usd42-million-mansion-freeze-usd772k-bank-account-of-suspected-nvidia-ai-gpu-smugglers-individuals-alleged-to-have-illegally-exported-data-center-servers-to-china-charged-with-fraud-money-laundering">Tom's Hardware</a> &middot; Jul 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="cases-h">
+        <div class="wrap">
+          <h2 id="cases-h"><span lang="en">The cases</span><span lang="zh">案件一览</span></h2>
+          <p class="intro">
+            <span lang="en">Open a row for what was alleged, the charge, the outcome so far, the penalty exposure and the sources. A row is amber while the case is unresolved; grey for an administrative listing, which is not a criminal charge.</span
+            ><span lang="zh">展开任一行，查看指控内容、罪名、目前结果、刑期风险及来源。案件未了结时该行为琥珀色；灰色表示行政列名，并非刑事指控。</span>
+          </p>
+
+          <div class="cases">
+            <div class="case-head">
+              <span><span lang="en">Who</span><span lang="zh">当事人</span></span>
+              <span><span lang="en">Jurisdiction</span><span lang="zh">司法辖区</span></span>
+              <span><span lang="en">Status</span><span lang="zh">状态</span></span>
+              <span></span>
+            </div>
+
+            <details class="case" id="alx">
+              <summary>
+                <span class="who"><span class="who-nm">Chuan Geng &middot; Shiwei Yang</span><span class="who-sub"><span lang="en">ALX Solutions, El Monte, CA</span><span lang="zh">ALX Solutions（加州 El Monte）</span></span></span>
+                <span class="juris"><span lang="en">US &middot; C.D. Cal.</span><span lang="zh">美国 &middot; C.D. Cal.</span></span>
+                <span class="status"><span class="st case"><span lang="en">Arrested, on bond</span><span lang="zh">已逮捕，保释候审</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">21+ unlicensed exports of Nvidia H100 and RTX 4090 cards to China through Singapore and Malaysia, Oct 2022 to Jul 2025.</span><span lang="zh">2022 年 10 月至 2025 年 7 月，经新加坡和马来西亚向中国进行 21 宗以上无证出口英伟达 H100 和 RTX 4090 显卡。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Export Control Reform Act (ECRA) violation.</span><span lang="zh">违反《出口管制改革法》（ECRA）。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Arrested, released on bond. No plea or verdict found.</span><span lang="zh">已逮捕并保释。未发现认罪或判决。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 20 years in prison.</span><span lang="zh">最高 20 年监禁。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.aljazeera.com/economy/2025/8/6/us-charges-chinese-nationals-with-illegally-shipping-nvidia-chips-to-china">Al Jazeera</a> &middot; 6 Aug 2025 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="hao-global">
+              <summary>
+                <span class="who"><span class="who-nm">Alan Hao Hsu &middot; Hao Global LLC</span><span class="who-sub"><span lang="en">Texas &middot; &ldquo;Operation Gatekeeper&rdquo;</span><span lang="zh">德克萨斯州 &middot; &ldquo;守门人行动&rdquo;</span></span></span>
+                <span class="juris"><span lang="en">US &middot; S.D. Tex.</span><span lang="zh">美国 &middot; S.D. Tex.</span></span>
+                <span class="status"><span class="st case"><span lang="en">Guilty plea, awaiting sentence</span><span lang="zh">已认罪，待量刑</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">Smuggling and unlawful export of more than $160M in Nvidia H100 and H200 chips; over $50M wired from the PRC.</span><span lang="zh">走私并非法出口超过 1.6 亿美元的英伟达 H100、H200 芯片；逾 5000 万美元自中国境内汇入。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Smuggling and unlawful export (ECRA).</span><span lang="zh">走私及非法出口（ECRA）。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Guilty plea entered 10 Oct 2025; cooperating. <strong>This is the furthest any case has gone</strong> &mdash; yet sentencing, set for 18 Feb 2026, has no public result. Over $50M in GPUs and cash seized.</span><span lang="zh">2025 年 10 月 10 日认罪，正配合调查。<strong>这是所有案件中进展最远的</strong>&mdash;&mdash;但原定 2026 年 2 月 18 日的量刑尚无公开结果。查扣逾 5000 万美元的 GPU 及现金。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Hsu up to 10 years; the company up to twice its gross gain, plus probation.</span><span lang="zh">许（Hsu）最高 10 年；公司最高按所得利润两倍计罚，另加缓刑。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.justice.gov/opa/pr/us-authorities-shut-down-major-china-linked-ai-tech-smuggling-network">DOJ</a> &middot; 8 Dec 2025</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="yuan">
+              <summary>
+                <span class="who"><span class="who-nm">Benlin Yuan</span><span class="who-sub"><span lang="en">CEO of a Virginia IT firm (Canadian national)</span><span lang="zh">弗吉尼亚州一家 IT 公司的 CEO（加拿大籍）</span></span></span>
+                <span class="juris"><span lang="en">US &middot; S.D. Tex.</span><span lang="zh">美国 &middot; S.D. Tex.</span></span>
+                <span class="status"><span class="st case"><span lang="en">In custody, pleaded not guilty</span><span lang="zh">羁押中，不认罪</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">Conspiracy to violate ECRA.</span><span lang="zh">合谋违反 ECRA。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Conspiracy to violate ECRA.</span><span lang="zh">合谋违反 ECRA。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Pleaded not guilty; in custody; jury trial pending. The plea rests on press reporting.</span><span lang="zh">不认罪；羁押中；待陪审团审判。认罪与否依据媒体报道。</span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 20 years and a $1M fine.</span><span lang="zh">最高 20 年监禁及 100 万美元罚款。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.justice.gov/opa/pr/us-authorities-shut-down-major-china-linked-ai-tech-smuggling-network">DOJ</a> &middot; 8 Dec 2025</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="gong">
+              <summary>
+                <span class="who"><span class="who-nm">Fanyue &ldquo;Tom&rdquo; Gong</span><span class="who-sub"><span lang="en">Brooklyn, NY (PRC citizen)</span><span lang="zh">纽约布鲁克林（中国公民）</span></span></span>
+                <span class="juris"><span lang="en">US &middot; S.D. Tex.</span><span lang="zh">美国 &middot; S.D. Tex.</span></span>
+                <span class="status"><span class="st case"><span lang="en">In custody, pleaded not guilty</span><span lang="zh">羁押中，不认罪</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">Conspiracy to smuggle goods out of the US.</span><span lang="zh">合谋走私货物出境。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Conspiracy to smuggle goods out of the US.</span><span lang="zh">合谋走私货物出境。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Pleaded not guilty; in custody. The plea rests on press reporting.</span><span lang="zh">不认罪；羁押中。认罪与否依据媒体报道。</span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 10 years.</span><span lang="zh">最高 10 年监禁。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.justice.gov/opa/pr/us-authorities-shut-down-major-china-linked-ai-tech-smuggling-network">DOJ</a> &middot; 8 Dec 2025</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="janford">
+              <summary>
+                <span class="who"><span class="who-nm">Hon Ning Ho &middot; Brian Raymond &middot; Cham Li &middot; Jing Chen</span><span class="who-sub"><span lang="en">front company Janford Realtor; Alabama electronics firm</span><span lang="zh">空壳公司 Janford Realtor；亚拉巴马州一家电子公司</span></span></span>
+                <span class="juris"><span lang="en">US &middot; multi-district</span><span lang="zh">美国 &middot; 多个辖区</span></span>
+                <span class="status"><span class="st case"><span lang="en">Indicted</span><span lang="zh">已起诉</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">A100, H100 and H200 chips sent to China via Malaysia and Thailand. Charged in M.D. Fla., N.D. Ala. and N.D. Cal.</span><span lang="zh">经马来西亚和泰国向中国运送 A100、H100、H200 芯片。于 M.D. Fla.、N.D. Ala. 及 N.D. Cal. 被起诉。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">ECRA conspiracy and violations, smuggling, money laundering.</span><span lang="zh">合谋并违反 ECRA、走私、洗钱。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Indicted; no plea or verdict reported. The government is seeking forfeiture of 50 H200 GPUs.</span><span lang="zh">已起诉；未见认罪或判决报道。政府寻求没收 50 块 H200 GPU。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 20 years per ECRA or laundering count, 10 per smuggling count.</span><span lang="zh">每项 ECRA 或洗钱罪名最高 20 年，每项走私罪名最高 10 年。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.justice.gov/opa/pr/us-citizens-and-chinese-nationals-arrested-exporting-artificial-intelligence-technology">DOJ</a> &middot; 19 Nov 2025</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="supermicro">
+              <summary>
+                <span class="who"><span class="who-nm">Yih-Shyan &ldquo;Wally&rdquo; Liaw &middot; Ruei-Tsan Chang &middot; Ting-Wei Sun</span><span class="who-sub"><span lang="en">Super Micro co-founder and associates</span><span lang="zh">美超微（Super Micro）联合创始人及相关人员</span></span></span>
+                <span class="juris"><span lang="en">US &middot; S.D.N.Y.</span><span lang="zh">美国 &middot; S.D.N.Y.</span></span>
+                <span class="status"><span class="st case"><span lang="en">Charges pending</span><span lang="zh">指控待审</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">About $2.5B of Super Micro Nvidia servers diverted to China; $510M routed through a Southeast Asian intermediary in Apr&ndash;May 2025.</span><span lang="zh">约 25 亿美元的美超微英伟达服务器被转运至中国；2025 年 4 至 5 月经一家东南亚中间商转移 5.1 亿美元。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Conspiracy to violate ECRA.</span><span lang="zh">合谋违反 ECRA。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Liaw and Sun arrested; Chang a fugitive. Liaw pleaded not guilty, trial reportedly set for 2 Nov 2026. Sun reportedly pleaded guilty (date unverified). <strong>Super Micro itself was NOT charged</strong>; its stock fell about 33%.</span><span lang="zh">廖、孙被捕；张在逃。廖不认罪，审判据报定于 2026 年 11 月 2 日。孙据报已认罪（日期未经证实）。<strong>美超微公司本身未被起诉</strong>；其股价下跌约 33%。</span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 20 years.</span><span lang="zh">最高 20 年监禁。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.cnbc.com/2026/03/19/us-tech-execs-smuggled-nvidia-chips-to-china-prosecutors-say.html">CNBC</a> &middot; 19 Mar 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                  <li class="src"><a href="https://www.tomshardware.com/tech-industry/super-micro-co-founder-wally-liaw-pleads-not-guilty-to-nvidia-smuggling-charges">Tom's Hardware</a> &middot; Mar 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="earthmade">
+              <summary>
+                <span class="who"><span class="who-nm">Greg Lui &middot; Earthmade Computer Inc.</span><span class="who-sub"><span lang="en">City of Industry, CA</span><span lang="zh">加州 City of Industry</span></span></span>
+                <span class="juris"><span lang="en">US &middot; C.D. Cal.</span><span lang="zh">美国 &middot; C.D. Cal.</span></span>
+                <span class="status"><span class="st case"><span lang="en">Arrested, arraigned</span><span lang="zh">已逮捕、提审</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">More than $300M in Nvidia GPU servers sent to China via Malaysia and Singapore.</span><span lang="zh">经马来西亚和新加坡向中国运送逾 3 亿美元的英伟达 GPU 服务器。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Conspiracy to violate ECRA, outbound smuggling, money-laundering conspiracy.</span><span lang="zh">合谋违反 ECRA、对外走私、合谋洗钱。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Arrested; arraigned 1 Oct 2026; no plea reported.</span><span lang="zh">已逮捕；2026 年 10 月 1 日提审；未见认罪报道。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Up to 20 years (ECRA), 10 (smuggling), 20 (laundering).</span><span lang="zh">最高 20 年（ECRA）、10 年（走私）、20 年（洗钱）。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.justice.gov/opa/pr/california-man-arrested-smuggling-more-300-million-export-controlled-computer-servers-china">DOJ</a> &middot; 1 Oct 2026</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="singapore">
+              <summary>
+                <span class="who"><span class="who-nm">Aaron Woon &middot; Alan Wei &middot; Li Ming &middot; Jenny Lim</span><span class="who-sub"><span lang="en">Aperia Group, Luxuriate Your Life, plus 4 companies</span><span lang="zh">Aperia Group、Luxuriate Your Life 及另外 4 家公司</span></span></span>
+                <span class="juris"><span lang="en">Singapore</span><span lang="zh">新加坡</span></span>
+                <span class="status"><span class="st case"><span lang="en">Charged &mdash; fraud, not export law</span><span lang="zh">以欺诈罪起诉&mdash;&mdash;非出口法</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">Lying to Dell and Super Micro about the end users of about US$390M in Nvidia-bearing servers; money laundering.</span><span lang="zh">就约 3.9 亿美元搭载英伟达芯片的服务器的最终用户，向戴尔和美超微虚假陈述；洗钱。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Fraud, money laundering, and (for Li) the Computer Misuse Act. <strong>This is a fraud case, not an export-control statute.</strong></span><span lang="zh">欺诈、洗钱，以及（对李）《计算机滥用法》。<strong>此为欺诈案件，并非援引出口管制法条。</strong></span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Wei pleaded not guilty to 11 charges (6 Jul 2026). A S$38M bungalow was seized and accounts frozen. No verdict found.</span><span lang="zh">魏就 11 项指控不认罪（2026 年 7 月 6 日）。查扣一栋价值 3800 万新元的洋房并冻结账户。未发现判决。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Not stated in the available sources.</span><span lang="zh">现有来源未载明。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.digitimes.com/news/a20260702VL213/chips-investigation-nvidia-supermicro.html">Digitimes</a> &middot; 2 Jul 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                  <li class="src"><a href="https://techcrunch.com/2025/03/13/singapore-grants-bail-for-nvidia-chip-smugglers-in-alleged-390m-fraud">TechCrunch</a> &middot; 13 Mar 2025 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                  <li class="src"><a href="https://www.tomshardware.com/tech-industry/singapore-cops-seize-usd42-million-mansion-freeze-usd772k-bank-account-of-suspected-nvidia-ai-gpu-smugglers-individuals-alleged-to-have-illegally-exported-data-center-servers-to-china-charged-with-fraud-money-laundering">Tom's Hardware</a> &middot; Jul 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="taiwan">
+              <summary>
+                <span class="who"><span class="who-nm">&ldquo;Chang&rdquo; and 8 others</span><span class="who-sub"><span lang="en">a senior Nvidia manager, 2 Super Micro Taiwan staff, staff of 4 firms</span><span lang="zh">一名英伟达高级经理、两名美超微台湾员工及 4 家公司的员工</span></span></span>
+                <span class="juris"><span lang="en">Taiwan</span><span lang="zh">台湾</span></span>
+                <span class="status"><span class="st case"><span lang="en">Indicted &mdash; forgery, not export law</span><span lang="zh">以伪造罪起诉&mdash;&mdash;非出口法</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">指控</span></dt>
+                  <dd><span lang="en">74 Nvidia B300 servers shipped to China via Japan and Indonesia; 56 more seized.</span><span lang="zh">经日本和印度尼西亚向中国运送 74 台英伟达 B300 服务器；另查扣 56 台。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">罪名</span></dt>
+                  <dd><span lang="en">Forgery and breach of trust. <strong>No export-control statute was named.</strong></span><span lang="zh">伪造文书及背信。<strong>未援引任何出口管制法条。</strong></span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Indicted; prosecutors are seeking 5 years for &ldquo;Chang&rdquo;. No verdict.</span><span lang="zh">已起诉；检方对&ldquo;张&rdquo;求刑 5 年。无判决。</span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">刑期风险</span></dt>
+                  <dd><span lang="en">Prosecutors seek up to 5 years &mdash; a request, not a sentence.</span><span lang="zh">检方求刑最高 5 年&mdash;&mdash;为求刑，而非判决。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.notebookcheck.net/Nvidia-senior-manager-caught-up-in-alleged-AI-chip-smuggling-to-China-faces-up-to-5-years-in-prison.1377269.0.html">Notebookcheck</a> &middot; Aug 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="case" id="entity-list">
+              <summary>
+                <span class="who"><span class="who-nm"><span lang="en">Inspur subsidiaries and 12 other entities</span><span lang="zh">浪潮子公司及另外 12 家实体</span></span><span class="who-sub"><span lang="en">6 Inspur units, 11 China and 1 Taiwan entities</span><span lang="zh">6 家浪潮子公司、11 家中国实体及 1 家台湾实体</span></span></span>
+                <span class="juris"><span lang="en">US &middot; BIS Entity List</span><span lang="zh">美国 &middot; BIS 实体清单</span></span>
+                <span class="status"><span class="st none"><span lang="en">Listing only, not a charge</span><span lang="zh">仅列入清单，非刑事指控</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Alleged</span><span lang="zh">理由</span></dt>
+                  <dd><span lang="en">Tied to advanced AI and supercomputing development for China-based end users. No chip-diversion finding.</span><span lang="zh">与面向中国最终用户的先进 AI 及超级计算研发相关。未认定存在芯片转移。</span></dd>
+                  <dt><span lang="en">Charge</span><span lang="zh">性质</span></dt>
+                  <dd><span lang="en">An administrative listing, <strong>not a criminal charge</strong>.</span><span lang="zh">属行政列名，<strong>并非刑事指控</strong>。</span></dd>
+                  <dt><span lang="en">Outcome so far</span><span lang="zh">目前结果</span></dt>
+                  <dd><span lang="en">Added to the BIS Entity List in March 2025 (a license is required and generally denied). No fines. Only this batch is confirmed from BIS; later additions (e.g. Sophgo) rest on secondary sources and are not listed here.</span><span lang="zh">于 2025 年 3 月列入 BIS 实体清单（须取得许可且通常被拒）。无罚款。仅此批次经 BIS 证实；后续新增（如算能 Sophgo）依据二手来源，未在此列出。</span> <span class="tag"><span lang="en">secondary</span><span lang="zh">二手</span></span></dd>
+                  <dt><span lang="en">Exposure</span><span lang="zh">后果</span></dt>
+                  <dd><span lang="en">Loss of access to US-origin technology; no criminal penalty.</span><span lang="zh">丧失获取美国技术的渠道；无刑事处罚。</span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://media.bis.gov/press-release/commerce-further-restricts-chinas-artificial-intelligence-advanced-computing-capabilities">BIS</a> &middot; Mar 2025</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="notyet-h">
+        <div class="wrap">
+          <h2 id="notyet-h"><span lang="en">Reported, but not a case</span><span lang="zh">有报道，但尚未立案</span></h2>
+          <div class="cases">
+            <details class="case" id="megaspeed">
+              <summary>
+                <span class="who"><span class="who-nm">Megaspeed &middot; Speedmatrix</span><span class="who-sub"><span lang="en">Singapore, with a Malaysian unit</span><span lang="zh">新加坡，设有马来西亚子公司</span></span></span>
+                <span class="juris"><span lang="en">Singapore / US probe</span><span lang="zh">新加坡 / 美国调查</span></span>
+                <span class="status"><span class="st none"><span lang="en">Reported probe, not charged</span><span lang="zh">据报被调查，未被起诉</span></span></span>
+                <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>
+              </summary>
+              <div class="case-body">
+                <dl class="case-detail">
+                  <dt><span lang="en">Reported</span><span lang="zh">报道内容</span></dt>
+                  <dd><span lang="en">Reported to be under US investigation for possible diversion of Nvidia chips.</span><span lang="zh">据报正因可能转运英伟达芯片而受美国调查。</span></dd>
+                  <dt><span lang="en">Status</span><span lang="zh">状态</span></dt>
+                  <dd><span lang="en"><strong>No charge, fine or listing has been found.</strong> The company denies wrongdoing. Treat this as a reported probe, not a case.</span><span lang="zh"><strong>未发现任何指控、罚款或列名。</strong>该公司否认不当行为。应视为据报的调查，而非已立案件。</span> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span></dd>
+                </dl>
+                <ul class="srcs">
+                  <li class="src"><a href="https://www.tomshardware.com/tech-industry/policy/nvidia-ceo-jensen-huang-may-have-been-the-target-of-a-spy-plot-through-chinese-intelligence-asset-report-claims-exec-from-firm-under-investigation-for-smuggling-banned-ai-chips-to-china-accused-of-being-a-spy-was-also-feeding-information-to-beijing">Tom's Hardware</a> &middot; 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></li>
+                </ul>
+              </div>
+            </details>
+          </div>
+          <p class="intro" style="margin-top: 18px">
+            <span lang="en">No prosecutions were found in Malaysia, Hong Kong, Japan or Thailand. No BIS administrative fine against a company for AI-chip exports was found &mdash; a &ldquo;Bosch $36M&rdquo; item seen in search results is Huawei-related and unverified, so it is excluded.</span
+            ><span lang="zh">未发现马来西亚、香港、日本或泰国有相关起诉。未发现 BIS 就 AI 芯片出口对任何公司处以行政罚款&mdash;&mdash;搜索结果中出现的&ldquo;博世 3600 万美元&rdquo;与华为相关且未经证实，故予排除。</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="pattern-h">
+        <div class="wrap">
+          <h2 id="pattern-h"><span lang="en">What the pattern shows</span><span lang="zh">案件显露的规律</span></h2>
+          <p class="intro">
+            <span lang="en">Seizures &mdash; and a roughly 33% stock drop for Super Micro, which was not charged &mdash; have hit before any ruling. Intermediary companies are rarely charged; their staff are. BIS listings fall on Chinese buyers, not on the people doing the diverting. Outside the US, Singapore and Taiwan reached for fraud and forgery law, not export-control law.</span
+            ><span lang="zh">查扣&mdash;&mdash;以及未被起诉的美超微约 33% 的股价下跌&mdash;&mdash;都发生在任何判决之前。中间商公司很少被起诉，被起诉的是其员工。BIS 清单针对的是中国买家，而非实施转运的人。在美国以外，新加坡和台湾援引的是欺诈和伪造文书法，而非出口管制法。</span>
+          </p>
+          <p class="src"><a href="https://www.cnbc.com/2026/03/19/us-tech-execs-smuggled-nvidia-chips-to-china-prosecutors-say.html">CNBC</a> &middot; 19 Mar 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span> &middot; <a href="https://media.bis.gov/press-release/commerce-further-restricts-chinas-artificial-intelligence-advanced-computing-capabilities">BIS</a> &middot; Mar 2025</p>
+
+          <p class="intro" style="margin-top: 28px">
+            <span lang="en"><strong>Gaps.</strong> The Operation Gatekeeper sentence (set for 18 Feb 2026) and the ALX Solutions outcome were not found. Court dockets were not checked, so every US matter is an allegation unless a guilty plea is noted. Plea details for several cases rest on press reports, tagged above.</span
+            ><span lang="zh"><strong>空白之处。</strong>&ldquo;守门人行动&rdquo;的量刑（原定 2026 年 2 月 18 日）及 ALX Solutions 的结果均未查到。本站未核查法院案卷，故除非注明已认罪，每宗美国案件均属指控。多宗案件的认罪细节依据媒体报道，已在上方标注。</span>
+          </p>
+
+          <a class="more" href="jurisdictions.html" data-keep-lang><span lang="en">How jurisdictions compare</span><span lang="zh">各司法辖区对比</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <nav class="foot-nav" aria-label="Footer">
+          <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+          <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+          <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+          <a href="read.html" data-keep-lang><span lang="en">Read</span><span lang="zh">深度阅读</span></a>
+          <a href="qa.html" data-keep-lang><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a>
+          <a href="routes.html" data-keep-lang><span lang="en">Lawful routes</span><span lang="zh">合规路径</span></a>
+          <a href="jurisdictions.html" data-keep-lang><span lang="en">Jurisdictions</span><span lang="zh">司法辖区</span></a>
+          <a href="cases.html" data-keep-lang><span lang="en">Enforcement cases</span><span lang="zh">执法案例</span></a>
+          <a href="market.html" data-keep-lang><span lang="en">Market</span><span lang="zh">市场</span></a>
+          <a href="glossary.html" data-keep-lang><span lang="en">Glossary</span><span lang="zh">术语表</span></a>
+        </nav>
+        <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">Check any transaction with export-control counsel. State of the law as of 31 Oct 2026.</span><span lang="zh">任何交易请咨询出口管制律师。法规状态截至 2026 年 10 月 31 日。</span></p>
+      </div>
+    </footer>
+    <script src="site.js"></script>
+  </body>
+</html>

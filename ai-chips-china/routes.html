@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Lawful routes — AI Chips &amp; China</title>
+    <meta name="title-en" content="Lawful routes — AI Chips &amp; China" />
+    <meta name="title-zh" content="合规路径 — AI 芯片与中国" />
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .head .lede { max-width: 44em; }
+      .lawful-note { color: var(--ink-2); font-size: 15px; max-width: 48em; }
+
+      .gate2 { display: grid; gap: 10px; max-width: 48em; }
+      .gate2 p { color: var(--ink-2); font-size: 16px; line-height: 1.55; }
+      .gate2 p b { color: var(--ink); font-weight: 650; }
+
+      .sum td:first-child, .sum th:first-child { font-weight: 700; width: 2.6em; font-variant-numeric: tabular-nums; }
+      .sum td a { color: var(--ink); text-decoration: none; }
+      .sum td a:hover { text-decoration: underline; text-underline-offset: 3px; }
+      .sum .st { white-space: nowrap; }
+
+      .routes-full { display: grid; gap: 0; }
+      .route { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 clamp(16px, 2.6vw, 30px); padding: clamp(28px, 4vw, 46px) 0; border-top: 1px solid var(--rule); scroll-margin-top: 90px; }
+      .route:first-child { border-top: 0; padding-top: clamp(8px, 1.4vw, 16px); }
+      .route-letter { font-size: clamp(34px, 5vw, 54px); font-weight: 700; line-height: 0.9; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+      .route-main { display: grid; gap: 14px; min-width: 0; max-width: 56em; }
+      .route-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+      .route-title h3 { font-size: clamp(19px, 2.1vw, 23px); font-weight: 650; line-height: 1.25; }
+      html[data-lang="zh"] .route-title h3 { line-height: 1.4; }
+      .route-main > p { color: var(--ink-2); font-size: 16px; line-height: 1.55; }
+      .route-main > p b { color: var(--ink); font-weight: 650; }
+
+      .lbl { display: block; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; margin-bottom: 7px; }
+      html[data-lang="zh"] .lbl { letter-spacing: 0; text-transform: none; }
+
+      .conds ol { list-style: none; display: grid; gap: 9px; counter-reset: c; }
+      .conds li { position: relative; padding-left: 2.2em; color: var(--ink-2); font-size: 15px; line-height: 1.5; counter-increment: c; }
+      .conds li::before { content: counter(c); position: absolute; left: 0; top: 0; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-3); font-size: 13px; }
+
+      .catch { border-left: 1px solid var(--rule); padding-left: 16px; }
+      .catch p { color: var(--ink-2); font-size: 15px; line-height: 1.55; }
+      .catch p b { color: var(--ink); font-weight: 650; }
+
+      .route.closed .route-letter, .route.closed .route-main > p, .route.closed .conds li, .route.closed .catch p { color: var(--ink-3); }
+      .route.closed .route-title h3 { color: var(--ink-2); }
+
+      .watch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 72px); }
+      .watch-item { padding: 24px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; align-content: start; }
+      .watch-when { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.03em; }
+      html[data-lang="zh"] .watch-when { letter-spacing: 0; }
+      .watch-item h3 { font-size: 18px; font-weight: 650; line-height: 1.3; }
+      .watch-item p { color: var(--ink-2); font-size: 15px; line-height: 1.55; }
+      .watch-item p b { color: var(--ink); font-weight: 650; }
+
+      @media (max-width: 720px) {
+        .watch { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 560px) {
+        .route { grid-template-columns: 1fr; gap: 10px; }
+        .route-letter { font-size: 30px; }
+      }
+    </style>
+  </head>
+  <body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html" data-keep-lang>
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="5" y="2" width="3" height="18" fill="currentColor" />
+        <rect x="14" y="2" width="3" height="18" fill="var(--cn)" />
+        <circle cx="11" cy="11" r="3" fill="currentColor" />
+      </svg>
+      <span lang="en">AI Chips &amp; China</span
+      ><span lang="zh">AI 芯片与中国</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" data-keep-lang
+        ><span lang="en">Overview</span><span lang="zh">全景</span></a
+      >
+      <a href="chips.html" data-keep-lang
+        ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+      >
+      <a href="timeline.html" data-keep-lang
+        ><span lang="en">Rules timeline</span
+        ><span lang="zh">规则时间线</span></a
+      >
+      <a href="read.html" data-keep-lang
+        ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+      >
+      <a href="qa.html" data-keep-lang
+        ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+      >
+    </nav>
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" data-set="zh" aria-pressed="false">中文</button>
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Main">
+  <a href="index.html" data-keep-lang
+    ><span lang="en">Overview</span><span lang="zh">全景</span></a
+  >
+  <a href="chips.html" data-keep-lang
+    ><span lang="en">Chips</span><span lang="zh">芯片查询</span></a
+  >
+  <a href="timeline.html" data-keep-lang
+    ><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a
+  >
+  <a href="read.html" data-keep-lang
+    ><span lang="en">Read</span><span lang="zh">深度阅读</span></a
+  >
+  <a href="qa.html" data-keep-lang
+    ><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a
+  >
+</nav>
+
+<main>
+  <div class="wrap head">
+    <h1><span lang="en">Lawful routes</span><span lang="zh">合规路径</span></h1>
+    <p class="lede">
+      <span lang="en">There are seven lawful ways to put chips or compute in the hands of a Chinese customer. Each is set out below with its exact conditions and what can close it. One rule sits above them all: every route into the mainland needs a <b>second yes</b> — Beijing's own approval, which is unpublished and granted case by case.</span
+      ><span lang="zh">共有七条合法路径可将芯片或算力交付中国客户。下文逐条列出其具体条件及可能使其关闭的因素。所有路径之上还有一条铁律：任何进入中国大陆的路径都需要<b>第二道许可</b>——北京自己的批准，而这道批准并不公开，且逐案发放。</span>
+    </p>
+    <p class="lawful-note">
+      <span lang="en">"Lawful" here means lawful under US export controls <b>and</b> under the local law where the activity happens.</span
+      ><span lang="zh">此处"合法"指既符合美国出口管制，<b>又</b>符合活动发生地的当地法律。</span>
+    </p>
+    <p class="asof">
+      <span lang="en">As of 31 Oct 2026 · every fact links its source</span
+      ><span lang="zh">截至 2026 年 10 月 31 日 · 每条事实均附来源</span>
+    </p>
+  </div>
+
+  <section class="block" aria-labelledby="glance-h">
+    <div class="wrap">
+      <h2 id="glance-h"><span lang="en">At a glance</span><span lang="zh">一览</span></h2>
+      <p class="intro"><span lang="en">The seven routes and where each stands. Tap a route to jump to its conditions.</span><span lang="zh">七条路径及其现状。点击路径名可跳至其条件。</span></p>
+      <div class="tbl-wrap">
+        <table class="sum stack">
+          <thead><tr><th></th><th><span lang="en">Route</span><span lang="zh">路径</span></th><th><span lang="en">Status</span><span lang="zh">状态</span></th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td><a href="#route-a" data-keep-lang><span lang="en">US-licensed H200-class, shipped from the US</span><span lang="zh">经美国许可的 H200 级芯片，自美国发货</span></a></td><td><span class="st case"><span lang="en">Open, narrow</span><span lang="zh">开放，范围窄</span></span></td></tr>
+            <tr><td>B</td><td><a href="#route-b" data-keep-lang><span lang="en">Products below every US threshold</span><span lang="zh">低于所有美国门槛的产品</span></a></td><td><span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span></td></tr>
+            <tr><td>C</td><td><a href="#route-c" data-keep-lang><span lang="en">H20 / MI308 under granted licenses</span><span lang="zh">已获许可的 H20 / MI308</span></a></td><td><span class="st letter"><span lang="en">Open, stalled</span><span lang="zh">开放，停滞</span></span></td></tr>
+            <tr><td>D</td><td><a href="#route-d" data-keep-lang><span lang="en">Chinese domestic chips (Huawei Ascend)</span><span lang="zh">国产芯片（华为昇腾）</span></a></td><td><span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span></td></tr>
+            <tr><td>E</td><td><a href="#route-e" data-keep-lang><span lang="en">Cloud compute from a non-Chinese-owned site abroad</span><span lang="zh">境外非中资数据中心提供云算力</span></a></td><td><span class="st case"><span lang="en">Open, watched</span><span lang="zh">开放，受严查</span></span></td></tr>
+            <tr><td>F</td><td><a href="#route-f" data-keep-lang><span lang="en">Chinese-owned data centers abroad</span><span lang="zh">境外中资数据中心</span></a></td><td><span class="st deny"><span lang="en">Existing kit only</span><span lang="zh">仅限存量设备</span></span></td></tr>
+            <tr><td>G</td><td><a href="#route-g" data-keep-lang><span lang="en">UAE / Gulf hubs</span><span lang="zh">阿联酋 / 海湾枢纽</span></a></td><td><span class="st deny"><span lang="en">Not a route to China</span><span lang="zh">不通往中国</span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gate2" style="margin-top:20px">
+        <p><span lang="en"><b>The second gate.</b> Every open route into the mainland needs Beijing's approval too. It is <b>unpublished</b> and granted case by case, and it steers buyers toward domestic chips. A US license or a below-threshold chip clears only the first gate.</span><span lang="zh"><b>第二道关口。</b>每一条通往中国大陆的开放路径还须得到北京批准。这道批准<b>并不公开</b>、逐案发放，并引导买家转向国产芯片。美国许可证或低于门槛的芯片只过了第一道关。</span></p>
+        <p class="src"><a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="routes-h">
+    <div class="wrap">
+      <h2 id="routes-h"><span lang="en">The seven routes</span><span lang="zh">七条路径</span></h2>
+      <p class="intro"><span lang="en">Routes A to E are open to varying degrees; F and G are closed or do not lead to China.</span><span lang="zh">路径 A 至 E 在不同程度上开放；F 与 G 已关闭或并不通往中国。</span></p>
+      <div class="routes-full">
+
+        <article class="route" id="route-a">
+          <span class="route-letter" aria-hidden="true">A</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">Licensed H200-class chips, exported from the US to end users in China or Macau</span><span lang="zh">经许可的 H200 级芯片，自美国出口至中国或澳门的终端用户</span></h3>
+              <span class="st case"><span lang="en">Open, narrow</span><span lang="zh">开放，范围窄</span></span>
+            </div>
+            <p><span lang="en"><b>Covers</b> chips with TPP below 21,000 and memory bandwidth below 6,500 GB/s that are sold commercially in the US — the H200, the MI325X and less advanced chips.</span><span lang="zh"><b>适用于</b> TPP 低于 21,000、显存带宽低于 6,500 GB/s 且在美国有商业销售的芯片——H200、MI325X 及更低端的芯片。</span></p>
+            <div class="conds">
+              <span class="lbl"><span lang="en">Nine conditions — the applicant certifies all of them, or review falls back to presumption of denial</span><span lang="zh">九项条件——申请人须全部承诺，否则审查退回推定拒绝</span></span>
+              <ol>
+                <li><span lang="en">US shipment numbers and full specs: TPP, memory bandwidth, interconnect bandwidth, co-packaged DRAM and peak power.</span><span lang="zh">美国出货量及完整规格：TPP、显存带宽、互联带宽、共封装显存及峰值功耗。</span></li>
+                <li><span lang="en">Enough US supply: no delay to US orders, and no foundry capacity pulled away from US customers.</span><span lang="zh">美国供给充足：不得延误美国订单，不得从美国客户处挪用代工产能。</span></li>
+                <li><span lang="en">Total TPP shipped to China/Macau no more than <b>50%</b> of the TPP of the same product shipped to US end users.</span><span lang="zh">运往中国/澳门的总 TPP 不得超过同款产品运往美国终端用户总 TPP 的 <b>50%</b>。</span></li>
+                <li><span lang="en">No military, military-intelligence or WMD end use or end user, and no Entity List or §744.8 party — including through remote access.</span><span lang="zh">不得用于军事、军事情报或大规模杀伤性武器用途或用户，不得涉及实体清单或 §744.8 主体——包括通过远程访问。</span></li>
+                <li><span lang="en">The consignee's know-your-customer (KYC) procedures to block unauthorized remote access, filed with BIS.</span><span lang="zh">收货方用于阻止未经授权远程访问的"了解你的客户"（KYC）程序，须报备 BIS。</span></li>
+                <li><span lang="en">A list of cloud (IaaS) remote users located in, or headquartered in, Belarus, China, Cuba, Iran, Macau, North Korea, Russia or Venezuela.</span><span lang="zh">一份位于或总部设在白俄罗斯、中国、古巴、伊朗、澳门、朝鲜、俄罗斯或委内瑞拉的云（IaaS）远程用户名单。</span></li>
+                <li><span lang="en">If the consignee is a cloud provider: no transfer of model weights to undisclosed users, and no remote access to trained models for barred parties.</span><span lang="zh">若收货方为云服务商：不得向未披露用户转移模型权重，不得向被禁主体提供对已训练模型的远程访问。</span></li>
+                <li><span lang="en">A description of the site's physical security.</span><span lang="zh">对站点物理安全的说明。</span></li>
+                <li><span lang="en">Every shipment tested by an independent US lab — US-headquartered, not China-controlled, no stake in the deal — before export.</span><span lang="zh">每批出货在出口前须经独立的美国实验室检测——总部在美国、不受中国控制、在交易中无利益关系。</span></li>
+              </ol>
+            </div>
+            <p><span lang="en"><b>Cost.</b> A 25% Section 232 tariff applies when the chips enter the US for testing. Nvidia says it cannot pass this cost on.</span><span lang="zh"><b>成本。</b>芯片入境美国接受检测时须缴纳 25% 的 232 条款关税。英伟达称无法将这一成本转嫁出去。</span></p>
+            <p><span lang="en"><b>Who can use it.</b> In practice only the chip maker (Nvidia, AMD) can apply, because conditions 1 to 3 need its own US sales and foundry data (our reading). Licenses went to Nvidia for the H200 and AMD for the MI325 in Feb 2026. A third party can only appear as a named Chinese end user or consignee, or as a US distributor working under the maker's license.</span><span lang="zh"><b>谁能使用。</b>实际上只有芯片厂商（英伟达、AMD）能提出申请，因为第 1 至 3 项条件需要其自身的美国销售及代工数据（我们的解读）。2026 年 2 月，英伟达的 H200 和 AMD 的 MI325 各自获批。第三方只能作为被指名的中国终端用户或收货方，或在厂商许可证下运营的美国分销商出现。</span></p>
+            <div class="catch">
+              <p><span class="lbl"><span lang="en">The catch</span><span lang="zh">关键限制</span></span><span lang="en">Nine conditions, an independent US lab test on every shipment, a 25% tariff, and in practice only the maker can apply. Beijing then caps the volume: ByteDance and Tencent each received about <b>10,000</b> chips by Aug 2026 against some <b>75,000</b> licensed <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>, and Nvidia says it shipped only "a fraction of the allowed" amount. It does not cover reexports from Taiwan, Singapore or other third countries, resale inside China, or China-headquartered firms abroad — all stay <span class="term">presumption of denial<small>推定拒绝</small></span>.</span><span lang="zh">九项条件、每批出货均须经独立美国实验室检测、25% 关税，且实际上只有厂商能申请。北京随后对放行量设限：截至 2026 年 8 月，字节跳动与腾讯各自仅获约 <b>1 万</b>片，而获批许可约 <b>7.5 万</b>片 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>；英伟达称其仅出货了"获准数量的一小部分"。此路径不涵盖经台湾、新加坡或其他第三国的再出口、在中国境内转售，以及总部位于中国但身处境外的企业——以上均维持<span class="term">推定拒绝<small>presumption of denial</small></span>。</span></p>
+            </div>
+            <p class="src"><a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026 · <a href="https://www.federalregister.gov/documents/2026/01/20/2026-01052/adjusting-imports-of-semiconductors-semiconductor-manufacturing-equipment-and-their-derivative">Proclamation 11002</a> · 20 Jan 2026 · <a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026 · <a href="https://asiatimes.com/2026/09/after-trump-xi-summit-nvidia-rtx-pro-5500-gains-export-prospects/">Asia Times</a> · 29 Sep 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p>
+          </div>
+        </article>
+
+        <article class="route" id="route-b">
+          <span class="route-letter" aria-hidden="true">B</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">Products below every US threshold — no US license</span><span lang="zh">低于所有美国门槛的产品——无需美国许可</span></h3>
+              <span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span>
+            </div>
+            <p><span lang="en"><b>Covers</b> items that are not 3A090 or 4A090 and not named in an is-informed letter, so an ordinary commercial buyer needs no US license to China. Examples: the RTX PRO 5500 (reported compliant, no official classification found; Chinese orders over 3M units <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>), RTX 4090D, RTX 5090D / D V2 and RTX PRO 6000D.</span><span lang="zh"><b>适用于</b>既非 3A090 或 4A090、又未被告知函点名的物项，普通商业买家对华采购无需美国许可。例如：RTX PRO 5500（据报符合规定，未见官方分类；中国订单逾 300 万片 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>）、RTX 4090D、RTX 5090D / D V2 及 RTX PRO 6000D。</span></p>
+            <p><span lang="en"><b>Conditions that still apply.</b> No Entity List party (and, if the Affiliates Rule returns on 10 Nov 2026, no company 50% or more owned by one); no military or military-intelligence end use; no knowledge of diversion. Get the maker's ECCN in writing before relying on "uncontrolled."</span><span lang="zh"><b>仍适用的条件。</b>不得涉及实体清单主体（且若关联方规则于 2026 年 11 月 10 日恢复，不得涉及被其持股 50% 或以上的公司）；不得用于军事或军事情报用途；不得明知存在转移。在依赖"不受管制"之前，须取得厂商书面出具的 ECCN。</span></p>
+            <div class="catch">
+              <p><span class="lbl"><span lang="en">The catch</span><span lang="zh">关键限制</span></span><span lang="en">China-side blocks already hit the RTX PRO 6000D (Sep 2025) and, as reported, the 5090D V2. Supply is rationed to <b>5 to 10%</b> of orders <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>. And the US can add any product to an is-informed letter overnight, as it did with the H20 in Apr 2025.</span><span lang="zh">中方封锁已波及 RTX PRO 6000D（2025 年 9 月），据报还包括 5090D V2。供货按订单的 <b>5% 至 10%</b> 配给 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>。且美国可一夜之间将任何产品列入告知函，正如 2025 年 4 月对 H20 的做法。</span></p>
+            </div>
+            <p class="src"><a href="https://www.federalregister.gov/documents/2023/10/25/2023-23055/implementation-of-additional-export-controls-certain-advanced-computing-items-supercomputer-and">88 FR 73458</a> · 25 Oct 2023 · <a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/20/bytedance-alibaba-tencent-place-over-us35-billion-worth-of-nvidia-chip-orders-reuters-exclusive/">Reuters via BNN</a> · 20 Oct 2026 · <a href="https://www.trendforce.com/news/2026/10/21/news-nvidia-rtx-pro-5500-reportedly-draws-35b-in-china-orders-with-supply-seen-at-just-5-10/">TrendForce</a> · 21 Oct 2026 · <a href="https://www.federalregister.gov/documents/2025/09/30/2025-19001/expansion-of-end-user-controls-to-cover-affiliates-of-certain-listed-entities">90 FR 47201</a> · 30 Sep 2025</p>
+          </div>
+        </article>
+
+        <article class="route" id="route-c">
+          <span class="route-letter" aria-hidden="true">C</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">H20 / MI308 under licenses already granted</span><span lang="zh">已获许可的 H20 / MI308</span></h3>
+              <span class="st letter"><span lang="en">Open, stalled</span><span lang="zh">开放，停滞</span></span>
+            </div>
+            <p><span lang="en"><b>Covers</b> H20 and MI308 shipped under individual BIS licenses issued under the April 2025 letters. H20 licenses date from Aug 2025; MI308 shipments began at the end of fiscal 2025.</span><span lang="zh"><b>适用于</b>依 2025 年 4 月告知函发放的 BIS 个案许可下出货的 H20 与 MI308。H20 许可始于 2025 年 8 月；MI308 出货自 2025 财年末开始。</span></p>
+            <p><span lang="en"><b>Conditions.</b> Whatever each license says — the terms are not public — plus a reported informal <b>15% revenue share</b> said to be agreed in Aug 2025. This figure is <b>press-only and is not in any SEC filing</b> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span>.</span><span lang="zh"><b>条件。</b>以各许可证的规定为准——条款不公开——另有据报于 2025 年 8 月非正式商定的 <b>15% 营收分成</b>。该数字<b>仅见于媒体，未出现在任何 SEC 文件中</b> <span class="tag"><span lang="en">unconfirmed</span><span lang="zh">未确认</span></span>。</span></p>
+            <div class="catch">
+              <p><span class="lbl"><span lang="en">The catch</span><span lang="zh">关键限制</span></span><span lang="en">Beijing discourages the purchase. Nvidia says it "was unable to sell our H20 inventory" because of PRC restrictions.</span><span lang="zh">北京不鼓励采购。英伟达称因中方限制"无法售出 H20 库存"。</span></p>
+            </div>
+            <p class="src"><a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026 · <a href="https://www.sec.gov/Archives/edgar/data/2488/000000248826000123/amd-20260627.htm">AMD 10-Q</a> · 5 Aug 2026 · <a href="https://builtin.com/articles/trump-lifts-ai-chip-ban-china-nvidia">builtin.com</a> · checked 31 Oct 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p>
+          </div>
+        </article>
+
+        <article class="route" id="route-d">
+          <span class="route-letter" aria-hidden="true">D</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">Chinese domestic accelerators (Huawei Ascend and others)</span><span lang="zh">国产加速卡（华为昇腾等）</span></h3>
+              <span class="st free"><span lang="en">Open</span><span lang="zh">开放</span></span>
+            </div>
+            <p><span lang="en"><b>Covers</b> Chinese buyers using Huawei Ascend and other domestic chips. Beijing favours this route — state-funded data centers must use domestic chips from Nov 2025.</span><span lang="zh"><b>适用于</b>使用华为昇腾等国产芯片的中国买家。北京力推此路径——自 2025 年 11 月起，国家出资的数据中心须采用国产芯片。</span></p>
+            <div class="catch">
+              <p><span class="lbl"><span lang="en">The catch</span><span lang="zh">关键限制</span></span><span lang="en">For a non-Chinese company, BIS says using certain Huawei Ascend chips "anywhere in the world" may breach the EAR — General Prohibition 10, because they are built with US technology. And Huawei says it cannot yet meet domestic demand <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>.</span><span lang="zh">对非中国企业而言，BIS 称在"全球任何地方"使用某些华为昇腾芯片都可能违反 EAR——即第 10 项一般禁令，因为它们使用了美国技术制造。且华为称尚无法满足国内需求 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>。</span></p>
+            </div>
+            <p class="src"><a href="https://www.tomshardware.com/tech-industry/semiconductors/china-bans-foreign-ai-chips-from-state-funded-data-centers">Tom's Hardware</a> · checked 31 Oct 2026 · <a href="https://www.bis.gov/press-release/department-commerce-announces-rescission-biden-era-artificial-intelligence-diffusion-rule-strengthens">BIS</a> · 13 May 2025 · <a href="https://asiatimes.com/2026/09/after-trump-xi-summit-nvidia-rtx-pro-5500-gains-export-prospects/">Asia Times</a> · 29 Sep 2026 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p>
+          </div>
+        </article>
+
+        <article class="route" id="route-e">
+          <span class="route-letter" aria-hidden="true">E</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">Cloud or remote compute from a data center outside China that is not Chinese-owned</span><span lang="zh">境外非中资数据中心提供的云或远程算力</span></h3>
+              <span class="st case"><span lang="en">Open, watched</span><span lang="zh">开放，受严查</span></span>
+            </div>
+            <p><span lang="en"><b>Covers</b> renting compute rather than shipping chips. Under current BIS practice, renting compute is "generally not treated as an export of the chips themselves." A pending bill (route E's threat, below) shows the gap is still open.</span><span lang="zh"><b>适用于</b>租用算力而非运送芯片。按 BIS 现行做法，租用算力"一般不视为芯片本身的出口"。一项待审法案（见下文对路径 E 的威胁）表明这一空隙仍然存在。</span></p>
+            <div class="conds">
+              <span class="lbl"><span lang="en">Conditions</span><span lang="zh">条件</span></span>
+              <ol>
+                <li><span lang="en">The operator must have obtained its chips lawfully. Non-China-owned operators in Singapore, Malaysia (a Malaysian permit is needed) or Japan need no US license for most chips. In the UAE, only listed parties — G42, Core42, eight US hyperscalers — get license-free chips.</span><span lang="zh">运营方须合法取得其芯片。新加坡、马来西亚（需马来西亚许可）或日本的非中资运营方，对多数芯片无需美国许可。在阿联酋，仅被列名主体——G42、Core42、八家美国云厂商——可获免许可芯片。</span></li>
+                <li><span lang="en">No service to Entity List parties, and no knowing support of military-intelligence or WMD end uses — including AI training for such parties headquartered in D:5 or Macau.</span><span lang="zh">不得向实体清单主体提供服务，不得明知支持军事情报或大规模杀伤性武器用途——包括为总部位于 D:5 或澳门的此类主体进行 AI 训练。</span></li>
+                <li><span lang="en">Any license the operator holds may forbid China-headquartered users; check its conditions. The H200-route licenses (A) explicitly police remote users.</span><span lang="zh">运营方持有的任何许可证都可能禁止总部位于中国的用户；须核对其条件。H200 路径（A）的许可证明确对远程用户加以管控。</span></li>
+              </ol>
+            </div>
+            <div class="catch">
+              <p><span class="lbl"><span lang="en">The catch</span><span lang="zh">关键限制</span></span><span lang="en">The highest-scrutiny route. Megaspeed — data centers in Malaysia and Indonesia that "appeared to be remotely serving Chinese clients" — is under investigation by Singapore and by the US, where DOJ has taken over from Commerce. No verdict yet <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>. If the Remote Access Security Act or an NDAA version passes, this route may close for China-headquartered customers.</span><span lang="zh">这是受审查最严的路径。Megaspeed——位于马来西亚和印尼、"似在远程服务中国客户"的数据中心——正受新加坡与美国调查，美方已由司法部接手商务部。尚无定论 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span>。若《远程访问安全法》或某一版本的 NDAA 通过，此路径或对总部位于中国的客户关闭。</span></p>
+            </div>
+            <p class="src"><a href="https://computelaw.blog/deals/export-control-compliance-advanced-ai-chips/">computelaw.blog</a> · May 2026 · <a href="https://www.federalregister.gov/documents/2026/07/14/2026-14132/enhanced-favorable-treatment-for-the-united-arab-emirates-under-the-export-administration">91 FR 43034</a> · 14 Jul 2026 · <a href="https://asiatimes.com/2026/06/nvidia-gpu-crackdown-hits-china-linked-southeast-asia-data-centers/">Asia Times</a> · 4 Jun 2026 · <a href="https://www.cnbc.com/2025/10/10/singapore-us-investigate-nvidia-client-megaspeed-export-controls-violation.html">CNBC</a> · 10 Oct 2025 <span class="tag"><span lang="en">press</span><span lang="zh">媒体</span></span></p>
+          </div>
+        </article>
+
+        <article class="route closed" id="route-f">
+          <span class="route-letter" aria-hidden="true">F</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">Chinese-owned data centers outside China</span><span lang="zh">境外中资数据中心</span></h3>
+              <span class="st deny"><span lang="en">Existing kit only</span><span lang="zh">仅限存量设备</span></span>
+            </div>
+            <p><span lang="en"><b>Existing kit.</b> Bona fide data-center operators "are not required to cease the ongoing use, storage, disposal, or servicing" of the chips they already hold, "until further notice."</span><span lang="zh"><b>存量设备。</b>真正的数据中心运营方"在另行通知前"，"无需停止对已持有芯片的持续使用、存储、处置或维护"。</span></p>
+            <p><span lang="en"><b>New chips.</b> A license is required in every country for entities headquartered in, or with a parent in, China or Macau — with a <span class="term">presumption of denial<small>推定拒绝</small></span> even for H200-class chips. So a Chinese firm's own subsidiary abroad has a harder path than the same firm's site inside China, which can use route A.</span><span lang="zh"><b>新芯片。</b>总部位于或母公司位于中国或澳门的主体，在任何国家采购都需要许可证——即便是 H200 级芯片也适用<span class="term">推定拒绝<small>presumption of denial</small></span>。因此，一家中国企业设在境外的子公司，其路径比该企业在中国境内的站点（可走路径 A）更难。</span></p>
+            <p class="src"><a href="https://www.bis.gov/media/documents/bis-guidance-may-31-2026.pdf">BIS guidance</a> · 31 May 2026 · <a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026</p>
+          </div>
+        </article>
+
+        <article class="route closed" id="route-g">
+          <span class="route-letter" aria-hidden="true">G</span>
+          <div class="route-main">
+            <div class="route-title">
+              <h3><span lang="en">UAE and Gulf hubs</span><span lang="zh">阿联酋与海湾枢纽</span></h3>
+              <span class="st deny"><span lang="en">Not a route to China</span><span lang="zh">不通往中国</span></span>
+            </div>
+            <p><span lang="en">Not a route to Chinese customers. The UAE rule keeps the license requirement for D:5-headquartered parties, and Commerce conditioned the G42 and Humain approvals on security and reporting. A China-headquartered party cannot use a Gulf hub to reach the chips license-free.</span><span lang="zh">并非通往中国客户的路径。阿联酋规则对总部位于 D:5 的主体保留许可要求，且商务部对 G42 与 Humain 的批准附加了安全与报告条件。总部位于中国的主体无法借海湾枢纽免许可取得芯片。</span></p>
+            <p class="src"><a href="https://www.federalregister.gov/documents/2026/07/14/2026-14132/enhanced-favorable-treatment-for-the-united-arab-emirates-under-the-export-administration">91 FR 43034</a> · 14 Jul 2026 · <a href="https://www.cov.com/en/news-and-insights/insights/2026/07/us-department-of-commerce-grants-the-uae-additional-license-exception-eligibility-and-authorizes-certain-uae-parties-to-receive-advanced-computing-items-without-a-license">Covington</a> · checked 31 Oct 2026 · <a href="https://www.commerce.gov/news/press-releases/2025/11/statement-uae-and-saudi-chip-exports">Commerce</a> · 19 Nov 2025</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="notroute-h">
+    <div class="wrap">
+      <h2 id="notroute-h"><span lang="en">Not a lawful route</span><span lang="zh">非合规路径</span></h2>
+      <p class="intro"><span lang="en">Four paths that look tempting but are not lawful. Each stays presumption of denial, and several are live criminal cases.</span><span lang="zh">四条看似可行却不合法的路径。每条均维持推定拒绝，其中数条正处于刑事诉讼中。</span></p>
+      <div class="tbl-wrap">
+        <table class="stack">
+          <thead><tr><th><span lang="en">Path</span><span lang="zh">做法</span></th><th><span lang="en">Why not</span><span lang="zh">为何不行</span></th></tr></thead>
+          <tbody>
+            <tr><td><span lang="en">Reexport of controlled chips from Taiwan, Singapore, Malaysia or Hong Kong into China</span><span lang="zh">经台湾、新加坡、马来西亚或香港将受管芯片再出口至中国</span></td><td><span lang="en">Presumption of denial for reexports, plus local permit and false-declaration offences.</span><span lang="zh">再出口适用推定拒绝，另构成当地许可与虚假申报违法。</span></td></tr>
+            <tr><td><span lang="en">Reselling controlled chips already inside China</span><span lang="zh">转售已在中国境内的受管芯片</span></td><td><span lang="en">In-country transfers are presumption of denial.</span><span lang="zh">境内转移适用推定拒绝。</span></td></tr>
+            <tr><td><span lang="en">Blackwell (B200 / B300 / B30A) to any Chinese party</span><span lang="zh">向任何中国主体供应 Blackwell（B200 / B300 / B30A）</span></td><td><span lang="en">Above the H200 line, so presumption of denial; the B30A is blocked.</span><span lang="zh">高于 H200 线，故推定拒绝；B30A 已被封锁。</span></td></tr>
+            <tr><td><span lang="en">Buying through a non-China front company, then letting the Chinese parent use the chips</span><span lang="zh">借非中国的空壳公司采购，再交由中国母公司使用</span></td><td><span lang="en">The headquarters rule applies to the ultimate parent, and misstating the end user is fraud or false declaration.</span><span lang="zh">总部规则看最终母公司，谎报终端用户构成欺诈或虚假申报。</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="src" style="margin-top:14px"><a href="https://public-inspection.federalregister.gov/2026-00789.pdf">91 FR 1684</a> · 15 Jan 2026 · <a href="https://www.bis.gov/media/documents/bis-guidance-may-31-2026.pdf">BIS 31 May 2026</a></p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="watch-h">
+    <div class="wrap">
+      <h2 id="watch-h"><span lang="en">What could change</span><span lang="zh">可能的变化</span></h2>
+      <p class="intro"><span lang="en">Two pending measures would narrow the open routes. Both are carried here as the law stands on 31 Oct 2026, not as settled fact.</span><span lang="zh">两项待定措施可能收窄现有的开放路径。两者均按 2026 年 10 月 31 日的法律状态列出，并非既成事实。</span></p>
+      <div class="watch">
+        <div class="watch-item">
+          <span class="watch-when"><span lang="en">Pending bill · passed House 12 Jan 2026</span><span lang="zh">待审法案 · 2026 年 1 月 12 日众议院通过</span></span>
+          <h3><span lang="en">Remote Access Security Act (H.R. 2683) — threatens route E</span><span lang="zh">《远程访问安全法》（H.R. 2683）——威胁路径 E</span></h3>
+          <p><span lang="en">If enacted, it could prohibit cloud service to any company whose ultimate parent is headquartered in China — closing route E for those customers. It has passed the House but is not yet law.</span><span lang="zh">若获通过，可能禁止向最终母公司总部位于中国的任何公司提供云服务——从而对这些客户关闭路径 E。该法案已在众议院通过，但尚未成为法律。</span></p>
+          <p class="src"><a href="https://www.congress.gov/bill/119th-congress/house-bill/2683">H.R. 2683</a> · <span lang="en">passed House 12 Jan 2026</span><span lang="zh">2026 年 1 月 12 日众议院通过</span> · <a href="https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm">NVDA 10-Q</a> · 26 Aug 2026</p>
+        </div>
+        <div class="watch-item">
+          <span class="watch-when"><span lang="en">10 Nov 2026 · no Federal Register extension as of 27 Oct 2026</span><span lang="zh">2026 年 11 月 10 日 · 截至 2026 年 10 月 27 日未见《联邦公报》延期</span></span>
+          <h3><span lang="en">The Affiliates Rule (50% rule) returns? — threatens routes B and F</span><span lang="zh">关联方规则（50% 规则）恢复？——威胁路径 B 与 F</span></h3>
+          <p><span lang="en">Its suspension is set to end on 10 Nov 2026, with no Federal Register extension found as of 27 Oct 2026. It would widen the "no Entity List party" check to every company 50% or more owned by a listed entity — tightening the below-threshold route (B) and catching more data-center operators abroad (routes E and F).</span><span lang="zh">其暂停期定于 2026 年 11 月 10 日届满，截至 2026 年 10 月 27 日未见《联邦公报》延期。它将把"不涉实体清单主体"的核查扩大到被列名主体持股 50% 或以上的任何公司——从而收紧低于门槛的路径（B），并将更多境外数据中心运营方（路径 E 与 F）纳入管控。</span></p>
+          <p class="src"><a href="https://www.federalregister.gov/documents/2025/09/30/2025-19001/expansion-of-end-user-controls-to-cover-affiliates-of-certain-listed-entities">90 FR 47201</a> · 30 Sep 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="index.html" data-keep-lang><span lang="en">Overview</span><span lang="zh">全景</span></a>
+      <a href="chips.html" data-keep-lang><span lang="en">Chips</span><span lang="zh">芯片查询</span></a>
+      <a href="timeline.html" data-keep-lang><span lang="en">Rules timeline</span><span lang="zh">规则时间线</span></a>
+      <a href="read.html" data-keep-lang><span lang="en">Read</span><span lang="zh">深度阅读</span></a>
+      <a href="qa.html" data-keep-lang><span lang="en">Q&amp;A</span><span lang="zh">问答</span></a>
+      <a href="routes.html" data-keep-lang><span lang="en">Lawful routes</span><span lang="zh">合规路径</span></a>
+      <a href="jurisdictions.html" data-keep-lang><span lang="en">Jurisdictions</span><span lang="zh">司法辖区</span></a>
+      <a href="cases.html" data-keep-lang><span lang="en">Enforcement cases</span><span lang="zh">执法案例</span></a>
+      <a href="market.html" data-keep-lang><span lang="en">Market</span><span lang="zh">市场</span></a>
+      <a href="glossary.html" data-keep-lang><span lang="en">Glossary</span><span lang="zh">术语表</span></a>
+    </nav>
+    <p><strong lang="en">Research, not legal advice.</strong><strong lang="zh">本站为研究资料，不构成法律意见。</strong> <span lang="en">Check any transaction with export-control counsel. State of the law as of 31 Oct 2026.</span><span lang="zh">任何交易请咨询出口管制律师。法规状态截至 2026 年 10 月 31 日。</span></p>
+  </div>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>
